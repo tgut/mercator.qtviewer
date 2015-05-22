@@ -1,4 +1,4 @@
-#include "layer_tiles_page.h"
+﻿#include "layer_tiles_page.h"
 #include "ui_layer_tiles_page.h"
 #include "layer_tiles.h"
 #include <QSettings>

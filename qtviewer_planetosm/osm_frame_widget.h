@@ -1,4 +1,4 @@
-#ifndef OSM_FRAME_WIDGET_H
+﻿#ifndef OSM_FRAME_WIDGET_H
 #define OSM_FRAME_WIDGET_H
 
 #include <QWidget>

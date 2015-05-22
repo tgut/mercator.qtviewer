@@ -1,4 +1,4 @@
-#ifndef LAYER_TILES_PAGE_H
+﻿#ifndef LAYER_TILES_PAGE_H
 #define LAYER_TILES_PAGE_H
 
 #include <QWidget>

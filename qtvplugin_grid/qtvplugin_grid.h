@@ -1,4 +1,4 @@
-#ifndef QTVPLUGIN_GRID_H
+﻿#ifndef QTVPLUGIN_GRID_H
 #define QTVPLUGIN_GRID_H
 
 #include <QWidget>

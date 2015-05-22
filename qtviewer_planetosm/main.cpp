@@ -1,4 +1,4 @@
-#include "osm_frame_widget.h"
+﻿#include "osm_frame_widget.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])

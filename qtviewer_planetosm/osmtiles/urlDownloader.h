@@ -1,4 +1,4 @@
-#ifndef URLDOWNLOADER_H
+﻿#ifndef URLDOWNLOADER_H
 #define URLDOWNLOADER_H
 #include <QObject>
 #include <QVector>

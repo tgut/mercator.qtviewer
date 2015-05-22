@@ -1,4 +1,4 @@
-#ifndef TILESVIEWER_H
+﻿#ifndef TILESVIEWER_H
 #define TILESVIEWER_H
 
 #include <QWidget>

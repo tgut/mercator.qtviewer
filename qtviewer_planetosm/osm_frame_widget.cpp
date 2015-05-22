@@ -1,4 +1,4 @@
-#include "osm_frame_widget.h"
+ï»¿#include "osm_frame_widget.h"
 #include "ui_osm_frame_widget.h"
 #include <QDir>
 #include <QtPlugin>
@@ -88,15 +88,15 @@ void osm_frame_widget::EnumPlugins()
 	QStringList filters;
 	filters << "*.dll";
 	pluginsDir.setNameFilters(filters);
-	//²éÕÒÎÄ¼ş
+	//æŸ¥æ‰¾æ–‡ä»¶
 	foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
 		QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
-		QObject *plugin = pluginLoader.instance();//³¢ÊÔµ÷ÈëPlugin
+		QObject *plugin = pluginLoader.instance();//å°è¯•è°ƒå…¥Plugin
 		if (plugin) {
-			layer_interface * pPlugin= qobject_cast<layer_interface *>(plugin);//¶¯Ì¬ÀàĞÍ×ª»»
-			if (pPlugin)//¾ßÓĞÕâ¸ö½Ó¿Ú
+			layer_interface * pPlugin= qobject_cast<layer_interface *>(plugin);//åŠ¨æ€ç±»å‹è½¬æ¢
+			if (pPlugin)//å…·æœ‰è¿™ä¸ªæ¥å£
 			{
-				//¼ÓÈëÍ¼²ã
+				//åŠ å…¥å›¾å±‚
 				AppendLayer(pPlugin);
 			}
 		}

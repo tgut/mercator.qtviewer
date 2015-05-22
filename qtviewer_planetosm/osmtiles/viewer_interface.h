@@ -1,4 +1,4 @@
-#ifndef VIEWER_INTERFACE_H
+﻿#ifndef VIEWER_INTERFACE_H
 #define VIEWER_INTERFACE_H
 #define OSMViewInterface_iid "org.goldenhawkingStudio.OSMViewer_iid.ViewerInterface"
 class viewer_interface{

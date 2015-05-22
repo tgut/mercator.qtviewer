@@ -1,4 +1,4 @@
-#include "urlDownloader.h"
+﻿#include "urlDownloader.h"
 #include <QNetworkRequest>
 #include <QUrl>
 #include <QDir>

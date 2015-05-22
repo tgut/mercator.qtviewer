@@ -1,4 +1,4 @@
-#include <QThread>
+﻿#include <QThread>
 #include <QCoreApplication>
 #include <QPainter>
 #include <QSettings>

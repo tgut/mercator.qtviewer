@@ -1,4 +1,4 @@
-#ifndef LAYER_TILES_H
+﻿#ifndef LAYER_TILES_H
 #define LAYER_TILES_H
 
 #include <QObject>

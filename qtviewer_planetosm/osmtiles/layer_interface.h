@@ -1,4 +1,4 @@
-#ifndef LAYER_BASE_H
+﻿#ifndef LAYER_BASE_H
 #define LAYER_BASE_H
 #include <QObject>
 #include <QWidget>

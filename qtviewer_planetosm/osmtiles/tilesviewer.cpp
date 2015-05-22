@@ -1,4 +1,4 @@
-#include<QGraphicsView>
+ï»¿#include<QGraphicsView>
 #include "tilesviewer.h"
 #include <QPainter>
 #include <QEvent>
@@ -307,11 +307,11 @@ void tilesviewer::DragView(int nOffsetX,int nOffsetY)
 //set center LLA
 void tilesviewer::setCenterLLA(double lat, double lon)
 {
-	//µ½Ä«¿¨ÍĞÍ¶Ó°
+	//åˆ°å¢¨å¡æ‰˜æŠ•å½±
 	double dMx = cProjectionMercator(lat,lon).ToMercator().m_x;
 	double dMy = cProjectionMercator(lat,lon).ToMercator().m_y;
 
-	//¼ÆËã¾Ş·ùÍ¼Æ¬ÄÚµÄ°Ù·Ö±È
+	//è®¡ç®—å·¨å¹…å›¾ç‰‡å†…çš„ç™¾åˆ†æ¯”
 	double dCtX = dMx/(cProjectionMercator::pi*cProjectionMercator::R*2);
 	double dCtY =  -dMy/(cProjectionMercator::pi*cProjectionMercator::R*2);
 
@@ -342,11 +342,11 @@ void tilesviewer::setCenterLLA(double lat, double lon)
 //set center LLA, not emit centerChanged
 void tilesviewer::setBrCenterLLA(double lat, double lon)
 {
-	//µ½Ä«¿¨ÍĞÍ¶Ó°
+	//åˆ°å¢¨å¡æ‰˜æŠ•å½±
 	double dMx = cProjectionMercator(lat,lon).ToMercator().m_x;
 	double dMy = cProjectionMercator(lat,lon).ToMercator().m_y;
 
-	//¼ÆËã¾Ş·ùÍ¼Æ¬ÄÚµÄ°Ù·Ö±È
+	//è®¡ç®—å·¨å¹…å›¾ç‰‡å†…çš„ç™¾åˆ†æ¯”
 	double dCtX = dMx/(cProjectionMercator::pi*cProjectionMercator::R*2);
 	double dCtY =  -dMy/(cProjectionMercator::pi*cProjectionMercator::R*2);
 
@@ -378,26 +378,26 @@ bool tilesviewer::oTVP_LLA2DP(double lat,double lon,qint32 * pX,qint32 *pY)
 	if (!pX||!pY)
 		return false;
 
-	//µ½Ä«¿¨ÍĞÍ¶Ó°
+	//åˆ°å¢¨å¡æ‰˜æŠ•å½±
 	double dMx = cProjectionMercator(lat,lon).ToMercator().m_x;
 	double dMy = cProjectionMercator(lat,lon).ToMercator().m_y;
 
-	//¼ÆËã¾Ş·ùÍ¼Æ¬ÄÚµÄ°Ù·Ö±È
+	//è®¡ç®—å·¨å¹…å›¾ç‰‡å†…çš„ç™¾åˆ†æ¯”
 	double dperx = dMx/(cProjectionMercator::pi*cProjectionMercator::R*2);
 	double dpery = -dMy/(cProjectionMercator::pi*cProjectionMercator::R*2);
 
 	double dCurrImgSize = pow(2.0,m_nLevel)*256;
-	//¼ÆËãÒª×ª»»µÄµãµÄ¾Ş·ùÍ¼Ïñ×ø±ê
+	//è®¡ç®—è¦è½¬æ¢çš„ç‚¹çš„å·¨å¹…å›¾åƒåæ ‡
 	double dTarX = dperx * dCurrImgSize + dCurrImgSize/2;
 	double dTarY = dpery * dCurrImgSize + dCurrImgSize/2;
-	//¼ÆËãµ±Ç°ÖĞĞÄµãµÄ¾Ş·ùÍ¼Ïñ×ø±ê
+	//è®¡ç®—å½“å‰ä¸­å¿ƒç‚¹çš„å·¨å¹…å›¾åƒåæ ‡
 	double dCurrX = dCurrImgSize*m_dCenterX+dCurrImgSize/2;
 	double dCurrY = dCurrImgSize*m_dCenterY+dCurrImgSize/2;
-	//¼ÆËãµ±Ç°ÖĞĞÄµÄÈ«¾Ö×ø±ê
+	//è®¡ç®—å½“å‰ä¸­å¿ƒçš„å…¨å±€åæ ‡
 	double nOffsetLT_x = (dCurrX-width()/2.0);
 	double nOffsetLT_y = (dCurrY-height()/2.0);
 
-	//ÅĞ¶ÏÊÇ·ñÔÚÊÓµãÄÚ
+	//åˆ¤æ–­æ˜¯å¦åœ¨è§†ç‚¹å†…
 	*pX = dTarX - nOffsetLT_x+.5;
 	*pY = dTarY - nOffsetLT_y+.5;
 
@@ -411,8 +411,8 @@ bool tilesviewer::oTVP_DP2LLA(qint32 X,qint32 Y,double  * plat,double * plon)
 {
 	if (!plat||!plon)
 		return false;
-	//ÏÔÊ¾¾­Î³¶È
-	//µ±Ç°Ëõ·ÅÍ¼·ùµÄÏñËØÊı
+	//æ˜¾ç¤ºç»çº¬åº¦
+	//å½“å‰ç¼©æ”¾å›¾å¹…çš„åƒç´ æ•°
 	double dCurrImgSize = pow(2.0,m_nLevel)*256;
 	int dx = X-(width()/2+.5);
 	int dy = Y-(height()/2+.5);

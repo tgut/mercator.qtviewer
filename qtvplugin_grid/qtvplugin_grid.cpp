@@ -1,4 +1,4 @@
-#include "qtvplugin_grid.h"
+ï»¿#include "qtvplugin_grid.h"
 #include "ui_qtvplugin_grid.h"
 #include <QPainter>
 #include <QBrush>
@@ -46,7 +46,7 @@ void qtvplugin_grid::cb_paintEvent( QPainter * pImage )
 	if (!m_pVi || m_bVisible==false)
 		return ;
 	QRect rect = m_pVi->windowRect();
-	//Ê×ÏÈÈ·¶¨µ±Ç°ÊÓµãµÄLLA
+	//é¦–å…ˆç¡®å®šå½“å‰è§†ç‚¹çš„LLA
 	double lat_top,lon_left;
 	double lat_bottom,lon_right;
 	m_pVi->oTVP_DP2LLA(
@@ -92,7 +92,7 @@ void qtvplugin_grid::cb_paintEvent( QPainter * pImage )
 			if (false==m_pVi->oTVP_LLA2DP(lat_bottom,lon,&DP_right,&DP_bottom))
 				continue;
 			pImage->drawLine(DP_left,DP_top,DP_right,DP_bottom);
-			//»Ø»·
+			//å›žçŽ¯
 			int nLon = lon;
 			while (nLon<-180)
 				nLon+=360;
@@ -129,7 +129,7 @@ void qtvplugin_grid::cb_paintEvent( QPainter * pImage )
 			if (false==m_pVi->oTVP_LLA2DP(lat_bottom,lon,&DP_right,&DP_bottom))
 				continue;
 			pImage->drawLine(DP_left,DP_top,DP_right,DP_bottom);
-			//»Ø»·
+			//å›žçŽ¯
 			float dLon = lon;
 			while (dLon<-180)
 				dLon+=360;

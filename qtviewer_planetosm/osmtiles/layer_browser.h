@@ -1,4 +1,4 @@
-#ifndef LAYER_BROSWER_H
+﻿#ifndef LAYER_BROSWER_H
 #define LAYER_BROSWER_H
 
 #include <QObject>
