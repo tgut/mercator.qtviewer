@@ -623,8 +623,24 @@ double qtvplugin_grid::CalDistance(double dLatStart,double dLatEnd,double dLonSt
 	return dist;
 }
 
-QMap<QString, QVariant> qtvplugin_grid::call_func(const  QMap<QString, QVariant> /*paras*/)
+QMap<QString, QVariant> qtvplugin_grid::call_func(const  QMap<QString, QVariant> paras)
 {
 	QMap<QString, QVariant> res;
+	if (paras.contains("function"))
+	{
+		QString funct = paras["function"].toString();
+		if (funct=="get_region")
+		{
+			int Count = m_list_points.size();
+			res["size"] = Count;
+			for (int i=0;i<Count;++i)
+			{
+				QString latkey = QString("lat%1").arg(i);
+				QString lonkey = QString("lon%1").arg(i);
+				res[latkey] = m_list_points[i].x();
+				res[lonkey] = m_list_points[i].y();
+			}
+		}
+	}
 	return std::move(res);
 }

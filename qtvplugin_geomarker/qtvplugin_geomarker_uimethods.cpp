@@ -3,8 +3,13 @@
 #include <QSettings>
 #include <QColorDialog>
 #include <QSet>
+#include <QMap>
+#include <QRegExp>
+#include <QDebug>
 #include "geographicsellipseitem.h"
 #include "geographicsrectitem.h"
+#include "geographicslineitem.h"
+#include "geographicspolygonitem.h"
 
 void		qtvplugin_geomarker::timerEvent(QTimerEvent * e)
 {
@@ -91,6 +96,22 @@ void qtvplugin_geomarker::on_toolButton_selColor_pointcolorFill_clicked()
 	if (col.isValid())
 		ui->lineEdit_PointColorFill->setText(color2string(col));
 }
+void qtvplugin_geomarker::on_toolButton_selColor_regionEdge_clicked()
+{
+	QString str = ui->lineEdit_RegionColorEdge->text();
+	QColor col = QColorDialog::getColor(string2color(str),this,tr("Select Color"),QColorDialog::ShowAlphaChannel|QColorDialog::DontUseNativeDialog);
+	if (col.isValid())
+		ui->lineEdit_RegionColorEdge->setText(color2string(col));
+
+}
+
+void qtvplugin_geomarker::on_toolButton_selColor_regionFill_clicked()
+{
+	QString str = ui->lineEdit_RegionColorFill->text();
+	QColor col = QColorDialog::getColor(string2color(str),this,tr("Select Color"),QColorDialog::ShowAlphaChannel|QColorDialog::DontUseNativeDialog);
+	if (col.isValid())
+		ui->lineEdit_RegionColorFill->setText(color2string(col));
+}
 
 void qtvplugin_geomarker::on_pushButton_pickToLine1_clicked()
 {
@@ -146,6 +167,10 @@ void qtvplugin_geomarker::SaveSettingsToIni()
 	settings.setValue("ui/lineEdit_lineColor",ui->lineEdit_lineColor->text());
 
 	settings.setValue("ui/comboBox_linePad",ui->comboBox_linePad->currentIndex());
+
+	settings.setValue("ui/lineEdit_RegionColorEdge",ui->lineEdit_RegionColorEdge->text());
+	settings.setValue("ui/lineEdit_RegionColorFill",ui->lineEdit_RegionColorFill->text());
+	settings.setValue("ui/plainTextEdit_corners",ui->plainTextEdit_corners->toPlainText());
 }
 
 void qtvplugin_geomarker::loadSettingsFromIni()
@@ -215,6 +240,13 @@ void qtvplugin_geomarker::loadSettingsFromIni()
 	int comboBox_linePad = settings.value("ui/comboBox_linePad",1).toInt();
 	ui->comboBox_linePad->setCurrentIndex(comboBox_linePad);
 
+	QString lineEdit_RegionColorEdge = settings.value("ui/lineEdit_RegionColorEdge","0").toString();
+	ui->lineEdit_RegionColorEdge->setText(lineEdit_RegionColorEdge);
+	QString lineEdit_RegionColorFill = settings.value("ui/lineEdit_RegionColorFill","0").toString();
+	ui->lineEdit_RegionColorFill->setText(lineEdit_RegionColorFill);
+	QString plainTextEdit_corners = settings.value("ui/plainTextEdit_corners","0").toString();
+	ui->plainTextEdit_corners->setPlainText(plainTextEdit_corners);
+
 }
 void qtvplugin_geomarker::on_pushButton_update_clicked()
 {
@@ -248,6 +280,31 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 	}
 	else if (ui->radioButton_tool_polygon->isChecked())
 	{
+		QColor colorEdge(string2color(ui->lineEdit_RegionColorEdge->text()));
+		QColor colorFill(string2color(ui->lineEdit_RegionColorFill->text()));
+		int width = ui->spinBox_lineWidth->value();
+		QPolygonF latlons;
+		QString strPlainTexts = ui->plainTextEdit_corners->toPlainText();
+		strPlainTexts.remove(' ');
+		strPlainTexts.remove('\n');
+		strPlainTexts.remove('\r');
+		strPlainTexts.remove('\015');
+		strPlainTexts.remove('\012');
+		QStringList lst = strPlainTexts.split(QRegExp("[,;]"),QString::SkipEmptyParts);
+		//qDebug()<<lst;
+		int c = 0;
+		QPointF ll;
+		foreach (QString s,lst)
+		{
+			if (c%2==0)
+				ll.setY(s.toDouble());
+			else
+				ll.setX(s.toDouble());
+			if ((++c) % 2==0)
+				latlons.push_back(ll);
+		}
+		if (latlons.size())
+			update_region(name,latlons,colorEdge,colorFill,width);
 
 	}
 	else
@@ -317,6 +374,30 @@ void qtvplugin_geomarker::on_tableView_marks_doubleClicked(const QModelIndex & i
 	}
 }
 
+void qtvplugin_geomarker::on_pushButton_getRegion_clicked()
+{
+	if (!m_pVi)	return;
+	QString strGridName = QString("grid%1").arg(m_nInstance);
+	layer_interface * pif =  m_pVi->layer(strGridName);
+	if (pif)
+	{
+		QMap<QString, QVariant> inPara, outPara;
+		inPara["function"] = "get_region";
+		outPara = pif->call_func(inPara);
+		QString strPlainText = "";
+		if (outPara.contains("size"))
+		{
+			int nsz = outPara["size"].toInt();
+			for (int i=0;i<nsz;++i)
+			{
+				QString latkey = QString("lat%1").arg(i);
+				QString lonkey = QString("lon%1").arg(i);
+				strPlainText += QString("%1,%2;\n").arg(outPara[latkey].toDouble(),0,'f',14).arg(outPara[lonkey].toDouble(),0,'f',14);
+			}
+		}
+		ui->plainTextEdit_corners->setPlainText(strPlainText);
+	}
+}
 void qtvplugin_geomarker::refreshItemUI(QString markname)
 {
 	QString name = markname;
@@ -360,8 +441,41 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 		}
 			break;
 		case QTVP_GEOMARKER::ITEAMTYPE_LINE:
+		{
+			QTVP_GEOMARKER::geoGraphicsLineItem * pitem = dynamic_cast<QTVP_GEOMARKER::geoGraphicsLineItem *>(item);
+			if (!pitem)
+				break;
+			ui->lineEdit_lineLat1->setText(QString("%1").arg(pitem->lat1(),0,'f',14));
+			ui->lineEdit_lineLat2->setText(QString("%1").arg(pitem->lat2(),0,'f',14));
+			ui->lineEdit_lineLon1->setText(QString("%1").arg(pitem->lon1(),0,'f',14));
+			ui->lineEdit_lineLon2->setText(QString("%1").arg(pitem->lon2(),0,'f',14));
+			QColor color = pitem->pen().color();
+			ui->lineEdit_lineColor->setText(color2string(color));
+			int width = pitem->pen().width();
+			ui->spinBox_point_width->setValue(width);
+			Qt::PenStyle st = pitem->pen().style();
+			ui->comboBox_linePad->setCurrentIndex((int)st);
+		}
 			break;
 		case QTVP_GEOMARKER::ITEAMTYPE_REGION:
+		{
+			QTVP_GEOMARKER::geoGraphicsPolygonItem * pitem = dynamic_cast<QTVP_GEOMARKER::geoGraphicsPolygonItem *>(item);
+			if (!pitem)
+				break;
+			QPolygonF pol = pitem->llas();
+			QString strPlainText;
+			foreach (QPointF p, pol)
+				strPlainText += QString("%1,%2\n").arg(p.y(),0,'f',14).arg(p.x(),0,'f',14);
+			ui->plainTextEdit_corners->setPlainText(strPlainText);
+			QColor color = pitem->pen().color();
+			ui->lineEdit_RegionColorEdge->setText(color2string(color));
+			int width = pitem->pen().width();
+			ui->spinBox_point_width->setValue(width);
+			Qt::PenStyle st = pitem->pen().style();
+			ui->comboBox_linePad->setCurrentIndex((int)st);
+			QColor colorFill = pitem->brush().color();
+			ui->lineEdit_RegionColorFill->setText(color2string(colorFill));
+		}
 			break;
 		default:
 			break;
