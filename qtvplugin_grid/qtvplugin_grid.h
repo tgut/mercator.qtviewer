@@ -2,45 +2,71 @@
 #define QTVPLUGIN_GRID_H
 
 #include <QWidget>
+#include <QTranslator>
+#include <QVector>
 #include "../qtviewer_planetosm/osmtiles/layer_interface.h"
 #include "../qtviewer_planetosm/osmtiles/viewer_interface.h"
 namespace Ui {
 	class qtvplugin_grid;
 }
+using namespace QTVOSM;
+/*!
+ \brief qtvplugin_grid
 
-class qtvplugin_grid : public QWidget, layer_interface
+ \class qtvplugin_grid qtvplugin_grid.h "qtvplugin_grid/qtvplugin_grid.h"
+*/
+class qtvplugin_grid : public QWidget,public layer_interface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID OSMLayerInterface_iid )
-	Q_INTERFACES(layer_interface)
+	Q_INTERFACES(QTVOSM::layer_interface)
 public:
 	qtvplugin_grid(QWidget *parent = 0);
 	~qtvplugin_grid();
-
+	//Properties
+	bool		is_active();
+	void		set_active(bool ab);
+	bool		is_visible();
+	void		set_visible(bool vb);
+	QString		get_name();
+	void		set_name(QString vb);
+	QWidget *	get_propWindow() {return this;}
+	QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> /*paras*/);
 private:
+	int m_nInstance;
+	//International Translator
+	QTranslator pluginTranslator;
 	Ui::qtvplugin_grid *ui;
+	//the pointer to main MAP functions
 	viewer_interface * m_pVi;
+	//Flags
 	bool m_bVisible;
-public:
-	virtual bool cb_initlayer(QObject  * ptrviewer);
-	virtual QWidget * cb_create_propWindow();
-	virtual void cb_finilayer(void * ptrviewer);
-	virtual void cb_update();
-
-	virtual void cb_paintEvent( QPainter * pImage );
-	virtual bool cb_mousePressEvent ( QMouseEvent * event );
-	virtual bool cb_mouseReleaseEvent ( QMouseEvent * event );
-	virtual bool cb_mouseMoveEvent(QMouseEvent * event);
-	virtual bool cb_wheelEvent ( QWheelEvent * event );
-	virtual void cb_resizeEvent ( QResizeEvent * event );
-	virtual void cb_levelChanged(int nLevel);
-
-	virtual bool cb_isActive();
-	virtual void cb_setActive(bool at);
-	virtual bool cb_isVisible();
-	virtual void cb_setVisible(bool vb);
-	virtual QString cb_name();
-	virtual void cb_setName(QString vb);
+	bool m_bActive;
+	//Lib Name
+	QString m_SLLibName;
+	//Measure
+	QPointF m_pt_end;
+	QPoint m_mousePos;
+	QVector<QPointF> m_list_points;
+	bool bFinished;
+	//measure method
+	void	CalArea();
+	double	GetArea(double * PointX,double * PointY,int Count);
+	double	CalDistance(double,double,double,double,double * psita);
+	bool	loadTranslation();
+protected:
+	layer_interface *	load_initial_plugin(QString strSLibPath,viewer_interface  * ptrviewer);
+	QWidget *			load_prop_window();
+	void				load_retranslate_UI();
+protected:
+	//Events
+	void cb_paintEvent( QPainter * pImage );
+	bool cb_mouseMoveEvent(QMouseEvent *);
+	bool cb_mousePressEvent(QMouseEvent *);
+	//Event filters
+	bool cb_event(const QMap<QString, QVariant>);
+protected slots:
+	void on_checkBox_measure_clicked(bool);
 
 };
 

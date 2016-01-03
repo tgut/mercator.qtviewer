@@ -5,7 +5,8 @@
 #-------------------------------------------------
 
 QT       += widgets
-
+linux:QMAKE_CXXFLAGS += -std=c++11
+win32-g++:QMAKE_CXXFLAGS += -std=c++11
 TARGET = ../../bin/qtvplugin_grid
 TEMPLATE = lib
 
@@ -21,5 +22,12 @@ HEADERS +=\
 
 FORMS += \
     qtvplugin_grid.ui
+
+TRANSLATIONS += qtvplugin_grid_zh_CN.ts
+
+OTHER_FILES += qtvplugin_grid_zh_CN.ts
+
+RESOURCES += \
+    resources.qrc
 
 

@@ -1,0 +1,95 @@
+<RCC>
+    <qresource prefix="/ui">
+        <file>icons/_40Icon Silver Reverse.png</file>
+        <file>icons/+_Sign.png</file>
+        <file>icons/+_Sign_Alt.png</file>
+        <file>icons/0_9.png</file>
+        <file>icons/3floppy_mount.png</file>
+        <file>icons/3floppy_mount-1.png</file>
+        <file>icons/3floppy_mount-2.png</file>
+        <file>icons/3floppy_mount-3.png</file>
+        <file>icons/3floppy_unmount.png</file>
+        <file>icons/3floppy_unmount-1.png</file>
+        <file>icons/3floppy_unmount-2.png</file>
+        <file>icons/3floppy_unmount-3.png</file>
+        <file>icons/3floppy_unmount-4.png</file>
+        <file>icons/010-3.png</file>
+        <file>icons/10-3.png</file>
+        <file>icons/019-1.png</file>
+        <file>icons/019-3.png</file>
+        <file>icons/19-1.png</file>
+        <file>icons/27_Martin.png</file>
+        <file>icons/033-1.png</file>
+        <file>icons/37.png</file>
+        <file>icons/049-1.png</file>
+        <file>icons/0062.png</file>
+        <file>icons/0098.png</file>
+        <file>icons/0104.png</file>
+        <file>icons/0109.png</file>
+        <file>icons/0126.png</file>
+        <file>icons/165c, 180c.png</file>
+        <file>icons/3018.png</file>
+        <file>icons/4003.png</file>
+        <file>icons/4011.png</file>
+        <file>icons/4013.png</file>
+        <file>icons/4018.png</file>
+        <file>icons/4021.png</file>
+        <file>icons/A-1 009.png</file>
+        <file>icons/Alienware (13).png</file>
+        <file>icons/Alienware (27).png</file>
+        <file>icons/Alienware (28).png</file>
+        <file>icons/Alienware (29).png</file>
+        <file>icons/Backup drive.png</file>
+        <file>icons/Backup-1.png</file>
+        <file>icons/BackUp-4.png</file>
+        <file>icons/Battery (1).png</file>
+        <file>icons/Battery Charged.png</file>
+        <file>icons/Battery -No charge.png</file>
+        <file>icons/Blizzard17.png</file>
+        <file>icons/blue - download.png</file>
+        <file>icons/bluetooth256.png</file>
+        <file>icons/Burn CD-1.png</file>
+        <file>icons/cn1.png</file>
+        <file>icons/cn2.png</file>
+        <file>icons/cn3.png</file>
+        <file>icons/cn4.png</file>
+        <file>icons/cn5.png</file>
+        <file>icons/cn6.png</file>
+        <file>icons/cn7.png</file>
+        <file>icons/cn8.png</file>
+        <file>icons/cn9.png</file>
+        <file>icons/cn10.png</file>
+        <file>icons/cn11.png</file>
+        <file>icons/cn12.png</file>
+        <file>icons/cn13.png</file>
+        <file>icons/coffee.png</file>
+        <file>icons/Color Classic Green.png</file>
+        <file>icons/Color Classic, Performa 250, 275.png</file>
+        <file>icons/Color Classic.png</file>
+        <file>icons/Color, Blueberry.png</file>
+        <file>icons/Color, Bondi.png</file>
+        <file>icons/Color, Bondi-1.png</file>
+        <file>icons/Color, Grape.png</file>
+        <file>icons/Color, Graphite.png</file>
+        <file>icons/Color, Indigo.png</file>
+        <file>icons/Color, Lemon.png</file>
+        <file>icons/Color, Lime.png</file>
+        <file>icons/Color, Ruby.png</file>
+        <file>icons/Color, Sage.png</file>
+        <file>icons/Color, Strawberry.png</file>
+        <file>icons/Color, Tangerine.png</file>
+        <file>icons/Color, Titanium.png</file>
+        <file>icons/Crystal_folder09.png</file>
+        <file>icons/Crystal_folder10.png</file>
+        <file>icons/Crystal_folder18.png</file>
+        <file>icons/Crystal_folder19.png</file>
+        <file>icons/Digital Image Bmp.png</file>
+        <file>icons/DimageViewer.png</file>
+        <file>icons/Folder Graphite-1.png</file>
+        <file>icons/Folder Online aqua.png</file>
+        <file>icons/hanukkah_03.png</file>
+        <file>icons/up_symbol.png</file>
+        <file>icons/view_bottom.png</file>
+        <file>icons/view_top_bottom.png</file>
+    </qresource>
+</RCC>

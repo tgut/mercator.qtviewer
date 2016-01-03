@@ -7,10 +7,26 @@
 #include <QModelIndexList>
 #include <QModelIndex>
 #include <QPluginLoader>
+#include <QFileDialog>
+#include <QSettings>
+#include <QMessageBox>
+#include "osmtiles/viewer_interface.h"
+
+ QMutex osm_frame_widget::m_mutex_proteced;
+
+/*!
+ \brief osm_frame_widget is the main widget of this control.
+ in this constructor, 2 OUTER message will be fired.
+
+ \fn osm_frame_widget::osm_frame_widget
+ \param parent
+*/
 osm_frame_widget::osm_frame_widget(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::osm_frame_widget)
 {
+	m_mutex_proteced.lock();
+	QTVOSM_DEBUG("The osm_frame_widget class constructing...");
 	ui->setupUi(this);
 	m_pLayerDispMod = new QStandardItemModel(this);
 	m_pLayerDispMod->setColumnCount(3);
@@ -23,32 +39,70 @@ osm_frame_widget::osm_frame_widget(QWidget *parent) :
 
 
 	//add an osm layer
-	layer_tiles * pOSMTile = new layer_tiles(ui->widget_mainMap);
-	pOSMTile->cb_setName("BackgroundOSM");
-	pOSMTile->cb_setActive(true);
-	pOSMTile->cb_setVisible(true);
-	pOSMTile->connectToTilesServer(true);
-	AppendLayer(pOSMTile);
+	layer_tiles * pOSMTile =  new layer_tiles(ui->widget_mainMap);
+	pOSMTile->set_name("OSM");
+	pOSMTile->set_active(true);
+	pOSMTile->set_visible(true);
+	//pOSMTile->connectToTilesServer(true);
+	AppendLayer(QCoreApplication::applicationFilePath(),pOSMTile);
 
-
+/*
 	//add an sat layer
 	layer_tiles * pSatTile = new layer_tiles(ui->widget_mainMap);
-	pSatTile->cb_setName("BackgroundSAT");
-	pSatTile->connectToTilesServer(true);
-	AppendLayer(pSatTile);
-
+	pSatTile->set_name("SAT");
+	//pSatTile->connectToTilesServer(true);
+	AppendLayer(QCoreApplication::applicationFilePath(),pSatTile);
+*/
 	//add single layer to browser
 	layer_browser * pOSMTileBr = new layer_browser(ui->browserView);
-	pOSMTileBr->cb_setName("BackgroundOSM");
+	pOSMTileBr->set_name("OSM");
+	pOSMTileBr->load_initial_plugin(QCoreApplication::applicationFilePath(),ui->browserView);
 	ui->browserView->addLayer(pOSMTileBr);
 
 	//connect center change event
 	connect (ui->widget_mainMap,&tilesviewer::evt_center_changed,ui->browserView,&tilesviewer::setBrCenterLLA);
 	connect (ui->browserView,&tilesviewer::evt_center_changed,ui->widget_mainMap,&tilesviewer::setCenterLLA);
 	connect (ui->widget_mainMap,&tilesviewer::evt_level_changed,ui->browserView,&tilesviewer::setBrLevel);
+	connect (ui->widget_mainMap,&tilesviewer::cmd_update_layer_box,this,&osm_frame_widget::delacmd_refresh_layer_view,Qt::QueuedConnection);
+	//send messages
+	//! 1. source=MAIN_MAP,  destin = ALL, msg = WINDOW_CREATE
+	if (this->isEnabled())
+	{
+		QMap<QString, QVariant> map_evt;
+		map_evt["source"] = "MAIN_MAP";
+		map_evt["destin"] = "ALL";
+		map_evt["name"] = "WINDOW_CREATE";
+		double tlat, tlon;
+		ui->widget_mainMap->centerLLA(&tlat,&tlon);
+		map_evt["main_lat"] = tlat;
+		map_evt["main_lon"] = tlon;
+		map_evt["nLevel"] = ui->widget_mainMap->level();
+		ui->widget_mainMap->post_event(map_evt);
+	}
 
+	ui->tab_map->installEventFilter(this);
+	//adjust layers, make exclusive layrs being de-activated.
+	ui->widget_mainMap->adjust_layers(pOSMTile);
+
+
+	//! 2. source=MAIN_MAP,  destin = ALL, msg = MAP_INITED
+	if ( this->isEnabled())
+	{
+		QMap<QString, QVariant> map_evt;
+		map_evt["source"] = "MAIN_MAP";
+		map_evt["destin"] = "ALL";
+		map_evt["name"] = "MAP_INITED";
+		double tlat, tlon;
+		ui->widget_mainMap->centerLLA(&tlat,&tlon);
+		map_evt["main_lat"] = tlat;
+		map_evt["main_lon"] = tlon;
+		map_evt["nLevel"] = ui->widget_mainMap->level();
+		ui->widget_mainMap->post_event(map_evt);
+	}
+	QTVOSM_DEBUG("The osm_frame_widget class constructed.");
 	EnumPlugins();
 	UpdateLayerTable();
+	m_mutex_proteced.unlock();
 }
 void osm_frame_widget::UpdateLayerTable()
 {
@@ -65,16 +119,69 @@ void osm_frame_widget::UpdateLayerTable()
 		m_pLayerDispMod->setData(m_pLayerDispMod->index(i,2),visibles[nItems-1-i]);
 	}
 }
-void osm_frame_widget::AppendLayer(layer_interface * interface)
+tilesviewer * osm_frame_widget::viewer()
 {
-	if (false==ui->widget_mainMap->addLayer(interface))
-		return;
-	QWidget * wig = interface->cb_create_propWindow();
+	return ui->widget_mainMap;
+}
+
+bool osm_frame_widget::eventFilter(QObject *obj, QEvent *event)
+{
+	if (event->type() == QEvent::Close && !( obj==ui->tab_map))
+	{
+		if (m_PropPageslayer.contains(obj))
+		{
+			QWidget * wig = qobject_cast<QWidget *>(obj);
+			if (wig)
+			{
+				Qt::WindowFlags flg = wig->windowFlags();
+				flg &= ~(Qt::WindowMinMaxButtonsHint|Qt::WindowStaysOnTopHint|Qt::Window );
+				wig->setWindowFlags(flg);
+				ui->tabWidget_main->addTab(
+							wig,
+							m_PropPageslayer[obj]->get_name()
+						);
+			}
+			return true;
+		}
+	}
+	else if (obj==ui->tab_map)//Map
+	{
+		if (event->type() == QEvent::Close)
+		{
+			QWidget * wig = qobject_cast<QWidget *>(obj);
+			if (wig)
+			{
+				Qt::WindowFlags flg = wig->windowFlags();
+				flg &= ~(Qt::WindowMinMaxButtonsHint|Qt::WindowStaysOnTopHint|Qt::Window );
+				wig->setWindowFlags(flg);
+				ui->tabWidget_main->addTab(
+							wig,
+							"Map"
+							);
+				return true;
+			}
+		}
+	}
+	// standard event processing
+	return QObject::eventFilter(obj, event);
+}
+
+bool osm_frame_widget::AppendLayer(QString SLName,layer_interface * interface)
+{
+	layer_interface * ci = interface->load_initial_plugin(SLName,ui->widget_mainMap);
+	if (0==ci)
+		return false;
+	if (false==ui->widget_mainMap->addLayer(ci))
+		return false;
+	QWidget * wig = ci->load_prop_window();
 	if (wig)
 	{
-		m_layerPropPages[interface] = wig;
-		ui->tabWidget_main->addTab(wig,interface->cb_name());
+		m_layerPropPages[ci] = wig;
+		m_PropPageslayer[wig] = ci;
+		ui->tabWidget_main->addTab(wig,ci->get_name());
+		wig->installEventFilter(this);
 	}
+	return true;
 }
 
 osm_frame_widget::~osm_frame_widget()
@@ -84,23 +191,28 @@ osm_frame_widget::~osm_frame_widget()
 
 void osm_frame_widget::EnumPlugins()
 {
-	QDir pluginsDir(QApplication::applicationDirPath());
+	QTVOSM_DEBUG("The osm_frame_widget is enuming plugins.");
+	QString strAppDir = QCoreApplication::applicationDirPath();
+	QDir pluginsDir(strAppDir);
 	QStringList filters;
-	filters << "*.dll";
+	filters << "qtvplugin_*.dll" << "libqtvplugin_*.so";
 	pluginsDir.setNameFilters(filters);
-	//查找文件
+	//Enum files
 	foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
 		QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
-		QObject *plugin = pluginLoader.instance();//尝试调入Plugin
+		QObject *plugin = pluginLoader.instance();//try to load Plugins
 		if (plugin) {
-			layer_interface * pPlugin= qobject_cast<layer_interface *>(plugin);//动态类型转换
-			if (pPlugin)//具有这个接口
+			layer_interface * pPlugin= qobject_cast<layer_interface *>(plugin);
+			if (pPlugin)
 			{
-				//加入图层
-				AppendLayer(pPlugin);
+				if (false==AppendLayer(fileName,pPlugin))
+				{
+
+				}
 			}
 		}
 	}
+	QTVOSM_DEBUG("The osm_frame_widget loaded all plugins.");
 	return ;
 }
 
@@ -114,7 +226,7 @@ void osm_frame_widget::on_pushButton_visible_clicked()
 		int row = lstSel.first().row();
 		if (row >=0 && row < layers.size())
 		{
-			layers[nItems - 1 -row]->cb_setVisible(true);
+			layers[nItems - 1 -row]->set_visible(true);
 			UpdateLayerTable();
 			ui->widget_mainMap->UpdateWindow();
 
@@ -132,7 +244,7 @@ void osm_frame_widget::on_pushButton_hide_clicked()
 		int row = lstSel.first().row();
 		if (row >=0 && row < layers.size())
 		{
-			layers[nItems - 1 -row]->cb_setVisible(false);
+			layers[nItems - 1 -row]->set_visible(false);
 			UpdateLayerTable();
 			ui->widget_mainMap->UpdateWindow();
 		}
@@ -206,6 +318,11 @@ void osm_frame_widget::on_pushButton_moveTop_clicked()
 		}
 	}
 }
+void osm_frame_widget::delacmd_refresh_layer_view()
+{
+	UpdateLayerTable();
+	ui->widget_mainMap->UpdateWindow();
+}
 
 void osm_frame_widget::on_pushButton_active_clicked()
 {
@@ -218,10 +335,64 @@ void osm_frame_widget::on_pushButton_active_clicked()
 		if (row >=0 && row < layers.size())
 		{
 			for (int i=0;i<layers.size();++i)
-				layers[i]->cb_setActive((i==(nItems - 1 -row))?true:false);
+			{
+				//It's exclusive, there should be at most only one layer_tiles active
+				if (i==(nItems - 1 -row))
+				{
+					layers[i]->set_active(true);
+					ui->widget_mainMap->adjust_layers(layers[i]);
+				}
+			}
 			UpdateLayerTable();
 
 		}
 	}
 }
 
+void osm_frame_widget::on_pushButton_deactive_clicked()
+{
+	QVector <layer_interface *> layers = ui->widget_mainMap->layers();
+	QModelIndexList lstSel = ui->tableView_layers->selectionModel()->selectedIndexes();
+	int nItems = layers.size();
+	if (lstSel.size())
+	{
+		int row = lstSel.first().row();
+		if (row >=0 && row < layers.size())
+		{
+			for (int i=0;i<layers.size();++i)
+			{
+				if (i==(nItems - 1 -row))
+					layers[i]->set_active(false);
+			}
+			UpdateLayerTable();
+
+		}
+	}
+}
+
+void osm_frame_widget::on_tabWidget_main_tabCloseRequested(int index)
+{
+	QWidget * wig = ui->tabWidget_main->widget(index);
+	this->ui->tabWidget_main->removeTab(index);
+
+	Qt::WindowFlags flg = wig->windowFlags();
+	flg |= (Qt::WindowMinMaxButtonsHint|Qt::WindowStaysOnTopHint|Qt::Window );
+	wig->setWindowFlags(flg);
+	wig->show();
+	wig->move(100,100);
+
+}
+
+void osm_frame_widget::on_pushButton_saveToFile_clicked()
+{
+	QSettings settings(QCoreApplication::applicationFilePath()+".ini",QSettings::IniFormat);
+	QString strLastSaveImgDir = settings.value("history/last_save_img_dir","./").toString();
+	QString newfm = QFileDialog::getSaveFileName(this,tr("save to image"),strLastSaveImgDir,
+								 "Images (*.png *.bmp *.jpg);;All files(*.*)"
+								 );
+	if (newfm.size()>2)
+	{
+		if (true == ui->widget_mainMap->saveToImage(newfm))
+			 settings.setValue("history/last_save_img_dir",newfm);
+	}
+}

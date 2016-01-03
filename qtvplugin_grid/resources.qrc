@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/Brush_Ruler_Alt.png</file>
+        <file>icons/Clear.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>testcontainer</class>
+ <widget class="QDialog" name="testcontainer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>testcontainer</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Map1</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QAxWidget" name="axWidget_map1"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Map2</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QAxWidget" name="axWidget_map2">
+         <property name="sizePolicy" stdset="0">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_Message">
+      <attribute name="title">
+       <string>Message</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QTableView" name="tableView_msg">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_lla">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QAxWidget</class>
+   <extends>QWidget</extends>
+   <header>qaxwidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
