@@ -41,6 +41,10 @@ namespace QTVOSM{
 					file.close();
 				}
 			}
+			else
+			{
+				qCritical()<<rply->errorString();
+			}
 			QString uniqueKey = tk.str_url + ":" +  tk.str_destinDir +":" + tk.str_destinFile;
 			m_set_tileAddress.remove(uniqueKey);
 			m_map_pendingTasks.remove(rply);
@@ -69,8 +73,11 @@ namespace QTVOSM{
 		m_mutex_protect.lock();
 		while (m_map_pendingTasks.size()<m_nMaxAsynThread && m_listTask.empty()==false)
 		{
+			QNetworkRequest req;
 			tag_download_tasks tk = m_listTask.first();
-			QNetworkReply * ptply = m_pNetMge->get(QNetworkRequest(QUrl(tk.str_url)));
+			req.setUrl(QUrl(tk.str_url));
+			req.setRawHeader("User-Agent", "qplanetosm 1.0");
+			QNetworkReply * ptply = m_pNetMge->get(req);
 			m_map_pendingTasks[ptply]=tk;
 			m_listTask.pop_front();
 		}
