@@ -41,22 +41,8 @@ namespace QTVP_GEOMARKER{
 				m_lon2 += 360;
 			while (m_lon2 - m_lon1 > 180)
 				m_lon2 -= 360;
-
-			while (m_lon1 < -180)
-			{
-				m_lon1 += 360;
-				m_lon2 += 360;
-			}
-			while (m_lon1 >180)
-			{
-				m_lon1 -= 360;
-				m_lon2 -= 360;
-			}
-			m_llap[i-1].setX(m_lon1);
 			m_llap[i].setX(m_lon2);
-
 		}
-
 	}
 
 	void geoGraphicsPolygonItem::adjust_coords(int nNewLevel)
