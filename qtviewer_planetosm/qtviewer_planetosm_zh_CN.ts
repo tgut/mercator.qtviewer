@@ -75,79 +75,79 @@
         <translation>Open Street Map 浏览器框架</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="67"/>
+        <location filename="osm_frame_widget.ui" line="70"/>
         <source>Map</source>
         <translation>地图</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="139"/>
+        <location filename="osm_frame_widget.ui" line="142"/>
         <source>Tools</source>
         <translation>工具</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="284"/>
+        <location filename="osm_frame_widget.ui" line="287"/>
         <source>Activate</source>
         <translation>激活图层</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="245"/>
+        <location filename="osm_frame_widget.ui" line="248"/>
         <source>export</source>
         <translation>截图保存</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="301"/>
+        <location filename="osm_frame_widget.ui" line="304"/>
         <source>Deactive</source>
-        <translation type="unfinished"></translation>
+        <translation>取消激活</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="325"/>
+        <location filename="osm_frame_widget.ui" line="328"/>
         <source>Show</source>
         <translation>显示</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="342"/>
+        <location filename="osm_frame_widget.ui" line="345"/>
         <source>Hide</source>
         <translation>隐藏</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="388"/>
+        <location filename="osm_frame_widget.ui" line="391"/>
         <source>Up</source>
         <translation>上移</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="405"/>
+        <location filename="osm_frame_widget.ui" line="408"/>
         <source>Top</source>
         <translation>置顶</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="429"/>
+        <location filename="osm_frame_widget.ui" line="432"/>
         <source>Down</source>
         <translation>下移</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="446"/>
+        <location filename="osm_frame_widget.ui" line="449"/>
         <source>Bottom</source>
         <translation>置底</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.cpp" line="20"/>
+        <location filename="osm_frame_widget.cpp" line="33"/>
         <source>name</source>
         <translation>图层</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.cpp" line="21"/>
+        <location filename="osm_frame_widget.cpp" line="34"/>
         <source>active</source>
         <translation>激活</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.cpp" line="22"/>
+        <location filename="osm_frame_widget.cpp" line="35"/>
         <source>visible</source>
         <translation>可见</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.cpp" line="367"/>
+        <location filename="osm_frame_widget.cpp" line="390"/>
         <source>save to image</source>
-        <translation type="unfinished"></translation>
+        <translation>保存到图像</translation>
     </message>
 </context>
 </TS>

@@ -2,6 +2,146 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
-   
+    <name>qtvplugin_geomarker</name>
+    <message>
+        <source>Grid</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Marks</source>
+        <translation>标记点</translation>
+    </message>
+    <message>
+        <source>points</source>
+        <translation>点标记</translation>
+    </message>
+    <message>
+        <source>lines</source>
+        <translation>连线标记</translation>
+    </message>
+    <message>
+        <source>polygons</source>
+        <translation>区域标记</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation>更新</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Latitude</source>
+        <translation>纬度</translation>
+    </message>
+    <message>
+        <source>Longitude</source>
+        <translation>经度</translation>
+    </message>
+    <message>
+        <source>width</source>
+        <translation>宽度</translation>
+    </message>
+    <message>
+        <source>height</source>
+        <translation>高度</translation>
+    </message>
+    <message>
+        <source>Edge color</source>
+        <translation>描边色彩</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Fill Color</source>
+        <translation>填充色彩</translation>
+    </message>
+    <message>
+        <source>Rectangle Marks</source>
+        <translation>矩形标记点</translation>
+    </message>
+    <message>
+        <source>Ecilips Marks</source>
+        <translation>椭圆标记点</translation>
+    </message>
+    <message>
+        <source>Lat1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Lon1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Pick</source>
+        <translation>选取</translation>
+    </message>
+    <message>
+        <source>Lat2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Lon2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>pad</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation>色彩</translation>
+    </message>
+    <message>
+        <source>corner Points</source>
+        <translation>顶点</translation>
+    </message>
+    <message>
+        <source>Call Region Get</source>
+        <translation>获取当前区域</translation>
+    </message>
+    <message>
+        <source>Save Data</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation>属性</translation>
+    </message>
+    <message>
+        <source>Property Name</source>
+        <translation>属性名</translation>
+    </message>
+    <message>
+        <source>Property String</source>
+        <translation>属性值</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>类型</translation>
+    </message>
+    <message>
+        <source>Props</source>
+        <translation>属性</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>值</translation>
+    </message>
+    <message>
+        <source>Select Color</source>
+        <translation>选择色彩</translation>
+    </message>
 </context>
 </TS>
