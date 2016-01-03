@@ -58,6 +58,7 @@ private:
 	template <class T>
 	void update_point		(const QString & name,double lat, double lon, const QColor & colorEdge, const QColor & colorFill, int width, int height);
 	void update_line		(const QString & name,double lat1, double lon1,double lat2, double lon2, const QColor & color, int width);
+	void update_region		(const QString & name,const QPolygonF latlons, const QColor & colorEdge, const QColor & colorFill, int width);
 protected:
 	layer_interface *		load_initial_plugin(QString strSLibPath,viewer_interface  * ptrviewer);
 	QWidget *				load_prop_window();
@@ -84,6 +85,8 @@ protected slots:
 	void on_radioButton_tool_polygon_toggled(bool);
 	void on_toolButton_selColor_pointEdge_clicked();
 	void on_toolButton_selColor_pointcolorFill_clicked();
+	void on_toolButton_selColor_regionEdge_clicked();
+	void on_toolButton_selColor_regionFill_clicked();
 	void on_tableView_marks_doubleClicked(const QModelIndex & index);
 	void on_pushButton_prop_update_clicked();
 	void on_pushButton_prop_delete_clicked();
@@ -91,6 +94,7 @@ protected slots:
 	void on_pushButton_pickToLine1_clicked();
 	void on_pushButton_pickToLine2_clicked();
 	void on_toolButton_selColor_clicked();
+	void on_pushButton_getRegion_clicked();
 };
 
 template <class T>

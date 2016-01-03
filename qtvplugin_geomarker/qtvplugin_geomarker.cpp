@@ -14,6 +14,7 @@
 #include "geographicsellipseitem.h"
 #include "geographicsrectitem.h"
 #include "geographicslineitem.h"
+#include "geographicspolygonitem.h"
 QMutex mutex_instances;
 QMap<viewer_interface *,  qtvplugin_geomarker * > map_instances;
 QMap<QString,  int > count_instances;
@@ -412,4 +413,53 @@ void qtvplugin_geomarker::update_line(const QString & name,double lat1, double l
 		}
 	}
 
+}
+void qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF latlons, const QColor & colorEdge, const QColor & colorFill, int width)
+{
+	//Get raw Item by name
+	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
+	//Get Props
+	QStringList propNames;
+	QVariantList propValues;
+	if (base)
+	{
+		propNames = base->prop_names();
+		propValues = base->prop_values();
+	}
+	//type convertion to T
+	QTVP_GEOMARKER::geoGraphicsPolygonItem * pitem = base?dynamic_cast<QTVP_GEOMARKER::geoGraphicsPolygonItem  *>(base):0;
+	if (!pitem)
+		pitem	= new QTVP_GEOMARKER::geoGraphicsPolygonItem(name,
+						this->m_pVi,
+						latlons);
+	Qt::PenStyle pst [] ={
+		Qt::NoPen	,
+		Qt::SolidLine	,
+		Qt::DashLine	,
+		Qt::DotLine	,
+		Qt::DashDotLine	,
+		Qt::DashDotDotLine	,
+		Qt::CustomDashLine
+	};
+
+	int ptdd = ui->comboBox_linePad->currentIndex();
+	if (ptdd < 0 || ptdd >=7)
+		ptdd = 1;
+	pitem->setPen(QPen(QBrush(colorEdge),width,pst[ptdd]));
+	pitem->setBrush(QColor(colorFill));
+	if (false==this->m_pScene->addItem(pitem,0))
+	{
+		if (base != pitem)
+			delete pitem;
+	}
+	else
+	{
+		int cs = propNames.size();
+		for (int i=0;i<cs && base != pitem;++i)
+		{
+			pitem->set_prop_data(propNames.first(), propValues.first());
+			propNames.pop_front();
+			propValues.pop_front();
+		}
+	}
 }
