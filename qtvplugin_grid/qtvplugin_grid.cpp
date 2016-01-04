@@ -641,6 +641,22 @@ QMap<QString, QVariant> qtvplugin_grid::call_func(const  QMap<QString, QVariant>
 				res[lonkey] = m_list_points[i].y();
 			}
 		}
+		else if (funct=="get_ruler_status")
+		{
+			res["status"] = m_bActive==false?0:-1;
+		}
+		else if (funct=="set_ruler_status")
+		{
+			int status = -1;
+			if (paras.contains("status"))
+				status = paras["status"].toInt();
+			set_active(status==0?false:true);
+			res["status"] = m_bActive==false?0:-1;
+		}
+		else
+			res["error"] = QString("unknown function \"%1\".").arg(funct);
 	}
+	else
+		res["error"] = "\"function\" keyword not specified, nothing to do.";
 	return std::move(res);
 }

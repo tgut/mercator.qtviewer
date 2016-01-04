@@ -50,7 +50,7 @@ qtaxviewer_planetosm::~qtaxviewer_planetosm()
 }
 
 /*!
- \brief	setTileAddress set the address of the OSM layer.
+ \brief	osm_set_remote_address set the address of the OSM layer.
  a Address is almost like:
 	http://192.168.1.127/osm/%1/%2/%3.png
 	or
@@ -220,7 +220,7 @@ void qtaxviewer_planetosm::_next_pending_evts()
 	for(QMap<QString, QVariant>::const_iterator p = e->begin();p!=e->end();++p)
 	{
 		str_props += p.key();
-		str_props +=":";
+		str_props +="=";
 		str_props +=p.value().toString();
 		str_props +=";";
 	}
@@ -348,8 +348,48 @@ int		qtaxviewer_planetosm::osm_layer_move_bottom(QString layerName)
 	}
 	return 0;
 }
+QString qtaxviewer_planetosm::map_to_string(const QMap<QString, QVariant> & m)
+{
+	QString s;
+	for(QMap<QString, QVariant>::const_iterator p = m.begin();p!=m.end();++p)
+	{
+		s += p.key();
+		s += "=";
+		s += p.value().toString();
+		s += ";";
+	}
+	return std::move(s);
+}
 
-//function Calls
+QMap<QString, QVariant> qtaxviewer_planetosm::string_to_map(const QString & s)
+{
+	QMap<QString, QVariant> res;
+	QStringList lst = s.split(";");
+	foreach (QString s, lst)
+	{
+		int t = s.indexOf("=");
+		if (t>0 && t< s.size())
+		{
+			QString name = s.left(t).trimmed();
+			QString value = s.mid(t+1).trimmed();
+			res[name] = value;
+		}
+	}
+	return std::move(res);
+}
+
+/**
+ * @brief	osm_layer_call_function call layers' call_func method from
+ * outside the ocx ctrl. Please MAKE SURE that this function is called from UI thread,
+ * which means the same thread that OCX ctrl stays. Calling "call_func" from another thread is
+ * NOT SUPPORTED, and will cause strange problems.
+ *
+ * @param layerName	the layer name to whom this function call will be sent
+ * @param args	args stored in key, value strings,
+ * key, value is connected with "=", and each pairs splitted by ";"
+ * eg, function=get_region;x=38.43834784;y=16.3834754;
+ * @return QString	the result string is also formatted with key-vaslue para strings.
+ */
 QString qtaxviewer_planetosm::osm_layer_call_function(QString layerName, QString args)
 {
 	QString strRes;
@@ -358,26 +398,12 @@ QString qtaxviewer_planetosm::osm_layer_call_function(QString layerName, QString
 	if (la)
 	{
 		QMap<QString, QVariant> p_in,p_out;
-		QStringList lst = args.split(";");
-		foreach (QString s, lst)
-		{
-			int t = s.indexOf(":");
-			if (t>0 && t< s.size())
-			{
-				QString name = s.left(t).trimmed();
-				QString value = s.mid(t+1).trimmed();
-				p_in[name] = value;
-			}
-		}
+		p_in = string_to_map(args);
 		p_out = la->call_func(p_in);
-		for(QMap<QString, QVariant>::iterator p = p_out.begin();p!=p_out.end();++p)
-		{
-			strRes += p.key();
-			strRes += ":";
-			strRes += p.value().toString();
-			strRes += ";";
-		}
+		strRes = map_to_string(p_out);
 	}
+	else
+		strRes = QString("error=Layer name \"%1\" does not exist.;").arg(layerName);
 	return strRes;
 }
 

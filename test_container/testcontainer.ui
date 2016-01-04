@@ -102,13 +102,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_test_layer_move">
-       <property name="text">
-        <string>test_layer_move</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -120,6 +113,20 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_test_grid_enable">
+       <property name="text">
+        <string>grid_measure</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_test_grid_getRegion">
+       <property name="text">
+        <string>grid_region</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

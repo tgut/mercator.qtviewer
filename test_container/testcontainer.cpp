@@ -140,3 +140,55 @@ void testcontainer::on_pushButton_test_layer_move_clicked()
 	av = ui->axWidget_map1->dynamicCall("osm_layer_set_active(QString,int)","OSM",av==0?-1:0).toInt();
 	QMessageBox::information(this,"active",QString("osm_layer_set_active(\"OSM\") returns  %1").arg(av));
 }
+QString testcontainer::map_to_string(const QMap<QString, QVariant> & m)
+{
+	QString s;
+	for(QMap<QString, QVariant>::const_iterator p = m.begin();p!=m.end();++p)
+	{
+		s += p.key();
+		s += "=";
+		s += p.value().toString();
+		s += ";";
+	}
+	return std::move(s);
+}
+
+QMap<QString, QVariant> testcontainer::string_to_map(const QString & s)
+{
+	QMap<QString, QVariant> res;
+	QStringList lst = s.split(";");
+	foreach (QString s, lst)
+	{
+		int t = s.indexOf("=");
+		if (t>0 && t< s.size())
+		{
+			QString name = s.left(t).trimmed();
+			QString value = s.mid(t+1).trimmed();
+			res[name] = value;
+		}
+	}
+	return std::move(res);
+}
+void testcontainer::on_pushButton_test_grid_enable_clicked()
+{
+	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","grid1","function=get_ruler_status;").toString();
+	QMessageBox::information(this,"grid1::get_ruler_status",res);
+	QMap<QString, QVariant> mres = string_to_map(res);
+	if (mres["status"].toInt())
+	{
+		res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","grid1","function=set_ruler_status;status=0;").toString();
+		QMessageBox::information(this,"grid1::set_ruler_status to false, you can call get_region to get region strings..",res);
+	}
+	else
+	{
+		res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","grid1","function=set_ruler_status;status=-1;").toString();
+		QMessageBox::information(this,"grid1::set_ruler_status to true, you can draw regions on map using mouse lbutton for begin and rbutton for end.",res);
+	}
+
+}
+void testcontainer::on_pushButton_test_grid_getRegion_clicked()
+{
+	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","grid1","function=get_region;").toString();
+	QMessageBox::information(this,"grid1::get_region",res);
+
+}
