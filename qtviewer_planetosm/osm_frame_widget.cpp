@@ -72,11 +72,6 @@ osm_frame_widget::osm_frame_widget(QWidget *parent) :
 		map_evt["source"] = "MAIN_MAP";
 		map_evt["destin"] = "ALL";
 		map_evt["name"] = "WINDOW_CREATE";
-		double tlat, tlon;
-		ui->widget_mainMap->centerLLA(&tlat,&tlon);
-		map_evt["main_lat"] = tlat;
-		map_evt["main_lon"] = tlon;
-		map_evt["nLevel"] = ui->widget_mainMap->level();
 		ui->widget_mainMap->post_event(map_evt);
 	}
 
@@ -92,10 +87,6 @@ osm_frame_widget::osm_frame_widget(QWidget *parent) :
 		map_evt["source"] = "MAIN_MAP";
 		map_evt["destin"] = "ALL";
 		map_evt["name"] = "MAP_INITED";
-		double tlat, tlon;
-		ui->widget_mainMap->centerLLA(&tlat,&tlon);
-		map_evt["main_lat"] = tlat;
-		map_evt["main_lon"] = tlon;
 		map_evt["nLevel"] = ui->widget_mainMap->level();
 		ui->widget_mainMap->post_event(map_evt);
 	}

@@ -293,14 +293,9 @@ namespace QTVOSM{
 		if (this->is_active())
 		{
 			QMap<QString, QVariant> map_evt;
-			map_evt["source"] = "MAIN_MAP";
+			map_evt["source"] = get_name();
 			map_evt["destin"] = "ALL";
 			map_evt["name"] = "CONNECTION";
-			double tlat, tlon;
-			m_pViewer->centerLLA(&tlat,&tlon);
-			map_evt["main_lat"] = tlat;
-			map_evt["main_lon"] = tlon;
-			map_evt["nLevel"] = m_pViewer->level();
 			map_evt["status"] =m_bconnected?"CONNECTED":"CLOSED";
 			m_pViewer->post_event(map_evt);
 		}

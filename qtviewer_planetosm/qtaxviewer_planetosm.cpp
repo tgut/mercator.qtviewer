@@ -50,7 +50,7 @@ qtaxviewer_planetosm::~qtaxviewer_planetosm()
 }
 
 /*!
- \brief	setTileAddress set the address of the OSM layer.
+ \brief	osm_set_remote_address set the address of the OSM layer.
  a Address is almost like:
 	http://192.168.1.127/osm/%1/%2/%3.png
 	or
@@ -59,10 +59,10 @@ qtaxviewer_planetosm::~qtaxviewer_planetosm()
  \fn	qtaxviewer_planetosm::setTileAddress
  \param	addr	QString type address.
 */
-void qtaxviewer_planetosm::setTileAddress (QString addr)
+void qtaxviewer_planetosm::osm_set_remote_address (QString layerName, QString addr)
 {
 	tilesviewer * pv = this->ui->widget_mainMap ;
-	layer_interface * la = pv->layer("OSM");
+	layer_interface * la = pv->layer(layerName);
 	if (la)
 	{
 		layer_tiles * lt = dynamic_cast<layer_tiles *>(la);
@@ -71,11 +71,11 @@ void qtaxviewer_planetosm::setTileAddress (QString addr)
 	}
 }
 
-QString qtaxviewer_planetosm::tileAddress() const
+QString qtaxviewer_planetosm::osm_get_remote_address(QString layerName) const
 {
 	QString res = "http://c.tile.openstreetmap.org/%1/%2/%3.png";
 	tilesviewer * pv = this->ui->widget_mainMap ;
-	layer_interface * la = pv->layer("OSM");
+	layer_interface * la = pv->layer(layerName);
 	if (la)
 	{
 		layer_tiles * lt = dynamic_cast<layer_tiles *>(la);
@@ -92,15 +92,15 @@ QString qtaxviewer_planetosm::tileAddress() const
 
  \fn qtaxviewer_planetosm::ConnectToServer
 */
-void qtaxviewer_planetosm::ConnectToServer (void)
+void qtaxviewer_planetosm::osm_set_auto_download (QString LayerName, int v)
 {
 	tilesviewer * pv = this->ui->widget_mainMap ;
-	layer_interface * la = pv->layer("OSM");
+	layer_interface * la = pv->layer(LayerName);
 	if (la)
 	{
 		layer_tiles * lt = dynamic_cast<layer_tiles *>(la);
 		if (lt)
-			lt->connectToTilesServer(true);
+			lt->connectToTilesServer(v==0?false:true);
 	}
 }
 
@@ -112,10 +112,10 @@ void qtaxviewer_planetosm::ConnectToServer (void)
  \fn qtaxviewer_planetosm::IsConnected
  \return int	-1 means connected, 0 mean not.
 */
-int qtaxviewer_planetosm::IsConnected(void)
+int qtaxviewer_planetosm::osm_get_auto_download(QString LayerName)
 {
 	tilesviewer * pv = this->ui->widget_mainMap ;
-	layer_interface * la = pv->layer("OSM");
+	layer_interface * la = pv->layer(LayerName);
 	if (la)
 	{
 		layer_tiles * lt = dynamic_cast<layer_tiles *>(la);
@@ -125,13 +125,13 @@ int qtaxviewer_planetosm::IsConnected(void)
 	return 0;
 }
 
-int qtaxviewer_planetosm::GetLevel(void)
+int qtaxviewer_planetosm::osm_get_level(void)
 {
 	tilesviewer * pv = this->ui->widget_mainMap ;
 	return pv->level();
 }
 
-int qtaxviewer_planetosm::SetLevel(int lv)
+int qtaxviewer_planetosm::osm_set_level(int lv)
 {
 	tilesviewer * pv = this->ui->widget_mainMap ;
 	int res =  pv->level();
@@ -139,7 +139,7 @@ int qtaxviewer_planetosm::SetLevel(int lv)
 	return res;
 }
 
-double qtaxviewer_planetosm::GetCenterLatitude()
+double qtaxviewer_planetosm::osm_get_center_lat()
 {
 	tilesviewer * pv = this->ui->widget_mainMap ;
 	double lat,lon;
@@ -147,7 +147,7 @@ double qtaxviewer_planetosm::GetCenterLatitude()
 	return lat;
 }
 
-double qtaxviewer_planetosm::GetCenterLongitude()
+double qtaxviewer_planetosm::osm_get_center_lon()
 {
 	tilesviewer * pv = this->ui->widget_mainMap ;
 	double lat,lon;
@@ -155,7 +155,7 @@ double qtaxviewer_planetosm::GetCenterLongitude()
 	return lon;
 }
 
-int qtaxviewer_planetosm::SetCenterPos(double lat,double lon)
+int qtaxviewer_planetosm::osm_set_center_pos(double lat,double lon)
 {
 	tilesviewer * pv = this->ui->widget_mainMap ;
 	pv->setCenterLLA(lat,lon);
@@ -170,66 +170,11 @@ int qtaxviewer_planetosm::SetCenterPos(double lat,double lon)
  \param fm	filename in  QString. ext name can specify the format.
  \return int	1 means OK, 0 means failed.
 */
-int qtaxviewer_planetosm::SaveCurrentViewToFile(QString fm)
+int qtaxviewer_planetosm::osm_save_view(QString fm)
 {
 	tilesviewer * pv = this->ui->widget_mainMap ;
 	bool ok = pv->saveToImage(fm);
 	return ok==true?1:0;
-}
-
-/*!
- \brief FrozenMap  mean that
- UI inputs, include MOUOSE, KEY, will take no effect for dragging
-
- \fn qtaxviewer_planetosm::FrozenMap
- \param status	set status. >0 means frozen it, <0 means re-enable it, 0 means just get status
- \return int	the current status.
-*/
-int qtaxviewer_planetosm::FrozenMap(int status)
-{
-	int ret = 0;
-	if (status==0)
-	{
-		QVector <layer_interface *> layers = ui->widget_mainMap->layers();
-		for (int i=0;i<layers.size()&& ret == 0;++i)
-		{
-			//It's exclusive, there should be at most only one layer_tiles active
-			if (layers[i]->is_exclusive()==true && layers[i]->is_active()==true)
-				ret = -1;
-		}
-		if (ret==0)
-			ret = 1;
-	}
-	else if (status > 0)
-	{
-		QVector <layer_interface *> layers = ui->widget_mainMap->layers();
-		for (int i=0;i<layers.size();++i)
-		{
-			//Turn all exclusive layers off( de-actived)
-			if (layers[i]->is_exclusive()==true && layers[i]->is_active()==true)
-			{
-				ret = 1;
-				layers[i]->set_active(false);
-			}
-		}
-		this->UpdateLayerTable();
-	}
-	else
-	{
-		QVector <layer_interface *> layers = ui->widget_mainMap->layers();
-		for (int i=0;i<layers.size() && ret == 0;++i)
-		{
-			//Turn first exclusive layers on( actived)
-			if (layers[i]->is_exclusive()==true && layers[i]->is_active()==true)
-			{
-				ret = -1;
-				layers[i]->set_active(true);
-				ui->widget_mainMap->adjust_layers(layers[i]);
-			}
-		}
-		this->UpdateLayerTable();
-	}
-	return ret;
 }
 
 
@@ -270,25 +215,17 @@ void qtaxviewer_planetosm::_next_pending_evts()
 		e = & *m_list_events.constBegin();
 	m_mutex_evts.unlock();
 
-	//!3,Extract dsource,destin, lat, lon from map
-	QString str_source = e->value("source").toString();
-	QString str_name = e->value("name").toString();
-	double d_lat = e->value("main_lat").toDouble();
-	double d_lon = e->value("main_lon").toDouble();
-	QString str_additional_prop;
-	//!4, for other key-value paras, just put it into str_additional_prop
+	QString str_props;
+	//!3,Extract props.just put it into str_prop, split by ;
 	for(QMap<QString, QVariant>::const_iterator p = e->begin();p!=e->end();++p)
 	{
-		if (p.key()!="source" && p.key()!="name" && p.key()!="main_lat" && p.key()!="main_lon")
-		{
-			str_additional_prop += p.key();
-			str_additional_prop +="=";
-			str_additional_prop +=p.value().toString();
-			str_additional_prop +=";";
-		}
+		str_props += p.key();
+		str_props +="=";
+		str_props +=p.value().toString();
+		str_props +=";";
 	}
 	//!5,Fire the OCX Event
-	emit evt_Message(str_source,str_name,d_lat,d_lon,str_additional_prop);
+	emit evt_Message(str_props);
 
 	//pop from queue
 	m_mutex_evts.lock();
@@ -301,6 +238,175 @@ void qtaxviewer_planetosm::_next_pending_evts()
 	if (needFire)
 		emit _evt_next_pending_evts();
 }
+
+int qtaxviewer_planetosm::osm_layer_get_count()
+{
+	return ui->widget_mainMap->layerNames().size();
+}
+
+QString qtaxviewer_planetosm::osm_layer_get_name(int n)
+{
+	QVector<QString> names = ui->widget_mainMap->layerNames();
+	if (n>=0 && n<names.size())
+		return names[n];
+	return "";
+}
+
+int qtaxviewer_planetosm::osm_layer_set_visiable(QString layerName, int v)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		la->set_visible(v==0?false:true);
+		pv->updateLayerGridView();
+		return la->is_visible()==false?0:-1;
+	}
+	return 0;
+}
+
+int qtaxviewer_planetosm::osm_layer_get_visiable(QString layerName)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+		return la->is_visible()==false?0:-1;
+	return 0;
+}
+
+int qtaxviewer_planetosm::osm_layer_set_active(QString layerName, int v)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		la->set_active(v==0?false:true);
+		if (v!=0)
+			pv->adjust_layers(la);
+		pv->updateLayerGridView();
+		return la->is_active()==false?0:-1;
+	}
+	return 0;
+}
+
+int qtaxviewer_planetosm::osm_layer_get_active(QString layerName)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+		return la->is_active()==false?0:-1;
+	return 0;
+}
+int		qtaxviewer_planetosm::osm_layer_move_up(QString layerName)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		pv->moveLayerUp(la);
+		pv->updateLayerGridView();
+		return -1;
+	}
+	return 0;
+}
+
+int		qtaxviewer_planetosm::osm_layer_move_down(QString layerName)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		pv->moveLayerDown(la);
+		pv->updateLayerGridView();
+		return -1;
+	}
+	return 0;
+}
+
+int		qtaxviewer_planetosm::osm_layer_move_top(QString layerName)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		pv->moveLayerTop(la);
+		pv->updateLayerGridView();
+		return -1;
+	}
+	return 0;
+}
+
+int		qtaxviewer_planetosm::osm_layer_move_bottom(QString layerName)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		pv->moveLayerBottom(la);
+		pv->updateLayerGridView();
+		return -1;
+	}
+	return 0;
+}
+QString qtaxviewer_planetosm::map_to_string(const QMap<QString, QVariant> & m)
+{
+	QString s;
+	for(QMap<QString, QVariant>::const_iterator p = m.begin();p!=m.end();++p)
+	{
+		s += p.key();
+		s += "=";
+		s += p.value().toString();
+		s += ";";
+	}
+	return std::move(s);
+}
+
+QMap<QString, QVariant> qtaxviewer_planetosm::string_to_map(const QString & s)
+{
+	QMap<QString, QVariant> res;
+	QStringList lst = s.split(";");
+	foreach (QString s, lst)
+	{
+		int t = s.indexOf("=");
+		if (t>0 && t< s.size())
+		{
+			QString name = s.left(t).trimmed();
+			QString value = s.mid(t+1).trimmed();
+			res[name] = value;
+		}
+	}
+	return std::move(res);
+}
+
+/**
+ * @brief	osm_layer_call_function call layers' call_func method from
+ * outside the ocx ctrl. Please MAKE SURE that this function is called from UI thread,
+ * which means the same thread that OCX ctrl stays. Calling "call_func" from another thread is
+ * NOT SUPPORTED, and will cause strange problems.
+ *
+ * @param layerName	the layer name to whom this function call will be sent
+ * @param args	args stored in key, value strings,
+ * key, value is connected with "=", and each pairs splitted by ";"
+ * eg, function=get_region;x=38.43834784;y=16.3834754;
+ * @return QString	the result string is also formatted with key-vaslue para strings.
+ */
+QString qtaxviewer_planetosm::osm_layer_call_function(QString layerName, QString args)
+{
+	QString strRes;
+	tilesviewer * pv = ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		QMap<QString, QVariant> p_in,p_out;
+		p_in = string_to_map(args);
+		p_out = la->call_func(p_in);
+		strRes = map_to_string(p_out);
+	}
+	else
+		strRes = QString("error=Layer name \"%1\" does not exist.;").arg(layerName);
+	return strRes;
+}
+
 
 QAXFACTORY_DEFAULT(qtaxviewer_planetosm,
 	   "{8FDF97AD-FEFA-44C9-973B-1B66D4C529DF}",

@@ -128,13 +128,7 @@ namespace QTVOSM{
 				map_evt["source"] = "MAIN_MAP";
 				map_evt["destin"] = "ALL";
 				map_evt["name"] = "LAYER_MOVED_UP";
-				double tlat, tlon;
-				centerLLA(&tlat,&tlon);
-				map_evt["main_lat"] = tlat;
-				map_evt["main_lon"] = tlon;
-				map_evt["nLevel"] = m_nLevel;
 				map_evt["layerName"] = ly->get_name();
-
 				post_event(map_evt);
 			}
 		}
@@ -155,13 +149,7 @@ namespace QTVOSM{
 				map_evt["source"] = "MAIN_MAP";
 				map_evt["destin"] = "ALL";
 				map_evt["name"] = "LAYER_MOVED_DOWN";
-				double tlat, tlon;
-				centerLLA(&tlat,&tlon);
-				map_evt["main_lat"] = tlat;
-				map_evt["main_lon"] = tlon;
-				map_evt["nLevel"] = m_nLevel;
 				map_evt["layerName"] = ly->get_name();
-
 				post_event(map_evt);
 			}
 		}
@@ -182,11 +170,6 @@ namespace QTVOSM{
 				map_evt["source"] = "MAIN_MAP";
 				map_evt["destin"] = "ALL";
 				map_evt["name"] = "LAYER_MOVED_TOP";
-				double tlat, tlon;
-				centerLLA(&tlat,&tlon);
-				map_evt["main_lat"] = tlat;
-				map_evt["main_lon"] = tlon;
-				map_evt["nLevel"] = m_nLevel;
 				map_evt["layerName"] = ly->get_name();
 
 				post_event(map_evt);
@@ -208,13 +191,7 @@ namespace QTVOSM{
 				map_evt["source"] = "MAIN_MAP";
 				map_evt["destin"] = "ALL";
 				map_evt["name"] = "LAYER_MOVED_BOTTOM";
-				double tlat, tlon;
-				centerLLA(&tlat,&tlon);
-				map_evt["main_lat"] = tlat;
-				map_evt["main_lon"] = tlon;
-				map_evt["nLevel"] = m_nLevel;
 				map_evt["layerName"] = ly->get_name();
-
 				post_event(map_evt);
 			}
 		}
@@ -274,10 +251,6 @@ namespace QTVOSM{
 			map_evt["source"] = "MAIN_MAP";
 			map_evt["destin"] = "ALL";
 			map_evt["name"] = "LEVEL_CHANGED";
-			double tlat, tlon;
-			centerLLA(&tlat,&tlon);
-			map_evt["main_lat"] = tlat;
-			map_evt["main_lon"] = tlon;
 			map_evt["nLevel"] = n;
 			post_event(map_evt);
 		}
@@ -333,8 +306,8 @@ namespace QTVOSM{
 				map_evt["name"] = "MOUSE_BUTTON_DOWN";
 			double tlat, tlon;
 			CV_DP2LLA(event->pos().x(),event->pos().y(),&tlat,&tlon);
-			map_evt["main_lat"] = tlat;
-			map_evt["main_lon"] = tlon;
+			map_evt["lat"] = tlat;
+			map_evt["lon"] = tlon;
 			map_evt["nLevel"] = m_nLevel;
 			post_event(map_evt);
 
@@ -398,11 +371,6 @@ namespace QTVOSM{
 			map_evt["source"] = "MAIN_MAP";
 			map_evt["destin"] = "OUTER";
 			map_evt["name"] = "MAP_RESIZED";
-			double tlat, tlon;
-			centerLLA(&tlat,&tlon);
-			map_evt["main_lat"] = tlat;
-			map_evt["main_lon"] = tlon;
-			map_evt["nLevel"] = m_nLevel;
 			map_evt["width"] = event->size().width();
 			map_evt["height"] = event->size().height();
 			post_event(map_evt);
@@ -439,8 +407,8 @@ namespace QTVOSM{
 				map_evt["name"] = "MOUSE_BUTTON_UP";
 			double tlat, tlon;
 			CV_DP2LLA(event->pos().x(),event->pos().y(),&tlat,&tlon);
-			map_evt["main_lat"] = tlat;
-			map_evt["main_lon"] = tlon;
+			map_evt["lat"] = tlat;
+			map_evt["lon"] = tlon;
 			map_evt["nLevel"] = m_nLevel;
 			post_event(map_evt);
 		}
@@ -477,8 +445,8 @@ namespace QTVOSM{
 				map_evt["name"] = "MOUSE_BUTTON_BLCLK";
 			double tlat, tlon;
 			CV_DP2LLA(event->pos().x(),event->pos().y(),&tlat,&tlon);
-			map_evt["main_lat"] = tlat;
-			map_evt["main_lon"] = tlon;
+			map_evt["lat"] = tlat;
+			map_evt["lon"] = tlon;
 			map_evt["nLevel"] = m_nLevel;
 			post_event(map_evt);
 		}
@@ -507,8 +475,8 @@ namespace QTVOSM{
 			map_evt["name"] = "MOUSE_MOVE";
 			double tlat, tlon;
 			CV_DP2LLA(event->pos().x(),event->pos().y(),&tlat,&tlon);
-			map_evt["main_lat"] = tlat;
-			map_evt["main_lon"] = tlon;
+			map_evt["lat"] = tlat;
+			map_evt["lon"] = tlon;
 			map_evt["nLevel"] = m_nLevel;
 			map_evt["mask"] = (quint32)event->buttons();
 			post_event(map_evt);
@@ -535,8 +503,8 @@ namespace QTVOSM{
 			map_evt["name"] = "MOUSE_WHELL";
 			double tlat, tlon;
 			CV_DP2LLA(event->pos().x(),event->pos().y(),&tlat,&tlon);
-			map_evt["main_lat"] = tlat;
-			map_evt["main_lon"] = tlon;
+			map_evt["lat"] = tlat;
+			map_evt["lon"] = tlon;
 			map_evt["nLevel"] = m_nLevel;
 			map_evt["pDeltaX"] = event->pixelDelta().x();
 			map_evt["pDeltaY"] = event->pixelDelta().y();
@@ -583,8 +551,8 @@ namespace QTVOSM{
 			map_evt["source"] = "MAIN_MAP";
 			map_evt["destin"] = "OUTER";
 			map_evt["name"] = "CENTER_CHANGED";
-			map_evt["main_lat"] = lat;
-			map_evt["main_lon"] = lon;
+			map_evt["lat"] = lat;
+			map_evt["lon"] = lon;
 			map_evt["nLevel"] = m_nLevel;
 			post_event(map_evt);
 		}
@@ -627,8 +595,8 @@ namespace QTVOSM{
 				map_evt["destin"] = "OUTER";
 				map_evt["name"] = "CENTER_CHANGED";
 				centerLLA(&lat,&lon);
-				map_evt["main_lat"] = lat;
-				map_evt["main_lon"] = lon;
+				map_evt["lat"] = lat;
+				map_evt["lon"] = lon;
 				map_evt["nLevel"] = m_nLevel;
 				post_event(map_evt);
 			}

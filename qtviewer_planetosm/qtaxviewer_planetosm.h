@@ -17,7 +17,9 @@
 class qtaxviewer_planetosm :public osm_frame_widget, public QAxBindable
 {
 	Q_OBJECT
-	Q_PROPERTY(QString tileAddress READ tileAddress WRITE setTileAddress)
+private:
+	QString map_to_string(const QMap<QString, QVariant> & m);
+	QMap<QString, QVariant> string_to_map(const QString & s);
 protected:
 	QTranslator qtTranslator;
 	QTranslator appTranslator;
@@ -30,34 +32,41 @@ protected:
 public:
 	explicit qtaxviewer_planetosm(QWidget *parent = 0);
 	~qtaxviewer_planetosm();
-	//! return the tileAddress which OSM plugin take use of
-	QString tileAddress(void) const;
-
 	//! slots below is designed for activeX interfaces
 public slots:
-	void setTileAddress (QString);
-	void ConnectToServer (void);
-	int IsConnected(void);
+	QString osm_get_remote_address(QString layerName) const;
+	void	osm_set_remote_address (QString layerName, QString addr);
+	void	osm_set_auto_download (QString layerName, int flag);
+	int		osm_get_auto_download(QString layerName);
 	//Navigate
-	int GetLevel(void);
-	int SetLevel(int);
-	double GetCenterLatitude();
-	double GetCenterLongitude();
-	int SetCenterPos(double lat,double lon);
+	int		osm_get_level(void);
+	int		osm_set_level(int);
+	double	osm_get_center_lat();
+	double	osm_get_center_lon();
+	int		osm_set_center_pos(double lat,double lon);
 	//! \brief	PrintScreen
-	int SaveCurrentViewToFile(QString);
-	//! \brief	acitve/ deactive Map drag
-	int FrozenMap(int status);
-	//! new interfaces
-public slots:
+	int		osm_save_view(QString);
+	//layer methods
+	int		osm_layer_get_count();
+	QString osm_layer_get_name(int n);
+	int		osm_layer_set_visiable(QString layerName, int v);
+	int		osm_layer_get_visiable(QString layerName);
+	int		osm_layer_set_active(QString layerName, int v);
+	int		osm_layer_get_active(QString layerName);
+	int		osm_layer_move_up(QString layerName);
+	int		osm_layer_move_down(QString layerName);
+	int		osm_layer_move_top(QString layerName);
+	int		osm_layer_move_bottom(QString layerName);
+	//function Calls
+	QString osm_layer_call_function(QString layerName, QString args);
 
 protected slots:
 	//! internal evts
 	void _next_pending_evts();
 signals:
 	void _evt_next_pending_evts();
-	//! Classical MFC-Styly messages
-	void evt_Message(QString ,QString ,double,double,QString);
+	//! messages
+	void evt_Message(QString);
 };
 
 #endif // QTAXVIEWER_PLANETOSM_H
