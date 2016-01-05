@@ -41,6 +41,7 @@ private:
 	int m_nTimerID_refreshUI;
 	bool m_bNeedRefresh;
 	QStandardItemModel * m_pLineStyleModel;
+	QStandardItemModel * m_pFillStyleModel;
 	QStandardItemModel * m_pGeoItemModel;
 	QStandardItemModel * m_pGeoPropModel;
 private:
@@ -56,9 +57,9 @@ private:
 	QString color2string(const QColor & c);
 
 	template <class T>
-	void update_point		(const QString & name,double lat, double lon, const QColor & colorEdge, const QColor & colorFill, int width, int height);
-	void update_line		(const QString & name,double lat1, double lon1,double lat2, double lon2, const QColor & color, int width);
-	void update_region		(const QString & name,const QPolygonF latlons, const QColor & colorEdge, const QColor & colorFill, int width);
+	void update_point		(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush);
+	void update_line		(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen);
+	void update_region		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush);
 protected:
 	layer_interface *		load_initial_plugin(QString strSLibPath,viewer_interface  * ptrviewer);
 	QWidget *				load_prop_window();
@@ -77,28 +78,25 @@ protected:
 	bool		cb_event(const QMap<QString, QVariant>);
 
 	void		timerEvent(QTimerEvent * e);
-
+	QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> /*paras*/);
 protected slots:
 	void on_pushButton_update_clicked();
 	void on_radioButton_tool_point_toggled(bool);
 	void on_radioButton_tool_line_toggled(bool);
 	void on_radioButton_tool_polygon_toggled(bool);
-	void on_toolButton_selColor_pointEdge_clicked();
-	void on_toolButton_selColor_pointcolorFill_clicked();
-	void on_toolButton_selColor_regionEdge_clicked();
-	void on_toolButton_selColor_regionFill_clicked();
+	void on_toolButton_selColorPen_clicked();
+	void on_toolButton_selColorFill_clicked();
 	void on_tableView_marks_doubleClicked(const QModelIndex & index);
 	void on_pushButton_prop_update_clicked();
 	void on_pushButton_prop_delete_clicked();
 	void on_pushButton_del_clicked();
 	void on_pushButton_pickToLine1_clicked();
 	void on_pushButton_pickToLine2_clicked();
-	void on_toolButton_selColor_clicked();
 	void on_pushButton_getRegion_clicked();
 };
 
 template <class T>
-void qtvplugin_geomarker::update_point(const QString & name,double lat, double lon, const QColor & colorEdge, const QColor & colorFill, int width, int height)
+void qtvplugin_geomarker::update_point(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush)
 {
 	//Get raw Item by name
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
@@ -117,8 +115,8 @@ void qtvplugin_geomarker::update_point(const QString & name,double lat, double l
 						this->m_pVi,
 						lat,lon,
 						width,height);
-	pitem->setPen(QPen(colorEdge));
-	pitem->setBrush(QBrush(colorFill));
+	pitem->setPen(pen);
+	pitem->setBrush(brush);
 
 	if (false==this->m_pScene->addItem(pitem,0))
 	{
