@@ -54,6 +54,24 @@ qtvplugin_geomarker::qtvplugin_geomarker(QWidget *parent) :
 	m_pLineStyleModel->appendRow(new QStandardItem("CustomDashLine"));
 	ui->comboBox_linePad->setModel(m_pLineStyleModel);
 
+	m_pFillStyleModel = new QStandardItemModel(this);
+	m_pFillStyleModel->appendRow(new QStandardItem("NoBrush"));
+	m_pFillStyleModel->appendRow(new QStandardItem("SolidPattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("Dense1Pattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("Dense2Pattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("Dense3Pattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("Dense4Pattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("Dense5Pattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("Dense6Pattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("Dense7Pattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("HorPattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("VerPattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("CrossPattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("BDiagPattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("FDiagPattern"));
+	m_pFillStyleModel->appendRow(new QStandardItem("DiagCrossPattern"));
+	ui->comboBox_fillPad->setModel(m_pFillStyleModel);
+
 	m_bNeedRefresh = false;
 	m_nTimerID_refreshUI = startTimer(2000);
 }
@@ -364,7 +382,7 @@ void qtvplugin_geomarker::refreshMarks()
 	m_bNeedRefresh = true;
 }
 
-void qtvplugin_geomarker::update_line(const QString & name,double lat1, double lon1,double lat2, double lon2, const QColor & color, int width)
+void qtvplugin_geomarker::update_line(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen)
 {
 	//Get raw Item by name
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
@@ -382,20 +400,8 @@ void qtvplugin_geomarker::update_line(const QString & name,double lat1, double l
 		pitem	= new QTVP_GEOMARKER::geoGraphicsLineItem(name,
 						this->m_pVi,
 						lat1,lon1,lat2,lon2);
-	Qt::PenStyle pst [] ={
-		Qt::NoPen	,
-		Qt::SolidLine	,
-		Qt::DashLine	,
-		Qt::DotLine	,
-		Qt::DashDotLine	,
-		Qt::DashDotDotLine	,
-		Qt::CustomDashLine
-	};
 
-	int ptdd = ui->comboBox_linePad->currentIndex();
-	if (ptdd < 0 || ptdd >=7)
-		ptdd = 1;
-	pitem->setPen(QPen(QBrush(color),width,pst[ptdd]));
+	pitem->setPen(pen);
 
 	if (false==this->m_pScene->addItem(pitem,0))
 	{
@@ -414,7 +420,7 @@ void qtvplugin_geomarker::update_line(const QString & name,double lat1, double l
 	}
 
 }
-void qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF latlons, const QColor & colorEdge, const QColor & colorFill, int width)
+void qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush)
 {
 	//Get raw Item by name
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
@@ -432,21 +438,9 @@ void qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF l
 		pitem	= new QTVP_GEOMARKER::geoGraphicsPolygonItem(name,
 						this->m_pVi,
 						latlons);
-	Qt::PenStyle pst [] ={
-		Qt::NoPen	,
-		Qt::SolidLine	,
-		Qt::DashLine	,
-		Qt::DotLine	,
-		Qt::DashDotLine	,
-		Qt::DashDotDotLine	,
-		Qt::CustomDashLine
-	};
 
-	int ptdd = ui->comboBox_linePad->currentIndex();
-	if (ptdd < 0 || ptdd >=7)
-		ptdd = 1;
-	pitem->setPen(QPen(QBrush(colorEdge),width,pst[ptdd]));
-	pitem->setBrush(QColor(colorFill));
+	pitem->setPen(pen);
+	pitem->setBrush(brush);
 	if (false==this->m_pScene->addItem(pitem,0))
 	{
 		if (base != pitem)

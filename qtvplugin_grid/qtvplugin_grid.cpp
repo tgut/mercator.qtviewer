@@ -365,7 +365,6 @@ void qtvplugin_grid::CalArea()
 	double * PointX = new double [Count];
 	double * PointY = new double [Count];
 	char  * buffertmp = new char[2048];
-	//转换为经纬度
 	bool Valid = true;
 	strMsg += "Points:\n";
 	//Length
@@ -426,6 +425,14 @@ void qtvplugin_grid::CalArea()
 	ui->plainTextEdit_RES->setPlainText(strMsg);
 }
 
+/**
+ * @brief Classical Polygon Area caculate method
+ *
+ * @param PointX	the x points
+ * @param PointY	the y points
+ * @param Count		the points' count
+ * @return double	area.
+ */
 double qtvplugin_grid::GetArea(double * PointX,double * PointY,int Count)
 {
 	const double pi=3.1415926535897932384626433832795;
@@ -588,6 +595,16 @@ double qtvplugin_grid::GetArea(double * PointX,double * PointY,int Count)
 }
 
 
+/**
+ * @brief Calculate distance between  2 positions
+ *
+ * @param dLatStart	start latitude
+ * @param dLatEnd	end latitude
+ * @param dLonStart	start longitude
+ * @param dLonEnd	end longitude
+ * @param psita		the earth center angle in polar
+ * @return double	distance.
+ */
 double qtvplugin_grid::CalDistance(double dLatStart,double dLatEnd,double dLonStart,double dLonEnd,double * psita)
 {
 	//deg to rad
@@ -623,6 +640,17 @@ double qtvplugin_grid::CalDistance(double dLatStart,double dLatEnd,double dLonSt
 	return dist;
 }
 
+/**
+ * function calls avaliable:
+ * 	1.function=get_region, no other para needed. returns current selected region's cornor points, in lat, lon; size=N;lat0=XX;lon0=XX;
+ * 	lat1=XX;lon1=XX;lat2=XX;lon2=XX;...;latN-1=XX;lonN-1=XX.
+ * 	2.function=get_ruler_status, no other para needed.returns whether ruler tool is active now, status=0 means not active, status=-1 means active.
+ * 	3.function=set_ruler_status, with para status, will set ruler status to given value.
+ * please notice that the function should be called from the MAIN THREAD ONLY.
+ *
+ * @param paras	the key-value style paraments.
+ * @return QMap<QString, QVariant>	the key-value style return paraments.
+ */
 QMap<QString, QVariant> qtvplugin_grid::call_func(const  QMap<QString, QVariant> paras)
 {
 	QMap<QString, QVariant> res;

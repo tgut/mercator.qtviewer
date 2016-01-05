@@ -20,7 +20,8 @@ SOURCES += \
     geographicsrectitem.cpp \
     qtvplugin_geomarker_uimethods.cpp \
     geographicslineitem.cpp \
-    geographicspolygonitem.cpp
+    geographicspolygonitem.cpp \
+    qtvplugin_geomarker_func.cpp
 
 HEADERS +=\
     ../qtviewer_planetosm/osmtiles/layer_interface.h \
