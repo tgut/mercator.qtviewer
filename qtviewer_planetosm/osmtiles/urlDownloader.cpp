@@ -22,6 +22,7 @@ namespace QTVOSM{
 	{
 		bool needDo = false;
 		bool allFinished = false;
+		bool succeeded = false;
 		m_mutex_protect.lock();
 		if (m_map_pendingTasks.contains(rply)==true)
 		{
@@ -39,6 +40,7 @@ namespace QTVOSM{
 				{
 					file.write(rply->readAll());
 					file.close();
+					succeeded = true;
 				}
 			}
 			else
@@ -59,7 +61,7 @@ namespace QTVOSM{
 		m_mutex_protect.unlock();
 		if (needDo)
 			emit evt_doNextJob();
-		if (allFinished == true)
+		if (allFinished == true && succeeded)
 			emit evt_all_taskFinished();
 	}
 

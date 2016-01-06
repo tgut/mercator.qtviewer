@@ -57,9 +57,9 @@ private:
 	QString color2string(const QColor & c);
 
 	template <class T>
-	void update_point		(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush);
-	void update_line		(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen);
-	void update_region		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush);
+	QTVP_GEOMARKER::geoItemBase * update_point		(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush);
+	QTVP_GEOMARKER::geoItemBase * update_line		(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen);
+	QTVP_GEOMARKER::geoItemBase * update_region		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush);
 protected:
 	layer_interface *		load_initial_plugin(QString strSLibPath,viewer_interface  * ptrviewer);
 	QWidget *				load_prop_window();
@@ -86,6 +86,7 @@ protected slots:
 	void on_radioButton_tool_polygon_toggled(bool);
 	void on_toolButton_selColorPen_clicked();
 	void on_toolButton_selColorFill_clicked();
+	void on_toolButton_selColorText_clicked();
 	void on_tableView_marks_doubleClicked(const QModelIndex & index);
 	void on_pushButton_prop_update_clicked();
 	void on_pushButton_prop_delete_clicked();
@@ -96,8 +97,9 @@ protected slots:
 };
 
 template <class T>
-void qtvplugin_geomarker::update_point(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush)
+QTVP_GEOMARKER::geoItemBase * qtvplugin_geomarker::update_point(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush)
 {
+	QTVP_GEOMARKER::geoItemBase * res = 0;
 	//Get raw Item by name
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
 	//Get Props
@@ -118,6 +120,11 @@ void qtvplugin_geomarker::update_point(const QString & name,double lat, double l
 	pitem->setPen(pen);
 	pitem->setBrush(brush);
 
+	if (base == pitem)
+	{
+		pitem->setCenter(lat,lon);
+		pitem->setSize(width,height);
+	}
 	if (false==this->m_pScene->addItem(pitem,0))
 	{
 		if (base != pitem)
@@ -132,7 +139,10 @@ void qtvplugin_geomarker::update_point(const QString & name,double lat, double l
 			propNames.pop_front();
 			propValues.pop_front();
 		}
+		res = pitem;
 	}
+
+	return res;
 
 }
 

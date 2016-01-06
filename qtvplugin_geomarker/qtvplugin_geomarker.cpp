@@ -122,7 +122,7 @@ layer_interface * qtvplugin_geomarker::load_initial_plugin(QString strSLibPath,v
 		 assert(ret==instance);
 		 return ret;
 	}
-
+	qDebug()<<QFont::substitutions();
 	return instance;
 }
 void qtvplugin_geomarker::loadTranslations()
@@ -161,25 +161,35 @@ void qtvplugin_geomarker::cb_paintEvent( QPainter * pImage )
 	double leftcenx, topceny, rightcenx, bottomceny;
 	m_pVi->CV_DP2World(0,0,&leftcenx,&topceny);
 	m_pVi->CV_DP2World(rect.width()-1,rect.height()-1,&rightcenx,&bottomceny);
-	QRectF source(
-				leftcenx ,
-				topceny,
-				(rightcenx - leftcenx),
-				(bottomceny - topceny)
-				);
+
 	int winsz = 256 * (1<<m_pVi->level());
 	//Warpping 180, -180
-	for (int t = -1; t <=1;++t)
+	for (int p = -1; p<=1 ;++p)
 	{
-		QRectF destin(
-					0 + winsz * t ,
-					0,
-					rect.width(),
-					rect.height()
+		QRectF source(
+					leftcenx + p * winsz,
+					topceny,
+					(rightcenx - leftcenx),
+					(bottomceny - topceny)
 					);
-		if (destin.right() < 0 || destin.left() >= rect.width())
-			continue;
-		m_pScene->render(pImage,destin,source);
+		for (int t = -1; t <=1;++t)
+		{
+			if (abs(p-t)==2 || (p==t && p !=0))
+				continue;
+			if (abs(p-t)==1 && (p==0 || t ==1))
+				continue;
+
+
+			QRectF destin(
+						0 + winsz * t ,
+						0,
+						rect.width(),
+						rect.height()
+						);
+			if (destin.right() < 0 || destin.left() >= rect.width())
+				continue;
+			m_pScene->render(pImage,destin,source);
+		}
 	}
 }
 
@@ -382,8 +392,9 @@ void qtvplugin_geomarker::refreshMarks()
 	m_bNeedRefresh = true;
 }
 
-void qtvplugin_geomarker::update_line(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen)
+QTVP_GEOMARKER::geoItemBase *  qtvplugin_geomarker::update_line(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen)
 {
+	QTVP_GEOMARKER::geoItemBase *  res = 0;
 	//Get raw Item by name
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
 	//Get Props
@@ -403,7 +414,9 @@ void qtvplugin_geomarker::update_line(const QString & name,double lat1, double l
 
 	pitem->setPen(pen);
 
-	if (false==this->m_pScene->addItem(pitem,0))
+	if (base == pitem)
+		pitem->setGeoLine(lat1,lon1,lat2,lon2);
+	else if (false==this->m_pScene->addItem(pitem,0))
 	{
 		if (base != pitem)
 			delete pitem;
@@ -417,11 +430,13 @@ void qtvplugin_geomarker::update_line(const QString & name,double lat1, double l
 			propNames.pop_front();
 			propValues.pop_front();
 		}
+		res = pitem;
 	}
-
+	return res;
 }
-void qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush)
+QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush)
 {
+	QTVP_GEOMARKER::geoItemBase *  res = 0;
 	//Get raw Item by name
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
 	//Get Props
@@ -441,7 +456,9 @@ void qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF l
 
 	pitem->setPen(pen);
 	pitem->setBrush(brush);
-	if (false==this->m_pScene->addItem(pitem,0))
+	if (base == pitem)
+		pitem->setGeoPolygon(latlons);
+	else if (false==this->m_pScene->addItem(pitem,0))
 	{
 		if (base != pitem)
 			delete pitem;
@@ -455,5 +472,7 @@ void qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF l
 			propNames.pop_front();
 			propValues.pop_front();
 		}
+		res = pitem;
 	}
+	return res;
 }

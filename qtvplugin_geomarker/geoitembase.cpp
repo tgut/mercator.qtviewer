@@ -2,6 +2,7 @@
 #include "geographicsscene.h"
 #include "../qtviewer_planetosm/osmtiles/viewer_interface.h"
 #include <QTextEdit>
+#include <QCoreApplication>
 namespace QTVP_GEOMARKER{
 	geoItemBase::geoItemBase(QString name,geo_item_type tp,QTVOSM::viewer_interface * pVi)
 		:m_pVi(pVi)
@@ -68,7 +69,11 @@ namespace QTVP_GEOMARKER{
 		if (k=="LABEL" && pc)
 		{
 			if (!m_pLabelItem)
+			{
 				m_pLabelItem = new QGraphicsTextItem(v.toString(),pc);
+				m_pLabelItem->setDefaultTextColor(m_LabelTextColor);
+				m_pLabelItem->setFont(m_LabelTextFont);
+			}
 			else if (m_bPropVisible==false)
 				m_pLabelItem->setPlainText(v.toString());
 			m_pLabelItem->setPos(this->label_pos());
@@ -109,7 +114,11 @@ namespace QTVP_GEOMARKER{
 				propValues.pop_front();
 			}
 			if (!m_pLabelItem)
+			{
 				m_pLabelItem = new QGraphicsTextItem(str,pc);
+				m_pLabelItem->setDefaultTextColor(m_LabelTextColor);
+				m_pLabelItem->setFont(m_LabelTextFont);
+			}
 			else
 				m_pLabelItem->setPlainText(str);
 			m_pLabelItem->setPos(this->label_pos());
@@ -132,7 +141,11 @@ namespace QTVP_GEOMARKER{
 			else
 			{
 				if (!m_pLabelItem)
+				{
 					m_pLabelItem = new QGraphicsTextItem(v.toString(),pc);
+					m_pLabelItem->setDefaultTextColor(m_LabelTextColor);
+					m_pLabelItem->setFont(m_LabelTextFont);
+				}
 				m_pLabelItem->setPlainText(v.toString());
 				m_pLabelItem->setPos(this->label_pos());
 			}

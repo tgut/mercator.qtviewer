@@ -96,7 +96,14 @@ void qtvplugin_geomarker::on_toolButton_selColorFill_clicked()
 	if (col.isValid())
 		ui->lineEdit_FillColor->setText(color2string(col));
 }
+void qtvplugin_geomarker::on_toolButton_selColorText_clicked()
+{
+	QString str = ui->lineEdit_TextColor->text();
 
+	QColor col = QColorDialog::getColor(string2color(str),this,tr("Select Color"),QColorDialog::ShowAlphaChannel|QColorDialog::DontUseNativeDialog);
+	if (col.isValid())
+		ui->lineEdit_TextColor->setText(color2string(col));
+}
 void qtvplugin_geomarker::on_pushButton_pickToLine1_clicked()
 {
 	ui->lineEdit_lineLat1->setText(ui->lineEdit_point_lat->text());
@@ -134,6 +141,7 @@ void qtvplugin_geomarker::SaveSettingsToIni()
 
 	settings.setValue("ui/lineEdit_PenColor",ui->lineEdit_PenColor->text());
 	settings.setValue("ui/lineEdit_FillColor",ui->lineEdit_FillColor->text());
+	settings.setValue("ui/lineEdit_TextColor",ui->lineEdit_TextColor->text());
 	settings.setValue("ui/lineEdit_prop_name",ui->lineEdit_prop_name->text());
 	settings.setValue("ui/lineEdit_prop_string",ui->lineEdit_prop_string->text());
 	settings.setValue("ui/lineEdit_lineLat1",ui->lineEdit_lineLat1->text());
@@ -144,6 +152,10 @@ void qtvplugin_geomarker::SaveSettingsToIni()
 	settings.setValue("ui/comboBox_linePad",ui->comboBox_linePad->currentIndex());
 	settings.setValue("ui/comboBox_fillPad",ui->comboBox_fillPad->currentIndex());
 	settings.setValue("ui/plainTextEdit_corners",ui->plainTextEdit_corners->toPlainText());
+
+	settings.setValue("ui/spinBox_textWeight",ui->spinBox_textWeight->value());
+	settings.setValue("ui/spinBox_fontSize",ui->spinBox_fontSize->value());
+
 }
 
 void qtvplugin_geomarker::loadSettingsFromIni()
@@ -180,6 +192,8 @@ void qtvplugin_geomarker::loadSettingsFromIni()
 	ui->lineEdit_PenColor->setText(lineEdit_PenColor);
 	QString lineEdit_FillColor = settings.value("ui/lineEdit_FillColor",color2string(QColor(255,255,255,128))).toString();
 	ui->lineEdit_FillColor->setText(lineEdit_FillColor);
+	QString lineEdit_TextColor = settings.value("ui/lineEdit_TextColor",color2string(QColor(0,0,0))).toString();
+	ui->lineEdit_TextColor->setText(lineEdit_TextColor);
 	int radioButton_PointRect =  settings.value("ui/radioButton_PointRect",0).toInt();
 	switch (radioButton_PointRect)
 	{
@@ -216,6 +230,11 @@ void qtvplugin_geomarker::loadSettingsFromIni()
 	QString plainTextEdit_corners = settings.value("ui/plainTextEdit_corners","0").toString();
 	ui->plainTextEdit_corners->setPlainText(plainTextEdit_corners);
 
+	int spinBox_fontSize = settings.value("ui/spinBox_fontSize",9).toInt();
+	ui->spinBox_fontSize->setValue(spinBox_fontSize);
+
+	int spinBox_textWeight = settings.value("ui/spinBox_textWeight",16).toInt();
+	ui->spinBox_textWeight->setValue(spinBox_textWeight);
 }
 void qtvplugin_geomarker::on_pushButton_update_clicked()
 {
@@ -271,6 +290,8 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 	brush.setColor(brushColor);
 	brush.setStyle(bst[btdd]);
 
+	QTVP_GEOMARKER::geoItemBase * newitem = 0;
+
 	if (ui->radioButton_tool_point->isChecked())
 	{
 		double lat = ui->lineEdit_point_lat->text().toDouble();
@@ -279,9 +300,9 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 		int width = ui->spinBox_point_width->value();
 		int height = ui->spinBox_point_size_height->value();
 		if (tp==0)
-			update_point<QTVP_GEOMARKER::geoGraphicsRectItem>(name,lat,lon,width,height,pen,brush);
+			newitem = update_point<QTVP_GEOMARKER::geoGraphicsRectItem>(name,lat,lon,width,height,pen,brush);
 		else
-			update_point<QTVP_GEOMARKER::geoGraphicsEllipseItem>(name,lat,lon,width,height,pen,brush);
+			newitem = update_point<QTVP_GEOMARKER::geoGraphicsEllipseItem>(name,lat,lon,width,height,pen,brush);
 	}
 	else if (ui->radioButton_tool_line->isChecked())
 	{
@@ -289,7 +310,7 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 		double lat2 = ui->lineEdit_lineLat2->text().toDouble();
 		double lon1 = ui->lineEdit_lineLon1->text().toDouble();
 		double lon2 = ui->lineEdit_lineLon2->text().toDouble();
-		update_line(name,lat1,lon1,lat2,lon2,pen);
+		newitem = update_line(name,lat1,lon1,lat2,lon2,pen);
 	}
 	else if (ui->radioButton_tool_polygon->isChecked())
 	{
@@ -313,12 +334,26 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 				latlons.push_back(ll);
 		}
 		if (latlons.size())
-			update_region(name,latlons,pen,brush);
+			newitem = update_region(name,latlons,pen,brush);
 
 	}
 	else
 		return;
+	if (newitem)
+	{
+		int fontSz = ui->spinBox_fontSize->value();
+		int fontWeight = ui->spinBox_textWeight->value();
+		QColor textColor = string2color( ui->lineEdit_TextColor->text());
+		QFont f = newitem->labelFont();
+		f.setPointSize(fontSz);
+		f.setWeight(fontWeight);
+		newitem->setLabelFont(f);
+		newitem->setLabelColor(textColor);
+
+
+	}
 	refreshMarks();
+	m_pVi->UpdateWindow();
 }
 
 void qtvplugin_geomarker::on_pushButton_del_clicked()
@@ -432,6 +467,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			ui->radioButton_PointRect->setChecked(true);
 			ui->spinBox_point_width->setValue(pitem->width());
 			ui->spinBox_point_size_height->setValue(pitem->height());
+			ui->radioButton_tool_point->setChecked(true);
 		}
 			break;
 		case QTVP_GEOMARKER::ITEAMTYPE_ELLIPSE_POINT:
@@ -446,6 +482,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			ui->radioButton_PointRound->setChecked(true);
 			ui->spinBox_point_width->setValue(pitem->width());
 			ui->spinBox_point_size_height->setValue(pitem->height());
+			ui->radioButton_tool_point->setChecked(true);
 		}
 			break;
 		case QTVP_GEOMARKER::ITEAMTYPE_LINE:
@@ -458,6 +495,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			ui->lineEdit_lineLat2->setText(QString("%1").arg(pitem->lat2(),0,'f',14));
 			ui->lineEdit_lineLon1->setText(QString("%1").arg(pitem->lon1(),0,'f',14));
 			ui->lineEdit_lineLon2->setText(QString("%1").arg(pitem->lon2(),0,'f',14));
+			ui->radioButton_tool_line->setChecked(true);
 		}
 			break;
 		case QTVP_GEOMARKER::ITEAMTYPE_REGION:
@@ -472,6 +510,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			foreach (QPointF p, pol)
 				strPlainText += QString("%1,%2\n").arg(p.y(),0,'f',14).arg(p.x(),0,'f',14);
 			ui->plainTextEdit_corners->setPlainText(strPlainText);
+			ui->radioButton_tool_polygon->setChecked(true);
 		}
 			break;
 		default:
@@ -493,6 +532,16 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 		int nbs = int(bs);
 		if (nbs >=0 && nbs < ui->comboBox_fillPad->count())
 			ui->comboBox_fillPad->setCurrentIndex((int)nbs);
+
+		QColor colorText = item->labelColor();
+		ui->lineEdit_TextColor->setText(color2string(colorText));
+
+		int fsize = item->labelFont().pointSize();
+		ui->spinBox_fontSize->setValue(fsize);
+
+		int weight = item->labelFont().weight();
+		ui->spinBox_textWeight->setValue(weight);
+
 		refreshProps(item);
 	}//end if item
 
