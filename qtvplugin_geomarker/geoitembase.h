@@ -4,6 +4,8 @@
 #include <QRectF>
 #include <QMap>
 #include <QVariant>
+#include <QFont>
+#include <QColor>
 #include <QGraphicsTextItem>
 namespace QTVOSM{
 	class viewer_interface;
@@ -40,6 +42,8 @@ namespace QTVP_GEOMARKER{
 		void setViewInterface(QTVOSM::viewer_interface * pVi);
 
 	private:
+		QFont						m_LabelTextFont;
+		QColor						m_LabelTextColor;
 		bool						m_bPropVisible;
 		int							m_nCurrentLevel;
 		QGraphicsTextItem *			m_pLabelItem;
@@ -55,6 +59,10 @@ namespace QTVP_GEOMARKER{
 		void			set_item_type	(geo_item_type tp)	{m_type = tp;}
 		QString			item_name		() const			{return m_name;}
 		void			set_item_name	(QString na)		{m_name = na;}
+		void			setLabelFont	(QFont font)		{m_LabelTextFont = font;if (m_pLabelItem) m_pLabelItem->setFont(m_LabelTextFont);}
+		QFont			labelFont		()					{return m_LabelTextFont;}
+		void			setLabelColor	(QColor col)		{m_LabelTextColor = col;if (m_pLabelItem) m_pLabelItem->setDefaultTextColor(m_LabelTextColor);}
+		QColor			labelColor		()					{return m_LabelTextColor;}
 		void			adjustLabelPos	();
 
 		QStringList			prop_names();
