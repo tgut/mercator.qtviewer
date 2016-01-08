@@ -61,6 +61,13 @@ namespace QTVP_GEOMARKER{
 
 	}
 
+	/**
+	 * @brief  sequentially call virtual function geoItemBase::adjust_coords for every geoItemBase object.
+	 *
+	 * Since the  scene coord will be zoomed in / out together with level change, all graphics items' coords should
+	 * be recalculated in time. the method adjust_item_coords will do this automatically,
+	 * @param newLevel the level to which current map is zoomed.
+	 */
 	void geoGraphicsScene::adjust_item_coords(int newLevel)
 	{
 		QList <QGraphicsItem * > it = this->items();
@@ -69,7 +76,11 @@ namespace QTVP_GEOMARKER{
 			geoItemBase * base = dynamic_cast<geoItemBase *>(t);
 			if (base)
 			{
+				//when this function is called, base->level() is the old level from which
+				//  current map is zoomed.
 				base->adjust_coords(newLevel);
+				//After adjust_coords above, the item "base" is considered to
+				// have a valid coord corresponds to current  newLevel
 				base->setLevel(newLevel);
 			}
 		}

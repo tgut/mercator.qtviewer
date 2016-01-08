@@ -5,6 +5,20 @@
 #include <QMap>
 namespace QTVP_GEOMARKER{
 	class geoItemBase;
+	/**
+	 * @brief geoGraphicsScene shield the common item operations, such as addEllipse
+	 * addPolygon, and so on. It provide user several new polymorphism method,
+	 * for special geoItemBase classes. Item name will be indexed using a QMap object m_map_items
+	 * so that user can get item pointers as soon as possible.
+	 *
+	 * The scene uses World Pixel Coordinate system, which has a commection between zoom level.
+	 * You can learn more principle about coordinates in the comments of class	viewer_interface. in zoom level 0,
+	 * world pixel size is 256x256, level 1 is 512x512, level 18 is 67108864 x 67108864
+	 * Since the  scene coord will be zoomed in / out together with level change, all graphics items' coords should
+	 * be recalculated in time. the method adjust_item_coords will do this automatically,
+	 * and in this function, virtual function geoItemBase::adjust_coords will be called sequentially.
+	 *
+	 */
 	class geoGraphicsScene : public QGraphicsScene
 	{
 		Q_OBJECT

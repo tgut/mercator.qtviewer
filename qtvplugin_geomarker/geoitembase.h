@@ -32,6 +32,13 @@ namespace QTVP_GEOMARKER{
 	}
 
 	class geoGraphicsScene;
+	/**
+	 * @brief class geoItemBase is the root base class for all geoGraphicsItems.
+	 * this class has several function, include:
+	 * 1.provide properties system, include  name, font, color, user-defined props using key-value mapping.
+	 * 2.provide a LABEL mechanism, which is tooking use of by geoGraphicsScene to display props on map.
+	 * 3.defines 2 interface, for Inheritance classes, give them optunities to maintain coordinates change when zooming.
+	 */
 	class geoItemBase
 	{
 		friend class geoGraphicsScene;

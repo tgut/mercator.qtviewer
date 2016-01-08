@@ -655,13 +655,13 @@ namespace QTVOSM{
 		double dperx = dMx/(cProjectionMercator::pi*cProjectionMercator::R*2);
 		double dpery = -dMy/(cProjectionMercator::pi*cProjectionMercator::R*2);
 
-		double dCurrImgSize = pow(2.0,m_nLevel)*256;
+		int nCurrImgSize = (1<<m_nLevel)*256;
 		//!3.Calculat the World pixel coordinats
-		double dTarX = dperx * dCurrImgSize + dCurrImgSize/2;
-		double dTarY = dpery * dCurrImgSize + dCurrImgSize/2;
+		double dTarX = dperx * nCurrImgSize + nCurrImgSize/2;
+		double dTarY = dpery * nCurrImgSize + nCurrImgSize/2;
 		//!4.Calculat the World pixel coordinats of current view-center point
-		double dCurrX = dCurrImgSize*m_dCenterX+dCurrImgSize/2;
-		double dCurrY = dCurrImgSize*m_dCenterY+dCurrImgSize/2;
+		double dCurrX = nCurrImgSize*m_dCenterX+nCurrImgSize/2;
+		double dCurrY = nCurrImgSize*m_dCenterY+nCurrImgSize/2;
 		//!5.Calculat the World pixel coordinats of current view-left-top point
 		double nOffsetLT_x = (dCurrX-width()/2.0);
 		double nOffsetLT_y = (dCurrY-height()/2.0);
@@ -689,13 +689,13 @@ namespace QTVOSM{
 			return false;
 
 		//!1.Current World Pixel Size, connected to nLevel
-		double dCurrImgSize = pow(2.0,m_nLevel)*256;
+		int nCurrImgSize = (1<<m_nLevel)*256;
 		//!2.current DP according to center
 		double dx = X-(width()/2.0);
 		double dy = Y-(height()/2.0);
 		//!3.Percentage -0.5 ~ 0.5 coord
-		double dImgX = dx/dCurrImgSize+m_dCenterX;
-		double dImgY = dy/dCurrImgSize+m_dCenterY;
+		double dImgX = dx/nCurrImgSize+m_dCenterX;
+		double dImgY = dy/nCurrImgSize+m_dCenterY;
 		//!4.to Mercator
 		double Mercator_x = cProjectionMercator::pi*cProjectionMercator::R*2*dImgX;
 		double Mercator_y = -cProjectionMercator::pi*cProjectionMercator::R*2*dImgY;
@@ -747,7 +747,7 @@ namespace QTVOSM{
 	/*!
 	 \brief convert Mercator to World. World Points is according to current level,
 	 point(0,0) stay at the left-top, point (SZ,SZ) in bottom-right
-	 SZ = pow(2.0,m_nLevel)*256, m_nLevel between 0 and 18
+	 the pixel size is 2^m_nLevel*256, m_nLevel between 0 and 18
 	 This approach is devided into several steps, and it is LEVEL RELATED!
 
 	 \fn tilesviewer::CV_MK2World
@@ -764,11 +764,11 @@ namespace QTVOSM{
 		double dperx = mx/(cProjectionMercator::pi*cProjectionMercator::R*2);
 		double dpery = -my/(cProjectionMercator::pi*cProjectionMercator::R*2);
 
-		double dCurrImgSize = pow(2.0,m_nLevel)*256;
+		int nCurrImgSize = (1<<m_nLevel)*256;
 
 		//!2.Calculat the World pixel coordinats
-		*px = dperx * dCurrImgSize + dCurrImgSize/2;
-		*py = dpery * dCurrImgSize + dCurrImgSize/2;
+		*px = dperx * nCurrImgSize + nCurrImgSize/2;
+		*py = dpery * nCurrImgSize + nCurrImgSize/2;
 
 		return true;
 	}
@@ -776,7 +776,7 @@ namespace QTVOSM{
 	/*!
 	 \brief convert World to  Mercator. World Points is according to current level,
 	 point(0,0) stay at the left-top, point (SZ,SZ) in bottom-right
-	 SZ = pow(2.0,m_nLevel)*256, m_nLevel between 0 and 18
+	 the pixel size is 2^m_nLevel*256, m_nLevel between 0 and 18
 	 This approach is devided into several steps, and it is LEVEL RELATED!
 
 	 \fn tilesviewer::CV_World2MK
@@ -790,10 +790,10 @@ namespace QTVOSM{
 	{
 		if (!pmx||!pmy)			return false;
 		//!1.Current World Pixel Size, connected to nLevel
-		double dCurrImgSize = pow(2.0,m_nLevel)*256;
+		int nCurrImgSize = (1<<m_nLevel)*256;
 		//!2.Percentage -0.5 ~ 0.5 coord
-		double dImgX = x/dCurrImgSize - .5;
-		double dImgY = y/dCurrImgSize - .5;
+		double dImgX = x/nCurrImgSize - .5;
+		double dImgY = y/nCurrImgSize - .5;
 		//!3.to Mercator
 		*pmx = cProjectionMercator::pi*cProjectionMercator::R*2*dImgX;
 		*pmy = -cProjectionMercator::pi*cProjectionMercator::R*2*dImgY;
@@ -804,7 +804,7 @@ namespace QTVOSM{
 	/*!
 	 \brief  convert LLA to world. World Points is according to current level,
 	 point(0,0) stay at the left-top, point (SZ,SZ) in bottom-right
-	 SZ = pow(2.0,m_nLevel)*256, m_nLevel between 0 and 18
+	 the pixel size is 2^m_nLevel*256, m_nLevel between 0 and 18
 	 This approach is devided into several steps, and it is LEVEL RELATED!
 
 	 \fn tilesviewer::CV_LLA2World
@@ -825,17 +825,17 @@ namespace QTVOSM{
 		double dperx = dMx/(cProjectionMercator::pi*cProjectionMercator::R*2);
 		double dpery = -dMy/(cProjectionMercator::pi*cProjectionMercator::R*2);
 
-		double dCurrImgSize = pow(2.0,m_nLevel)*256;
+		int nCurrImgSize = (1<<m_nLevel)*256;
 		//!3.Calculat the World pixel coordinats
-		*px = dperx * dCurrImgSize + dCurrImgSize/2;
-		*py = dpery * dCurrImgSize + dCurrImgSize/2;
+		*px = dperx * nCurrImgSize + nCurrImgSize/2;
+		*py = dpery * nCurrImgSize + nCurrImgSize/2;
 		return true;
 	}
 
 	/*!
 	 \brief  convert world to LLA. World Points is according to current level,
 	 point(0,0) stay at the left-top, point (SZ,SZ) in bottom-right
-	 SZ = pow(2.0,m_nLevel)*256, m_nLevel between 0 and 18
+	 the pixel size is 2^m_nLevel*256, m_nLevel between 0 and 18
 	 This approach is devided into several steps, and it is LEVEL RELATED!
 
 	 \fn tilesviewer::CV_World2LLA
@@ -849,10 +849,10 @@ namespace QTVOSM{
 	{
 		if (!plat||!plon)			return false;
 		//!1.Current World Pixel Size, connected to nLevel
-		double dCurrImgSize = pow(2.0,m_nLevel)*256;
+		int nCurrImgSize = (1<<m_nLevel)*256;
 		//!2.Percentage -0.5 ~ 0.5 coord
-		double dImgX = x/dCurrImgSize - .5;
-		double dImgY = y/dCurrImgSize - .5;
+		double dImgX = x/nCurrImgSize - .5;
+		double dImgY = y/nCurrImgSize - .5;
 		//!3.to Mercator
 		double mkx = cProjectionMercator::pi*cProjectionMercator::R*2*dImgX;
 		double mky = -cProjectionMercator::pi*cProjectionMercator::R*2*dImgY;
@@ -867,7 +867,7 @@ namespace QTVOSM{
 	 \brief	 convert  Device Points to World. Device Points is according to current viewport,
 	 point(0,0) stay at the top-left, point (width-1,height-1) in bottom-right. World Points is according
 	 to current level,	 point(0,0) stay at the left-top, point (SZ,SZ) in bottom-right,
-	 SZ = pow(2.0,m_nLevel)*256, m_nLevel between 0 and 18
+	 the pixel size is 2^m_nLevel*256, m_nLevel between 0 and 18
 	 This approach is devided into several steps, and it is LEVEL RELATED!
 
 	 \fn tilesviewer::CV_DP2World
@@ -881,16 +881,16 @@ namespace QTVOSM{
 	{
 		if (!px||!py)			return false;
 		//!1.Current World Pixel Size, connected to nLevel
-		double dCurrImgSize = pow(2.0,m_nLevel)*256;
+		int nCurrImgSize = (1<<m_nLevel)*256;
 		//!2.current DP according to center
 		double dx = dX-(width()/2.0);
 		double dy = dY-(height()/2.0);
 		//!3.Percentage -0.5 ~ 0.5 coord
-		double dImgX = dx/dCurrImgSize+m_dCenterX;
-		double dImgY = dy/dCurrImgSize+m_dCenterY;
+		double dImgX = dx/nCurrImgSize+m_dCenterX;
+		double dImgY = dy/nCurrImgSize+m_dCenterY;
 		//!4.Calculat the World pixel coordinats
-		*px = dImgX * dCurrImgSize + dCurrImgSize/2;
-		*py = dImgY * dCurrImgSize + dCurrImgSize/2;
+		*px = dImgX * nCurrImgSize + nCurrImgSize/2;
+		*py = dImgY * nCurrImgSize + nCurrImgSize/2;
 		return true;
 
 	}
@@ -899,7 +899,7 @@ namespace QTVOSM{
 	 \brief	 convert  World to Device Points. Device Points is according to current viewport,
 	 point(0,0) stay at the top-left, point (width-1,height-1) in bottom-right. World Points is according
 	 to current level,	 point(0,0) stay at the left-top, point (SZ,SZ) in bottom-right,
-	 SZ = pow(2.0,m_nLevel)*256, m_nLevel between 0 and 18
+	 the pixel size is 2^m_nLevel*256, m_nLevel between 0 and 18
 	 This approach is devided into several steps, and it is LEVEL RELATED!
 
 	 \fn tilesviewer::CV_World2DP
@@ -914,11 +914,11 @@ namespace QTVOSM{
 		if (!pdX||!pdY)			return false;
 
 		//!1.Current World Pixel Size, connected to nLevel
-		double dCurrImgSize = pow(2.0,m_nLevel)*256;
+		int nCurrImgSize = (1<<m_nLevel)*256;
 
 		//!2.Calculat the World pixel coordinats of current view-center point
-		double dCurrX = dCurrImgSize*m_dCenterX+dCurrImgSize/2;
-		double dCurrY = dCurrImgSize*m_dCenterY+dCurrImgSize/2;
+		double dCurrX = nCurrImgSize*m_dCenterX+nCurrImgSize/2;
+		double dCurrY = nCurrImgSize*m_dCenterY+nCurrImgSize/2;
 		//!3.Calculat the World pixel coordinats of current view-left-top point
 		double nOffsetLT_x = (dCurrX-width()/2.0);
 		double nOffsetLT_y = (dCurrY-height()/2.0);
@@ -932,7 +932,7 @@ namespace QTVOSM{
 	/*!
 	 \brief	 convert  percentage coord to world. World Points is according
 	 to current level,	 point(0,0) stay at the left-top, point (SZ,SZ) in bottom-right,
-	 SZ = pow(2.0,m_nLevel)*256, m_nLevel between 0 and 18. Percentage coord is a
+	 the pixel size is 2^m_nLevel*256, m_nLevel between 0 and 18. Percentage coord is a
 	 level-unretated coord, take a range -0.5~0.5, the world center in 0,0, -0.5.-0.5
 	 at top-left, 0.5,0.5 at bottom-right
 	 This approach is LEVEL RELATED!
@@ -959,7 +959,7 @@ namespace QTVOSM{
 	/*!
 	 \brief	 convert world to   percentage coord. World Points is according
 	 to current level,	 point(0,0) stay at the left-top, point (SZ,SZ) in bottom-right,
-	 SZ = pow(2.0,m_nLevel)*256, m_nLevel between 0 and 18. Percentage coord is a
+	 the pixel size is 2^m_nLevel*256, m_nLevel between 0 and 18. Percentage coord is a
 	 level-unretated coord, take a range -0.5~0.5, the world center in 0,0, -0.5.-0.5
 	 at top-left, 0.5,0.5 at bottom-right
 	 This approach is LEVEL RELATED!
@@ -976,10 +976,10 @@ namespace QTVOSM{
 		if (!px || !py)
 			return false;
 		//Current World Pixel Size, connected to nLevel
-		double dCurrImgSize = pow(2.0,m_nLevel)*256;
+		int nCurrImgSize = (1<<m_nLevel)*256;
 		//Percentage -0.5 ~ 0.5 coord
-		*px = nx/dCurrImgSize - .5;
-		*py = ny/dCurrImgSize - .5;
+		*px = nx/nCurrImgSize - .5;
+		*py = ny/nCurrImgSize - .5;
 
 		return true;
 	}

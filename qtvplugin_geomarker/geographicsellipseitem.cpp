@@ -29,6 +29,10 @@ namespace QTVP_GEOMARKER{
 	{
 		if (vi() && nNewLevel != level())
 		{
+			/** Since the map is zooming from level() to current level,
+			 * the map size zoom ratio can be calculated using pow below.
+			 * We can get new coord for current zoom level by multiplicative.
+			*/
 			double ratio = pow(2.0,(nNewLevel - level()));
 			QRectF rect = this->rect();
 			QPointF center = rect.center();
