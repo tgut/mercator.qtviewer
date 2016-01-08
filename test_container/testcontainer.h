@@ -29,7 +29,7 @@ protected slots:
 	void on_pushButton_test_layers_clicked();
 	void on_pushButton_test_layer_move_clicked();
 	void on_pushButton_test_grid_enable_clicked();
-	void on_pushButton_test_grid_getRegion_clicked();
+	void on_pushButton_test_grid_getPolygon_clicked();
 };
 
 #endif // TESTCONTAINER_H

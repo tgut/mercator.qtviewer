@@ -449,7 +449,7 @@ QTVP_GEOMARKER::geoItemBase *  qtvplugin_geomarker::update_line(const QString & 
 }
 
 
-QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush)
+QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_polygon		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush)
 {
 	QTVP_GEOMARKER::geoItemBase *  res = 0;
 	//Get raw Item by name

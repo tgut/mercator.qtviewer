@@ -122,9 +122,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_test_grid_getRegion">
+      <widget class="QPushButton" name="pushButton_test_grid_getPolygon">
        <property name="text">
-        <string>grid_region</string>
+        <string>grid_polygon</string>
        </property>
       </widget>
      </item>

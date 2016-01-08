@@ -16,14 +16,14 @@ namespace Ui {
 using namespace QTVOSM;
 /*!
  \brief qtvplugin_geomarker introduces QGraphicesView system, established a common approach for geo marking.
- GEO marker is a vector symbol displays on the background OSM raster map. there are 3 different mark types supported by this plugin.
- 1. Point Marks. Include ellipse and rect style mark. these type of mark stand for a single point on earth, with a specified lat, lon .the with and height
- for rect / ellipse circumrect can be specified by user at runtime, in PIXEL. with and height will stay still during map zoom.
+ GEO marker is a vector symbol that will be displayed on the background OSM raster map. there are 3 different mark types supported by this plugin.
+ 1. Point Marks. Include ellipse and rect style mark. these type of mark stand for a single point on earth, with a specified lat, lon .the width and height
+ for rect / ellipse circumrect can be specified by user at runtime, in PIXEL. width and height will stay still during map zoom.
 
  2. Line Mark.	Line mark is a beeline on map. ATTENTION, in Mercator Projection system, the geo shortest path between 2 points on earth is NOT a beeline, that means
  beeline on a map is just for display performance and accessibility. the real path is a curve , which has 2 point of intersections exactly at start position and end position.
 
- 3. Polygon (Region) Mark. Polygon mark is a region on map. borders of a region is painted with lines, for a same reason above, the geo shortest path between 2 points on earth is NOT a beeline either.
+ 3. Polygon (Polygon) Mark. Polygon mark is a polygon on map. borders of a polygon is painted with lines, for a same reason above, the geo shortest path between 2 points on earth is NOT a beeline either.
 
  Marks above shares a same style system provided by Qt painter system. pen, brush , font can be setted for each mark.
 
@@ -105,10 +105,13 @@ private:
 	//Geo mark updating functions
 private:
 	template <class T>
-	QTVP_GEOMARKER::geoItemBase * update_point		(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush);
-	QTVP_GEOMARKER::geoItemBase * update_line		(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen);
-	QTVP_GEOMARKER::geoItemBase * update_region		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush);
-	bool update_mark(tag_xml_mark & mark);
+	QTVP_GEOMARKER::geoItemBase *	update_point		(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush);
+	QTVP_GEOMARKER::geoItemBase *	update_point		(const QMap<QString, QVariant> &);
+	QTVP_GEOMARKER::geoItemBase *	update_line			(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen);
+	QTVP_GEOMARKER::geoItemBase *	update_line			(const QMap<QString, QVariant> &);
+	QTVP_GEOMARKER::geoItemBase *	update_polygon		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush);
+	QTVP_GEOMARKER::geoItemBase *	update_polygon		(const QMap<QString, QVariant> &);
+	bool							update_mark			(tag_xml_mark & mark);
 
 	//overloaded virtual funtions
 protected:
@@ -127,7 +130,7 @@ protected:
 	bool		cb_event(const QMap<QString, QVariant>);
 
 	void		timerEvent(QTimerEvent * e);
-	QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> /*paras*/);
+	QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> & /*paras*/);
 
 	//ui slots
 protected slots:
@@ -144,7 +147,7 @@ protected slots:
 	void on_pushButton_del_clicked();
 	void on_pushButton_pickToLine1_clicked();
 	void on_pushButton_pickToLine2_clicked();
-	void on_pushButton_getRegion_clicked();
+	void on_pushButton_getPolygon_clicked();
 	void on_pushButton_save_clicked();
 	void on_pushButton_load_clicked();
 };

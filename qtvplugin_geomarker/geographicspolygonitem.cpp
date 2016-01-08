@@ -10,7 +10,7 @@ namespace QTVP_GEOMARKER{
 			QString name,
 			QTVOSM::viewer_interface * pVi,const QPolygonF & lla_polygon)
 		:QGraphicsPolygonItem(0)
-		,geoItemBase(name,QTVP_GEOMARKER::ITEAMTYPE_REGION,pVi)
+		,geoItemBase(name,QTVP_GEOMARKER::ITEAMTYPE_POLYGON,pVi)
 	{
 		assert(vi()!=0);
 		m_llap = lla_polygon;

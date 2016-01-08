@@ -387,7 +387,7 @@ QMap<QString, QVariant> qtaxviewer_planetosm::string_to_map(const QString & s)
  * @param layerName	the layer name to whom this function call will be sent
  * @param args	args stored in key, value strings,
  * key, value is connected with "=", and each pairs splitted by ";"
- * eg, function=get_region;x=38.43834784;y=16.3834754;
+ * eg, function=get_polygon;x=38.43834784;y=16.3834754;
  * @return QString	the result string is also formatted with key-vaslue para strings.
  */
 QString qtaxviewer_planetosm::osm_layer_call_function(QString layerName, QString args)

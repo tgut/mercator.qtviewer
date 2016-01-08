@@ -95,7 +95,7 @@ namespace QTVOSM
 		virtual void set_visible(bool /*vb*/) {}
 	public:
 		//user-def direct function calls
-		virtual QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> /*paras*/){return  std::move( QMap<QString, QVariant>());}
+		virtual QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> & /*paras*/){return  std::move( QMap<QString, QVariant>());}
 
 	};
 

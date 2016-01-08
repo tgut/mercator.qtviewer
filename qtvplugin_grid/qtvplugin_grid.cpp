@@ -642,7 +642,7 @@ double qtvplugin_grid::CalDistance(double dLatStart,double dLatEnd,double dLonSt
 
 /**
  * function calls avaliable:
- * 	1.function=get_region, no other para needed. returns current selected region's cornor points, in lat, lon; size=N;lat0=XX;lon0=XX;
+ * 	1.function=get_polygon, no other para needed. returns current selected polygon's cornor points, in lat, lon; size=N;lat0=XX;lon0=XX;
  * 	lat1=XX;lon1=XX;lat2=XX;lon2=XX;...;latN-1=XX;lonN-1=XX.
  * 	2.function=get_ruler_status, no other para needed.returns whether ruler tool is active now, status=0 means not active, status=-1 means active.
  * 	3.function=set_ruler_status, with para status, will set ruler status to given value.
@@ -651,13 +651,13 @@ double qtvplugin_grid::CalDistance(double dLatStart,double dLatEnd,double dLonSt
  * @param paras	the key-value style paraments.
  * @return QMap<QString, QVariant>	the key-value style return paraments.
  */
-QMap<QString, QVariant> qtvplugin_grid::call_func(const  QMap<QString, QVariant> paras)
+QMap<QString, QVariant> qtvplugin_grid::call_func(const  QMap<QString, QVariant> & paras)
 {
 	QMap<QString, QVariant> res;
 	if (paras.contains("function"))
 	{
 		QString funct = paras["function"].toString();
-		if (funct=="get_region")
+		if (funct=="get_polygon")
 		{
 			int Count = m_list_points.size();
 			res["size"] = Count;

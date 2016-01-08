@@ -17,7 +17,7 @@
  * @param paras	the key-value style paraments.
  * @return QMap<QString, QVariant>	the key-value style return values.
  */
-QMap<QString, QVariant> qtvplugin_geomarker::call_func(const  QMap<QString, QVariant> paras)
+QMap<QString, QVariant> qtvplugin_geomarker::call_func(const  QMap<QString, QVariant> & paras)
 {
 	QMap<QString, QVariant> res;
 	if (paras.contains("function"))
@@ -25,13 +25,17 @@ QMap<QString, QVariant> qtvplugin_geomarker::call_func(const  QMap<QString, QVar
 		QString funct = paras["function"].toString();
 		if (funct=="update_point")
 		{
-
+			update_point(paras);
 		}
 		else if (funct=="update_line")
 		{
-
+			update_line(paras);
 		}
 		else if (funct=="update_polygon")
+		{
+			update_polygon(paras);
+		}
+		else if (funct=="update_prop")
 		{
 
 		}
@@ -136,7 +140,7 @@ bool qtvplugin_geomarker::saveToXml(QString xml)
 			}
 		}
 			break;
-		case QTVP_GEOMARKER::ITEAMTYPE_REGION:
+		case QTVP_GEOMARKER::ITEAMTYPE_POLYGON:
 		{
 			QTVP_GEOMARKER::geoGraphicsPolygonItem * pU = dynamic_cast<QTVP_GEOMARKER::geoGraphicsPolygonItem *>(item);
 			if (pU)
@@ -439,9 +443,9 @@ bool qtvplugin_geomarker::update_mark(tag_xml_mark & mark)
 		double lon2 = mark.geoPoints.last().x();
 		newitem = update_line(name,lat1,lon1,lat2,lon2,pen);
 	}
-	else if (mark.type==QTVP_GEOMARKER::ITEAMTYPE_REGION)
+	else if (mark.type==QTVP_GEOMARKER::ITEAMTYPE_POLYGON)
 	{
-		newitem = update_region(name,mark.geoPoints,pen,brush);
+		newitem = update_polygon(name,mark.geoPoints,pen,brush);
 	}
 	else
 		return false;
@@ -466,4 +470,17 @@ bool qtvplugin_geomarker::update_mark(tag_xml_mark & mark)
 	}
 
 	return true;
+}
+
+QTVP_GEOMARKER::geoItemBase * qtvplugin_geomarker::update_point		(const QMap<QString, QVariant> & paras)
+{
+	return 0;
+}
+QTVP_GEOMARKER::geoItemBase * qtvplugin_geomarker::update_line		(const QMap<QString, QVariant> & paras)
+{
+	return 0;
+}
+QTVP_GEOMARKER::geoItemBase * qtvplugin_geomarker::update_polygon		(const QMap<QString, QVariant> & paras)
+{
+	return 0;
 }

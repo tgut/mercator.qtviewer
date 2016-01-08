@@ -185,18 +185,18 @@ void testcontainer::on_pushButton_test_grid_enable_clicked()
 	if (mres["status"].toInt())
 	{
 		res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","grid1","function=set_ruler_status;status=0;").toString();
-		QMessageBox::information(this,"grid1::set_ruler_status to false, you can call get_region to get region strings..",res);
+		QMessageBox::information(this,"grid1::set_ruler_status to false, you can call get_polygon to get polygon strings..",res);
 	}
 	else
 	{
 		res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","grid1","function=set_ruler_status;status=-1;").toString();
-		QMessageBox::information(this,"grid1::set_ruler_status to true, you can draw regions on map using mouse lbutton for begin and rbutton for end.",res);
+		QMessageBox::information(this,"grid1::set_ruler_status to true, you can draw polygons on map using mouse lbutton for begin and rbutton for end.",res);
 	}
 
 }
-void testcontainer::on_pushButton_test_grid_getRegion_clicked()
+void testcontainer::on_pushButton_test_grid_getPolygon_clicked()
 {
-	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","grid1","function=get_region;").toString();
-	QMessageBox::information(this,"grid1::get_region",res);
+	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","grid1","function=get_polygon;").toString();
+	QMessageBox::information(this,"grid1::get_polygon",res);
 
 }

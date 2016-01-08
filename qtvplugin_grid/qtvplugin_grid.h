@@ -11,7 +11,7 @@ namespace Ui {
 }
 using namespace QTVOSM;
 /*!	qtvplugin_grid support distance and area measuring. function calls avaliable:
-	1.function=get_region, no other para needed. returns current selected region's cornor points, in lat, lon; size=N;lat0=XX;lon0=XX;
+	1.function=get_polygon, no other para needed. returns current selected polygon's cornor points, in lat, lon; size=N;lat0=XX;lon0=XX;
 	lat1=XX;lon1=XX;lat2=XX;lon2=XX;...;latN-1=XX;lonN-1=XX.
 	2.function=get_ruler_status, no other para needed.returns whether ruler tool is active now, status=0 means not active, status=-1 means active.
 	3.function=set_ruler_status, with para status, will set ruler status to given value.
@@ -33,7 +33,7 @@ public:
 	QString		get_name();
 	void		set_name(QString vb);
 	QWidget *	get_propWindow() {return this;}
-	QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> /*paras*/);
+	QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> & /*paras*/);
 private:
 	int m_nInstance;
 	//International Translator

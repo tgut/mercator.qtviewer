@@ -4,12 +4,8 @@
 <context>
     <name>qtvplugin_geomarker</name>
     <message>
-        <source>Grid</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Marks</source>
-        <translation>标记点</translation>
+        <translation>标记</translation>
     </message>
     <message>
         <source>points</source>
@@ -45,15 +41,15 @@
     </message>
     <message>
         <source>width</source>
-        <translation>宽度</translation>
+        <translation>像素宽</translation>
     </message>
     <message>
         <source>height</source>
-        <translation>高度</translation>
+        <translation>像素高</translation>
     </message>
     <message>
         <source>Edge color</source>
-        <translation>描边色彩</translation>
+        <translation type="vanished">描边色彩</translation>
     </message>
     <message>
         <source>...</source>
@@ -92,24 +88,16 @@
         <translation></translation>
     </message>
     <message>
-        <source>pad</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>color</source>
-        <translation>色彩</translation>
+        <translation type="vanished">色彩</translation>
     </message>
     <message>
         <source>corner Points</source>
         <translation>顶点</translation>
     </message>
     <message>
-        <source>Call Region Get</source>
+        <source>Call Polygon Get</source>
         <translation>获取当前区域</translation>
-    </message>
-    <message>
-        <source>Save Data</source>
-        <translation></translation>
     </message>
     <message>
         <source>Properties</source>
@@ -142,6 +130,106 @@
     <message>
         <source>Select Color</source>
         <translation>选择色彩</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存XML</translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation>加载XML</translation>
+    </message>
+    <message>
+        <source>Pen width</source>
+        <translation>笔像素宽</translation>
+    </message>
+    <message>
+        <source>Pen Style</source>
+        <translation>笔风格</translation>
+    </message>
+    <message>
+        <source>Pen Color</source>
+        <translation>笔色彩</translation>
+    </message>
+    <message>
+        <source>Text Color</source>
+        <translation>文本色彩</translation>
+    </message>
+    <message>
+        <source>weight</source>
+        <translation>文本粗细</translation>
+    </message>
+    <message>
+        <source>Fill Style</source>
+        <translation>填充风格</translation>
+    </message>
+    <message>
+        <source>Font Size</source>
+        <translation>字号</translation>
+    </message>
+    <message>
+        <source>Version must &gt;=1.0.</source>
+        <translation>本XML版本号必须&gt;=1.0.</translation>
+    </message>
+    <message>
+        <source>This XML is not a geomarker format file.</source>
+        <translation>这不是一个正确的 geomarker 格式文件。</translation>
+    </message>
+    <message>
+        <source>Empty XML.</source>
+        <translation>XML 没有有效信息。</translation>
+    </message>
+    <message>
+        <source>mark name is null or type error .</source>
+        <translation>类型错误或者标记名称 name 字段为空。</translation>
+    </message>
+    <message>
+        <source>coords is 0 .</source>
+        <translation>坐标为0.</translation>
+    </message>
+    <message>
+        <source>missing geo coords .</source>
+        <translation>地理坐标不足。</translation>
+    </message>
+    <message>
+        <source>save to xml</source>
+        <translation>导出到XML</translation>
+    </message>
+    <message>
+        <source>succeed</source>
+        <translation>成功</translation>
+    </message>
+    <message>
+        <source>Successfully saved XML file</source>
+        <translation>保存XML成功</translation>
+    </message>
+    <message>
+        <source>failed</source>
+        <translation>失败</translation>
+    </message>
+    <message>
+        <source>Save XML file</source>
+        <translation>保存XML文件</translation>
+    </message>
+    <message>
+        <source> Failed</source>
+        <translation>失败</translation>
+    </message>
+    <message>
+        <source>load from xml</source>
+        <translation>从XML加载</translation>
+    </message>
+    <message>
+        <source>Successfully load XML file</source>
+        <translation>成功从XML文件加载数据</translation>
+    </message>
+    <message>
+        <source>Load XML file</source>
+        <translation>加载XML数据</translation>
+    </message>
+    <message>
+        <source>geoMarker</source>
+        <translation>标记工具插件</translation>
     </message>
 </context>
 </TS>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Grid</string>
+   <string>geoMarker</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_13">
    <property name="spacing">
@@ -349,7 +349,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="page_region">
+       <widget class="QWidget" name="page_polygon">
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
           <widget class="QLabel" name="label_13">
@@ -381,9 +381,9 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_getRegion">
+            <widget class="QPushButton" name="pushButton_getPolygon">
              <property name="text">
-              <string>Call Region Get</string>
+              <string>Call Polygon Get</string>
              </property>
             </widget>
            </item>

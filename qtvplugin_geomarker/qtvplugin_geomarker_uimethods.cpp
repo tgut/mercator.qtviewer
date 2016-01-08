@@ -336,7 +336,7 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 				latlons.push_back(ll);
 		}
 		if (latlons.size())
-			newitem = update_region(name,latlons,pen,brush);
+			newitem = update_polygon(name,latlons,pen,brush);
 
 	}
 	else
@@ -433,7 +433,7 @@ void qtvplugin_geomarker::on_tableView_marks_doubleClicked(const QModelIndex & i
 	}
 }
 
-void qtvplugin_geomarker::on_pushButton_getRegion_clicked()
+void qtvplugin_geomarker::on_pushButton_getPolygon_clicked()
 {
 	if (!m_pVi)	return;
 	QString strGridName = QString("grid%1").arg(m_nInstance);
@@ -441,7 +441,7 @@ void qtvplugin_geomarker::on_pushButton_getRegion_clicked()
 	if (pif)
 	{
 		QMap<QString, QVariant> inPara, outPara;
-		inPara["function"] = "get_region";
+		inPara["function"] = "get_polygon";
 		outPara = pif->call_func(inPara);
 		QString strPlainText = "";
 		if (outPara.contains("size"))
@@ -513,7 +513,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			ui->radioButton_tool_line->setChecked(true);
 		}
 			break;
-		case QTVP_GEOMARKER::ITEAMTYPE_REGION:
+		case QTVP_GEOMARKER::ITEAMTYPE_POLYGON:
 		{
 			QTVP_GEOMARKER::geoGraphicsPolygonItem * pitem = dynamic_cast<QTVP_GEOMARKER::geoGraphicsPolygonItem *>(item);
 			if (!pitem)
