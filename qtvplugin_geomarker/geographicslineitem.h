@@ -14,6 +14,8 @@ namespace QTVP_GEOMARKER{
 		void unwarrp();
 	protected:
 		void mousePressEvent(QGraphicsSceneMouseEvent * event);
+		void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+
 	public:
 		explicit geoGraphicsLineItem(QString name,QTVOSM::viewer_interface * pVi,
 									 qreal lat1 = 90,

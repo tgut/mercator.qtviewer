@@ -235,45 +235,6 @@ bool qtvplugin_geomarker::cb_event(const QMap<QString, QVariant> para)
 {
 	return false;
 }
-bool		qtvplugin_geomarker::cb_mouseReleaseEvent(QMouseEvent * e)
-{
-	if (!m_pVi)
-		return false;
-
-	QPoint mouse_view_pt = e->pos();
-	int winsz = 256 * (1<<m_pVi->level());
-	double wx,wy;
-	m_pVi->CV_DP2World(mouse_view_pt.x(),mouse_view_pt.y(),&wx,&wy);
-	//Warp
-	while (wx < 0) wx += winsz;
-	while (wx > winsz-1) wx -= winsz;
-
-	QPointF mouse_scene_pt(wx,wy);
-	QPoint mouse_screen_pt = e->globalPos();
-	Qt::MouseButton mouse_button = e->button();
-	QWidget * pwig = dynamic_cast<QWidget *> (m_pVi);
-	if (m_bVisible && pwig)
-	{
-		// Convert and deliver the mouse event to the scene.
-		QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMouseRelease);
-		mouseEvent.setWidget(pwig);
-		mouseEvent.setButtonDownScenePos(mouse_button, mouse_scene_pt);
-		mouseEvent.setButtonDownScreenPos(mouse_button, mouse_screen_pt);
-		mouseEvent.setScenePos(mouse_scene_pt);
-		mouseEvent.setScreenPos(mouse_screen_pt);
-		mouseEvent.setLastScenePos(mouse_scene_pt);
-		mouseEvent.setLastScreenPos(mouse_screen_pt);
-		mouseEvent.setButtons(e->buttons());
-		mouseEvent.setButton(e->button());
-		mouseEvent.setModifiers(e->modifiers());
-		mouseEvent.setAccepted(false);
-		QApplication::sendEvent(m_pScene, &mouseEvent);
-		bool isAccepted = mouseEvent.isAccepted();
-		e->setAccepted(isAccepted);
-		return isAccepted;
-	}
-	return false;
-}
 
 bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 {
@@ -286,8 +247,8 @@ bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 	double mlat, mlon;
 	m_pVi->CV_DP2World(mouse_view_pt.x(),mouse_view_pt.y(),&wx,&wy);
 	m_pVi->CV_DP2LLA(mouse_view_pt.x(),mouse_view_pt.y(),&mlat,&mlon);
-	ui->lineEdit_point_lat->setText(QString("%1").arg(mlat,0,'f',14));
-	ui->lineEdit_point_lon->setText(QString("%1").arg(mlon,0,'f',14));
+	ui->lineEdit_point_lat->setText(QString("%1").arg(mlat,0,'f',7));
+	ui->lineEdit_point_lon->setText(QString("%1").arg(mlon,0,'f',7));
 	//Warp
 	while (wx < 0) wx += winsz;
 	while (wx > winsz-1) wx -= winsz;
@@ -415,7 +376,10 @@ QTVP_GEOMARKER::geoItemBase *  qtvplugin_geomarker::update_line(const QString & 
 	pitem->setPen(pen);
 
 	if (base == pitem)
+	{
 		pitem->setGeoLine(lat1,lon1,lat2,lon2);
+		res = pitem;
+	}
 	else if (false==this->m_pScene->addItem(pitem,0))
 	{
 		if (base != pitem)
@@ -434,6 +398,8 @@ QTVP_GEOMARKER::geoItemBase *  qtvplugin_geomarker::update_line(const QString & 
 	}
 	return res;
 }
+
+
 QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_region		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush)
 {
 	QTVP_GEOMARKER::geoItemBase *  res = 0;
@@ -457,7 +423,10 @@ QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_region		(const QStri
 	pitem->setPen(pen);
 	pitem->setBrush(brush);
 	if (base == pitem)
+	{
 		pitem->setGeoPolygon(latlons);
+		res = pitem;
+	}
 	else if (false==this->m_pScene->addItem(pitem,0))
 	{
 		if (base != pitem)
