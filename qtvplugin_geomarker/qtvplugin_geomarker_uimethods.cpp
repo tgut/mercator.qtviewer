@@ -6,6 +6,8 @@
 #include <QMap>
 #include <QRegExp>
 #include <QDebug>
+#include <QFileDialog>
+#include <QMessageBox>
 #include "geographicsellipseitem.h"
 #include "geographicsrectitem.h"
 #include "geographicslineitem.h"
@@ -117,7 +119,7 @@ void qtvplugin_geomarker::on_pushButton_pickToLine2_clicked()
 }
 
 
-void qtvplugin_geomarker::SaveSettingsToIni()
+void qtvplugin_geomarker::saveSettingsToIni()
 {
 	QSettings settings(inifile(),QSettings::IniFormat);
 	int radioButton_tool_point = 0;
@@ -241,7 +243,7 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 	if (m_pVi==0 || !m_pScene)
 		return;
 	QString name = ui->lineEdit_currentID->text();
-	SaveSettingsToIni();
+	saveSettingsToIni();
 
 	//Get pen and brush settings
 	Qt::PenStyle pst [] ={
@@ -375,6 +377,7 @@ void qtvplugin_geomarker::on_pushButton_del_clicked()
 
 void qtvplugin_geomarker::on_pushButton_prop_update_clicked()
 {
+	saveSettingsToIni();
 	QString name = ui->lineEdit_currentID->text();
 	//Fill in the pages
 	QTVP_GEOMARKER::geoItemBase * item = m_pScene->geoitem_by_name(name);
@@ -382,6 +385,18 @@ void qtvplugin_geomarker::on_pushButton_prop_update_clicked()
 	{
 		item->set_prop_data(ui->lineEdit_prop_name->text(),ui->lineEdit_prop_string->text());
 		this->refreshProps(item);
+		this->refreshMarks();
+		//Update Font
+		int fontSz = ui->spinBox_fontSize->value();
+		int fontWeight = ui->spinBox_textWeight->value();
+		QColor textColor = string2color( ui->lineEdit_TextColor->text());
+		QFont f = item->labelFont();
+		f.setPointSize(fontSz);
+		f.setWeight(fontWeight);
+		item->setLabelFont(f);
+		item->setLabelColor(textColor);
+
+		m_pVi->UpdateWindow();
 	}
 }
 void qtvplugin_geomarker::on_pushButton_prop_delete_clicked()
@@ -436,7 +451,7 @@ void qtvplugin_geomarker::on_pushButton_getRegion_clicked()
 			{
 				QString latkey = QString("lat%1").arg(i);
 				QString lonkey = QString("lon%1").arg(i);
-				strPlainText += QString("%1,%2;\n").arg(outPara[latkey].toDouble(),0,'f',14).arg(outPara[lonkey].toDouble(),0,'f',14);
+				strPlainText += QString("%1,%2;\n").arg(outPara[latkey].toDouble(),0,'f',7).arg(outPara[lonkey].toDouble(),0,'f',7);
 			}
 		}
 		ui->plainTextEdit_corners->setPlainText(strPlainText);
@@ -462,8 +477,8 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 				break;
 			pen = pitem->pen();
 			brush = pitem->brush();
-			ui->lineEdit_point_lat->setText(QString("%1").arg(pitem->lat(),0,'f',14));
-			ui->lineEdit_point_lon->setText(QString("%1").arg(pitem->lon(),0,'f',14));
+			ui->lineEdit_point_lat->setText(QString("%1").arg(pitem->lat(),0,'f',7));
+			ui->lineEdit_point_lon->setText(QString("%1").arg(pitem->lon(),0,'f',7));
 			ui->radioButton_PointRect->setChecked(true);
 			ui->spinBox_point_width->setValue(pitem->width());
 			ui->spinBox_point_size_height->setValue(pitem->height());
@@ -477,8 +492,8 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 				break;
 			pen = pitem->pen();
 			brush = pitem->brush();
-			ui->lineEdit_point_lat->setText(QString("%1").arg(pitem->lat(),0,'f',14));
-			ui->lineEdit_point_lon->setText(QString("%1").arg(pitem->lon(),0,'f',14));
+			ui->lineEdit_point_lat->setText(QString("%1").arg(pitem->lat(),0,'f',7));
+			ui->lineEdit_point_lon->setText(QString("%1").arg(pitem->lon(),0,'f',7));
 			ui->radioButton_PointRound->setChecked(true);
 			ui->spinBox_point_width->setValue(pitem->width());
 			ui->spinBox_point_size_height->setValue(pitem->height());
@@ -491,10 +506,10 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			if (!pitem)
 				break;
 			pen = pitem->pen();
-			ui->lineEdit_lineLat1->setText(QString("%1").arg(pitem->lat1(),0,'f',14));
-			ui->lineEdit_lineLat2->setText(QString("%1").arg(pitem->lat2(),0,'f',14));
-			ui->lineEdit_lineLon1->setText(QString("%1").arg(pitem->lon1(),0,'f',14));
-			ui->lineEdit_lineLon2->setText(QString("%1").arg(pitem->lon2(),0,'f',14));
+			ui->lineEdit_lineLat1->setText(QString("%1").arg(pitem->lat1(),0,'f',7));
+			ui->lineEdit_lineLat2->setText(QString("%1").arg(pitem->lat2(),0,'f',7));
+			ui->lineEdit_lineLon1->setText(QString("%1").arg(pitem->lon1(),0,'f',7));
+			ui->lineEdit_lineLon2->setText(QString("%1").arg(pitem->lon2(),0,'f',7));
 			ui->radioButton_tool_line->setChecked(true);
 		}
 			break;
@@ -508,7 +523,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			QPolygonF pol = pitem->llas();
 			QString strPlainText;
 			foreach (QPointF p, pol)
-				strPlainText += QString("%1,%2\n").arg(p.y(),0,'f',14).arg(p.x(),0,'f',14);
+				strPlainText += QString("%1,%2;\n").arg(p.y(),0,'f',7).arg(p.x(),0,'f',7);
 			ui->plainTextEdit_corners->setPlainText(strPlainText);
 			ui->radioButton_tool_polygon->setChecked(true);
 		}
@@ -563,4 +578,42 @@ void qtvplugin_geomarker::refreshProps(QTVP_GEOMARKER::geoItemBase * itm)
 		lstValues.pop_front();
 	}
 }
+void qtvplugin_geomarker::on_pushButton_save_clicked()
+{
+	QSettings settings(inifile(),QSettings::IniFormat);
+	QString strLastSaveImgDir = settings.value("history/last_save_xml_dir","./").toString();
+	QString newfm = QFileDialog::getSaveFileName(this,tr("save to xml"),strLastSaveImgDir,
+								 "xml (*.xml);;All files(*.*)"
+								 );
+	if (newfm.size()>2)
+	{
+		if (true==saveToXml(newfm))
+		{
+			settings.setValue("history/last_save_xml_dir",newfm);
+			QMessageBox::information(this,tr("succeed"),tr("Successfully saved XML file") + newfm);
+		}
+		else
+			QMessageBox::warning(this,tr("failed"),tr("Save XML file") + newfm + tr(" Failed"));
+	}
+}
 
+void qtvplugin_geomarker::on_pushButton_load_clicked()
+{
+	QSettings settings(inifile(),QSettings::IniFormat);
+	QString strLastSaveImgDir = settings.value("history/last_open_xml_dir","./").toString();
+	QString newfm = QFileDialog::getOpenFileName(this,tr("load from xml"),strLastSaveImgDir,
+								 "xml (*.xml);;All files(*.*)"
+								 );
+	if (newfm.size()>2)
+	{
+		if (true==loadFromXml(newfm))
+		{
+			settings.setValue("history/last_open_xml_dir",newfm);
+			QMessageBox::information(this,tr("succeed"),tr("Successfully load XML file") + newfm);
+		}
+		else
+			QMessageBox::warning(this,tr("failed"),tr("Load XML file") + newfm + tr(" Failed"));
+	}
+	refreshMarks();
+	m_pVi->UpdateWindow();
+}

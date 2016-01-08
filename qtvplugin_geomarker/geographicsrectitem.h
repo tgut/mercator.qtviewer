@@ -13,6 +13,8 @@ namespace QTVP_GEOMARKER{
 		qreal m_height;
 	protected:
 		void mousePressEvent(QGraphicsSceneMouseEvent * event);
+		void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+
 	public:
 		explicit geoGraphicsRectItem(QString name,QTVOSM::viewer_interface * pVi,
 							   qreal cent_lat = 90,

@@ -33,14 +33,22 @@ void testcontainer::closeEvent(QCloseEvent *)
 }
 void testcontainer::slot_message(QString message)
 {
-	QAxBase * base = qobject_cast<QAxBase *>(sender());
-	QList<QStandardItem *> list_newrow;
-	list_newrow << new QStandardItem(QString("%1").arg((quint64)base));
-	list_newrow << new QStandardItem(QString("%1").arg(message));
-	m_pModel->appendRow(list_newrow);
-	while (m_pModel->rowCount()>1024)
-		m_pModel->removeRow(0);
-	ui->tableView_msg->scrollToBottom();
+	if (message.contains("MOUSE_MOVE"))
+	{
+		ui->label_mouseMove->setText(message);
+	}
+	else
+	{
+		QAxBase * base = qobject_cast<QAxBase *>(sender());
+		QList<QStandardItem *> list_newrow;
+		list_newrow << new QStandardItem(QString("%1").arg((quint64)base));
+		list_newrow << new QStandardItem(QString("%1").arg(message));
+		m_pModel->appendRow(list_newrow);
+		while (m_pModel->rowCount()>1024)
+			m_pModel->removeRow(0);
+		ui->tableView_msg->scrollToBottom();
+	}
+
 }
 
 void testcontainer::on_pushButton_test_adds_clicked()

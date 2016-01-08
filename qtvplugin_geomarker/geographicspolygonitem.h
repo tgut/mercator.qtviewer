@@ -12,6 +12,8 @@ namespace QTVP_GEOMARKER{
 		void unwarrp();
 	protected:
 		void mousePressEvent(QGraphicsSceneMouseEvent * event);
+		void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+
 	public:
 		explicit geoGraphicsPolygonItem(QString name,QTVOSM::viewer_interface * pVi,
 									 const QPolygonF & lla_polygon

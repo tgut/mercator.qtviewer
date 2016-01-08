@@ -53,6 +53,7 @@ namespace QTVP_GEOMARKER{
 		QString						m_name;
 	protected:
 		void			setLevel		(int currlevel);
+		QTVOSM::viewer_interface *	vi(){return m_pVi;}
 	public:
 		int				level			()					{return m_nCurrentLevel;}
 		geo_item_type	item_type		() const			{return m_type;}

@@ -438,11 +438,11 @@ namespace QTVOSM{
 			if (event->buttons() & Qt::LeftButton)
 				map_evt["name"] = "MOUSE_LBUTTON_DBLCLK";
 			else if (event->buttons() & Qt::RightButton)
-				map_evt["name"] = "MOUSE_RBUTTON_BLCLK";
+				map_evt["name"] = "MOUSE_RBUTTON_DBLCLK";
 			else if (event->buttons() & Qt::MidButton)
-				map_evt["name"] = "MOUSE_MBUTTON_BLCLK";
+				map_evt["name"] = "MOUSE_MBUTTON_DBLCLK";
 			else
-				map_evt["name"] = "MOUSE_BUTTON_BLCLK";
+				map_evt["name"] = "MOUSE_BUTTON_DBLCLK";
 			double tlat, tlon;
 			CV_DP2LLA(event->pos().x(),event->pos().y(),&tlat,&tlon);
 			map_evt["lat"] = tlat;
