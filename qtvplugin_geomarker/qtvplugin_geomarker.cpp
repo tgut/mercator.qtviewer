@@ -84,24 +84,39 @@ void qtvplugin_geomarker::load_retranslate_UI()
 {
 	ui->retranslateUi(this);
 }
-
+/*! load_initial_plugin will be called when this plug in being loaded.
+ * Please notice that a global parament "map_instances" is introduced, for multi-instance situation
+ * in windows OCX usage. A Brave new instance of "qtvplugin_geomarker" will be created for each different viewer_interface.
+ *
+ * @param strSLibPath the absolute path of this dll.
+ * @param ptrviewer the pointer to main view.
+ * @return	return the instance pointer to the instance belong to ptrviewer
+*/
 layer_interface * qtvplugin_geomarker::load_initial_plugin(QString strSLibPath,viewer_interface  * ptrviewer)
 {
+	//!In this instance, we will see how to create a new instance for each ptrviewer
 	qtvplugin_geomarker * instance = 0;
+	//!1.Check whether there is already a instance for ptrviewer( viewer_interface)
 	mutex_instances.lock();
+	//!1.1 situation 1: map_instances is empty, which means no instance exists. We just save this pointer to map_instances
 	if (map_instances.empty()==true)
 	{
 		map_instances[ptrviewer] = this;
 		instance = this;
 	}
+	/*! 1.2 situation 2: map_instances dose not contain ptrviewer, which is the normal situation when a second ocx ctrl is initializing.
+	 * we just allocate a new  qtvplugin_geomarker, and save key-value in map_instances.
+	*/
 	else if (map_instances.contains(ptrviewer)==false)
 	{
 		instance = new qtvplugin_geomarker;
 		map_instances[ptrviewer] = instance;
 	}
+	//! 1.3 situation 3: a ABNORMAL situation. load_initial_plugin is called again.
 	else
 		instance = map_instances[ptrviewer];
 	mutex_instances.unlock();
+	//2. if the instance is just this object, we do real init code.
 	if (instance==this)
 	{
 		QFileInfo info(strSLibPath);
@@ -116,6 +131,7 @@ layer_interface * qtvplugin_geomarker::load_initial_plugin(QString strSLibPath,v
 		loadTranslations();
 		loadSettingsFromIni();
 	}
+	//3. elseif, we call the instance's load_initial_plugin method instead
 	else
 	{
 		 layer_interface * ret = instance->load_initial_plugin(strSLibPath,ptrviewer);
@@ -125,6 +141,7 @@ layer_interface * qtvplugin_geomarker::load_initial_plugin(QString strSLibPath,v
 	qDebug()<<QFont::substitutions();
 	return instance;
 }
+
 void qtvplugin_geomarker::loadTranslations()
 {
 	//Trans
@@ -163,7 +180,16 @@ void qtvplugin_geomarker::cb_paintEvent( QPainter * pImage )
 	m_pVi->CV_DP2World(rect.width()-1,rect.height()-1,&rightcenx,&bottomceny);
 
 	int winsz = 256 * (1<<m_pVi->level());
-	//Warpping 180, -180
+
+	QRectF destin(
+				0,
+				0,
+				rect.width(),
+				rect.height()
+				);
+	//Warpping 180, -180. because longitude +180 and -180 is the same point,
+	// but the map is plat, -180 and + 180 is quite different positions, we
+	// should draw 3 times, to slove cross 180 drawing problems.
 	for (int p = -1; p<=1 ;++p)
 	{
 		QRectF source(
@@ -172,24 +198,9 @@ void qtvplugin_geomarker::cb_paintEvent( QPainter * pImage )
 					(rightcenx - leftcenx),
 					(bottomceny - topceny)
 					);
-		for (int t = -1; t <=1;++t)
-		{
-			if (abs(p-t)==2 || (p==t && p !=0))
-				continue;
-			if (abs(p-t)==1 && (p==0 || t ==1))
-				continue;
 
+		m_pScene->render(pImage,destin,source);
 
-			QRectF destin(
-						0 + winsz * t ,
-						0,
-						rect.width(),
-						rect.height()
-						);
-			if (destin.right() < 0 || destin.left() >= rect.width())
-				continue;
-			m_pScene->render(pImage,destin,source);
-		}
 	}
 }
 
@@ -236,6 +247,15 @@ bool qtvplugin_geomarker::cb_event(const QMap<QString, QVariant> para)
 	return false;
 }
 
+/*! qtvplugin_geomarker::cb_mouseXXXEvent tranfer mouse events from main view to
+ * QGraphicsItem based classes, so that these items will recieve mouse events.
+ * For qt's graphics-view framework, this approach is done inside QGraphicsView class.
+ * however, our main view is a simple widget, which means mouse events should be dealed manually.
+ *
+ * @fn qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
+ * @param e the mouse event.
+ * @return bool event acception.
+*/
 bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 {
 	if (!m_pVi)
@@ -279,7 +299,15 @@ bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 	}
 	return false;
 }
-
+/*! qtvplugin_geomarker::cb_mouseXXXEvent tranfer mouse events from main view to
+ * QGraphicsItem based classes, so that these items will recieve mouse events.
+ * For qt's graphics-view framework, this approach is done inside QGraphicsView class.
+ * however, our main view is a simple widget, which means mouse events should be dealed manually.
+ *
+ * @fn qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
+ * @param e the mouse event.
+ * @return bool event acception.
+*/
 bool qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
 {
 	if (!m_pVi)
@@ -321,7 +349,15 @@ bool qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
 	return false;
 
 }
-
+/*! for convenience, color is stored in plain text in XML and UI.
+ * the plain text color is 5 sub value , which stands for r,g,b,alpha.
+ * the fifth value is a integer, equals to
+ * (col.alpha()<<24) +(col.blue()<<16) + (col.green()<<8) + (col.red());
+ *
+ * @fn qtvplugin_geomarker::string2color(const QString & s)
+ * @param s the string color.
+ * @return QColor is the color object.
+*/
 QColor qtvplugin_geomarker::string2color(const QString & s)
 {
 	QStringList lst = s.split(",",QString::SkipEmptyParts);
@@ -332,6 +368,15 @@ QColor qtvplugin_geomarker::string2color(const QString & s)
 	if (lst.empty()==false) {a = lst.first().toInt(); lst.pop_front();}
 	return QColor(r,g,b,a);
 }
+/*! for convenience, color is stored in plain text in XML and UI.
+ * the plain text color is 5 sub value , which stands for r,g,b,alpha.
+ * the fifth value is a integer, equals to
+ * (col.alpha()<<24) +(col.blue()<<16) + (col.green()<<8) + (col.red());
+ *
+ * @fn qtvplugin_geomarker::color2string(const QColor & col)
+ * @param col the  color object.
+ * @return QString is the color string.
+*/
 QString qtvplugin_geomarker::color2string(const QColor & col)
 {
 	quint32 cv =(col.alpha()<<24) +(col.blue()<<16) + (col.green()<<8) + (col.red());
@@ -346,10 +391,14 @@ QString qtvplugin_geomarker::inifile()
 	else
 		return QCoreApplication::applicationFilePath() + QString("/geomarker%1.ini").arg(m_nInstance);
 }
+
 void qtvplugin_geomarker::refreshMarks()
 {
 	if (!m_pVi || !m_pScene)
 		return;
+	//We do not refresh UI immediately after each mark-insert, for these inserts is very dense ,
+	//BAD performence will arise if so.
+	//We will set a flag and refresh the ui in timerEvent Instead.
 	m_bNeedRefresh = true;
 }
 
