@@ -195,7 +195,7 @@ bool qtvplugin_geomarker::saveToXml(QString xml)
 	fp.close();
 	return true;
 }
-QMap<QString,QString> qtvplugin_geomarker::attribs(QXmlStreamAttributes & ats)
+QMap<QString,QString> qtvplugin_geomarker::attribs(const QXmlStreamAttributes & ats)
 {
 	QMap<QString, QString > attr;
 	foreach(QXmlStreamAttribute a, ats)

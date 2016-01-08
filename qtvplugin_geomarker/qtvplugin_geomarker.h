@@ -91,7 +91,7 @@ private:
 	bool readGeo(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
 	bool readStyle(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
 	bool readProps(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
-	QMap<QString,QString> attribs(QXmlStreamAttributes & ats);
+	QMap<QString,QString> attribs(const QXmlStreamAttributes & ats);
 	void loadTranslations();
 	QString inifile();
 
