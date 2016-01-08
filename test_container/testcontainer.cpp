@@ -200,3 +200,14 @@ void testcontainer::on_pushButton_test_grid_getPolygon_clicked()
 	QMessageBox::information(this,"grid1::get_polygon",res);
 
 }
+void testcontainer::on_pushButton_test_mark_clicked()
+{
+	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=update_point;name=ID1;type=1;"
+												 "lat=31.3737;lon=121.3783474;"
+												 "style_pen=2;color_pen=0,0,255,128;"
+												 "width_pen=3;style_brush=1;color_brush=0,255,0,128;"
+												 "width=16;height=20;").toString();
+	QMessageBox::information(this,"grid1::get_polygon",res);
+
+}

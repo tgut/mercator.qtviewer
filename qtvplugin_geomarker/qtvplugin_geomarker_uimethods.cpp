@@ -62,6 +62,18 @@ void		qtvplugin_geomarker::timerEvent(QTimerEvent * e)
 			m_pGeoItemModel->removeRows(c, rowCount - c);
 		m_nTimerID_refreshUI = startTimer(2000);
 	}
+	else if (m_nTimerID_refreshMap==e->timerId() && m_bNeedUpdateView==true)
+	{
+		m_bNeedUpdateView = false;
+		killTimer(m_nTimerID_refreshMap);
+		m_nTimerID_refreshMap = -1;
+		m_pVi->UpdateWindow();
+		m_nTimerID_refreshMap = startTimer(100);
+	}
+	else
+	{
+
+	}
 }
 
 
@@ -354,7 +366,7 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 
 
 	}
-	refreshMarks();
+	scheduleRefreshMarks();
 	m_pVi->UpdateWindow();
 }
 
@@ -371,7 +383,7 @@ void qtvplugin_geomarker::on_pushButton_del_clicked()
 		if (b)
 			m_pScene->removeItem(b,0);
 	}
-	refreshMarks();
+	scheduleRefreshMarks();
 
 }
 
@@ -385,7 +397,7 @@ void qtvplugin_geomarker::on_pushButton_prop_update_clicked()
 	{
 		item->set_prop_data(ui->lineEdit_prop_name->text(),ui->lineEdit_prop_string->text());
 		this->refreshProps(item);
-		this->refreshMarks();
+		this->scheduleRefreshMarks();
 		//Update Font
 		int fontSz = ui->spinBox_fontSize->value();
 		int fontWeight = ui->spinBox_textWeight->value();
@@ -614,6 +626,6 @@ void qtvplugin_geomarker::on_pushButton_load_clicked()
 		else
 			QMessageBox::warning(this,tr("failed"),tr("Load XML file") + newfm + tr(" Failed"));
 	}
-	refreshMarks();
+	scheduleRefreshMarks();
 	m_pVi->UpdateWindow();
 }

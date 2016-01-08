@@ -26,14 +26,22 @@ QMap<QString, QVariant> qtvplugin_geomarker::call_func(const  QMap<QString, QVar
 		if (funct=="update_point")
 		{
 			update_point(paras);
+			scheduleRefreshMarks();
+			scheduleUpdateMap();
 		}
 		else if (funct=="update_line")
 		{
 			update_line(paras);
+			scheduleRefreshMarks();
+			scheduleUpdateMap();
+
 		}
 		else if (funct=="update_polygon")
 		{
 			update_polygon(paras);
+			scheduleRefreshMarks();
+			scheduleUpdateMap();
+
 		}
 		else if (funct=="update_prop")
 		{
@@ -474,13 +482,278 @@ bool qtvplugin_geomarker::update_mark(tag_xml_mark & mark)
 
 QTVP_GEOMARKER::geoItemBase * qtvplugin_geomarker::update_point		(const QMap<QString, QVariant> & paras)
 {
-	return 0;
+	QString name = paras["name"].toString();
+	if (name.size()==0)
+		return 0;
+	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
+	QPen pen(Qt::SolidLine);
+	QBrush brush(QColor(255,255,255,128));
+	qreal width =8;
+	qreal height =8;
+
+	if (base)
+	{
+		if (base->item_type()==QTVP_GEOMARKER::ITEAMTYPE_RECT_POINT)
+		{
+			QTVP_GEOMARKER::geoGraphicsRectItem * it = dynamic_cast<QTVP_GEOMARKER::geoGraphicsRectItem * >(base);
+			if (it)
+			{
+				pen = it->pen();
+				brush = it->brush();
+				width = it->width();
+				height = it->height();
+			}
+		}
+		else if (base->item_type()==QTVP_GEOMARKER::ITEAMTYPE_ELLIPSE_POINT)
+		{
+			QTVP_GEOMARKER::geoGraphicsEllipseItem * it = dynamic_cast<QTVP_GEOMARKER::geoGraphicsEllipseItem * >(base);
+			if (it)
+			{
+				pen = it->pen();
+				brush = it->brush();
+				width = it->width();
+				height = it->height();
+			}
+		}
+	}
+	if ( paras.contains("style_pen"))
+	{
+		//Get pen and brush settings
+		Qt::PenStyle pst [] ={
+			Qt::NoPen	,
+			Qt::SolidLine	,
+			Qt::DashLine	,
+			Qt::DotLine	,
+			Qt::DashDotLine	,
+			Qt::DashDotDotLine	,
+			Qt::CustomDashLine
+		};
+		int ptdd =paras["style_pen"].toInt();
+		if (ptdd < 0 || ptdd >=7)
+			ptdd = 1;
+		pen.setStyle(pst[ptdd]);
+	}
+	if ( paras.contains("color_pen"))
+	{
+		QColor penColor = string2color( paras["color_pen"].toString());
+		pen.setColor(penColor);
+
+	}
+	if ( paras.contains("width_pen"))
+	{
+		int penWidth =paras["width_pen"].toInt();
+		if (penWidth<0)	penWidth = 1;
+		pen.setWidth(penWidth);
+
+	}
+
+	if ( paras.contains("style_brush"))
+	{
+		Qt::BrushStyle bst [] = {
+			Qt::NoBrush,
+			Qt::SolidPattern,
+			Qt::Dense1Pattern,
+			Qt::Dense2Pattern,
+			Qt::Dense3Pattern,
+			Qt::Dense4Pattern,
+			Qt::Dense5Pattern,
+			Qt::Dense6Pattern,
+			Qt::Dense7Pattern,
+			Qt::HorPattern,
+			Qt::VerPattern,
+			Qt::CrossPattern,
+			Qt::BDiagPattern,
+			Qt::FDiagPattern,
+			Qt::DiagCrossPattern
+		};
+		int btdd = paras["style_brush"].toInt();
+		if (btdd < 0 || btdd >=15)
+			btdd = 1;
+		brush.setStyle(bst[btdd]);
+	}
+	if ( paras.contains("color_brush"))
+	{
+		QColor brushColor = string2color( paras["color_brush"].toString());
+		brush.setColor(brushColor);
+	}
+
+	if ( paras.contains("width"))
+	{
+		width =paras["width"].toReal();
+		if (width ==0)	width = 8;
+	}
+	if ( paras.contains("height"))
+	{
+		height =paras["height"].toReal();
+		if (height ==0)	height = 8;
+	}
+	QTVP_GEOMARKER::geoItemBase * newitem = 0;
+
+	double lat =paras["lat"].toDouble();
+	double lon = paras["lon"].toDouble();
+
+	int tpn = paras["type"].toInt();
+	if (tpn > 1 || tpn <0) tpn = 0;
+	QTVP_GEOMARKER::geo_item_type tpe = static_cast< QTVP_GEOMARKER::geo_item_type > (tpn);
+	if (tpe==QTVP_GEOMARKER::ITEAMTYPE_RECT_POINT)
+		newitem = update_point<QTVP_GEOMARKER::geoGraphicsRectItem>(name,lat,lon,width,height,pen,brush);
+	else
+		newitem = update_point<QTVP_GEOMARKER::geoGraphicsEllipseItem>(name,lat,lon,width,height,pen,brush);
+
+	return newitem;
 }
 QTVP_GEOMARKER::geoItemBase * qtvplugin_geomarker::update_line		(const QMap<QString, QVariant> & paras)
 {
-	return 0;
+	QString name = paras["name"].toString();
+	if (name.size()==0)
+		return 0;
+	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
+	QPen pen(Qt::SolidLine);
+	if (base)
+	{
+		if (base->item_type()==QTVP_GEOMARKER::ITEAMTYPE_LINE)
+		{
+			QTVP_GEOMARKER::geoGraphicsLineItem * it = dynamic_cast<QTVP_GEOMARKER::geoGraphicsLineItem * >(base);
+				pen = it->pen();
+		}
+
+	}
+	if ( paras.contains("style_pen"))
+	{
+		//Get pen and brush settings
+		Qt::PenStyle pst [] ={
+			Qt::NoPen	,
+			Qt::SolidLine	,
+			Qt::DashLine	,
+			Qt::DotLine	,
+			Qt::DashDotLine	,
+			Qt::DashDotDotLine	,
+			Qt::CustomDashLine
+		};
+		int ptdd =paras["style_pen"].toInt();
+		if (ptdd < 0 || ptdd >=7)
+			ptdd = 1;
+		pen.setStyle(pst[ptdd]);
+	}
+	if ( paras.contains("color_pen"))
+	{
+		QColor penColor = string2color( paras["color_pen"].toString());
+		pen.setColor(penColor);
+
+	}
+	if ( paras.contains("width_pen"))
+	{
+		int penWidth =paras["width_pen"].toInt();
+		if (penWidth<0)	penWidth = 1;
+		pen.setWidth(penWidth);
+
+	}
+
+	QTVP_GEOMARKER::geoItemBase * newitem = 0;
+
+	double lat1 =paras["lat1"].toDouble();
+	double lon1 = paras["lon1"].toDouble();
+	double lat2 =paras["lat2"].toDouble();
+	double lon2 = paras["lon2"].toDouble();
+
+	newitem = update_line(name,lat1,lon1,lat2,lon2,pen);
+	return newitem;
 }
 QTVP_GEOMARKER::geoItemBase * qtvplugin_geomarker::update_polygon		(const QMap<QString, QVariant> & paras)
 {
-	return 0;
+	QString name = paras["name"].toString();
+	if (name.size()==0)
+		return 0;
+	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
+	QPen pen(Qt::SolidLine);
+	QBrush brush(QColor(255,255,255,128));
+	if (base)
+	{
+		if (base->item_type()==QTVP_GEOMARKER::ITEAMTYPE_POLYGON)
+		{
+			QTVP_GEOMARKER::geoGraphicsPolygonItem * it = dynamic_cast<QTVP_GEOMARKER::geoGraphicsPolygonItem * >(base);
+			if (it)
+			{
+				pen = it->pen();
+				brush = it->brush();
+			}
+		}
+
+	}
+	if ( paras.contains("style_pen"))
+	{
+		//Get pen and brush settings
+		Qt::PenStyle pst [] ={
+			Qt::NoPen	,
+			Qt::SolidLine	,
+			Qt::DashLine	,
+			Qt::DotLine	,
+			Qt::DashDotLine	,
+			Qt::DashDotDotLine	,
+			Qt::CustomDashLine
+		};
+		int ptdd =paras["style_pen"].toInt();
+		if (ptdd < 0 || ptdd >=7)
+			ptdd = 1;
+		pen.setStyle(pst[ptdd]);
+	}
+	if ( paras.contains("color_pen"))
+	{
+		QColor penColor = string2color( paras["color_pen"].toString());
+		pen.setColor(penColor);
+
+	}
+	if ( paras.contains("width_pen"))
+	{
+		int penWidth =paras["width_pen"].toInt();
+		if (penWidth<0)	penWidth = 1;
+		pen.setWidth(penWidth);
+
+	}
+
+	if ( paras.contains("style_brush"))
+	{
+		Qt::BrushStyle bst [] = {
+			Qt::NoBrush,
+			Qt::SolidPattern,
+			Qt::Dense1Pattern,
+			Qt::Dense2Pattern,
+			Qt::Dense3Pattern,
+			Qt::Dense4Pattern,
+			Qt::Dense5Pattern,
+			Qt::Dense6Pattern,
+			Qt::Dense7Pattern,
+			Qt::HorPattern,
+			Qt::VerPattern,
+			Qt::CrossPattern,
+			Qt::BDiagPattern,
+			Qt::FDiagPattern,
+			Qt::DiagCrossPattern
+		};
+		int btdd = paras["style_brush"].toInt();
+		if (btdd < 0 || btdd >=15)
+			btdd = 1;
+		brush.setStyle(bst[btdd]);
+	}
+	if ( paras.contains("color_brush"))
+	{
+		QColor brushColor = string2color( paras["color_brush"].toString());
+		brush.setColor(brushColor);
+	}
+
+	QTVP_GEOMARKER::geoItemBase * newitem = 0;
+
+	QPolygonF pl;
+	int ct = 0;
+	QString strKeyLat = QString("lat%1").arg(ct);
+	QString strKeyLon = QString("lon%1").arg(ct);
+	while (paras.contains(strKeyLat) && paras.contains(strKeyLon))
+	{
+		double lat =paras[strKeyLat].toDouble();
+		double lon = paras[strKeyLon].toDouble();
+		pl.push_back(QPointF(lon,lat));
+	}
+	if (pl.size()>2)
+		newitem = update_polygon(name,pl,pen,brush);
+	return newitem;
 }

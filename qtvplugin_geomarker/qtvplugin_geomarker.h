@@ -75,7 +75,10 @@ private:
 	 * This timer is just affects UI widgets, Map will be updated immediately otherwise.
 	*/
 	int m_nTimerID_refreshUI;
+	int m_nTimerID_refreshMap;
 	bool m_bNeedRefresh;
+	bool m_bNeedUpdateView;
+
 	QStandardItemModel * m_pLineStyleModel;
 	QStandardItemModel * m_pFillStyleModel;
 	QStandardItemModel * m_pGeoItemModel;
@@ -97,7 +100,8 @@ private:
 
 	//UI refreshing functions
 private:
-	void refreshMarks();
+	void scheduleRefreshMarks();
+	void scheduleUpdateMap();
 	void refreshItemUI(QString markname);
 	void refreshProps(QTVP_GEOMARKER::geoItemBase * itm);
 	QColor string2color(const QString & s);

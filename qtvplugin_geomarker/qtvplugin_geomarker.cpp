@@ -73,7 +73,9 @@ qtvplugin_geomarker::qtvplugin_geomarker(QWidget *parent) :
 	ui->comboBox_fillPad->setModel(m_pFillStyleModel);
 
 	m_bNeedRefresh = false;
+	m_bNeedUpdateView = false;
 	m_nTimerID_refreshUI = startTimer(2000);
+	m_nTimerID_refreshMap = startTimer(100);
 }
 
 qtvplugin_geomarker::~qtvplugin_geomarker()
@@ -392,7 +394,7 @@ QString qtvplugin_geomarker::inifile()
 		return QCoreApplication::applicationFilePath() + QString("/geomarker%1.ini").arg(m_nInstance);
 }
 
-void qtvplugin_geomarker::refreshMarks()
+void qtvplugin_geomarker::scheduleRefreshMarks()
 {
 	if (!m_pVi || !m_pScene)
 		return;
@@ -400,6 +402,15 @@ void qtvplugin_geomarker::refreshMarks()
 	//BAD performence will arise if so.
 	//We will set a flag and refresh the ui in timerEvent Instead.
 	m_bNeedRefresh = true;
+}
+void qtvplugin_geomarker::scheduleUpdateMap()
+{
+	if (!m_pVi || !m_pScene)
+		return;
+	//We do not refresh MAP immediately after each mark-insert, for these inserts is very dense ,
+	//BAD performence will arise if so.
+	//We will set a flag and refresh the ui in timerEvent Instead.
+	m_bNeedUpdateView = true;
 }
 
 QTVP_GEOMARKER::geoItemBase *  qtvplugin_geomarker::update_line(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen)
