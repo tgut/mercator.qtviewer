@@ -131,7 +131,8 @@ layer_interface * qtvplugin_geomarker::load_initial_plugin(QString strSLibPath,v
 		mutex_instances.unlock();
 
 		loadTranslations();
-		loadSettingsFromIni();
+		ini_load();
+		initialBindPluginFuntions();
 	}
 	//3. elseif, we call the instance's load_initial_plugin method instead
 	else
@@ -352,9 +353,7 @@ bool qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
 
 }
 /*! for convenience, color is stored in plain text in XML and UI.
- * the plain text color is 5 sub value , which stands for r,g,b,alpha.
- * the fifth value is a integer, equals to
- * (col.alpha()<<24) +(col.blue()<<16) + (col.green()<<8) + (col.red());
+ * the plain text color is 4 sub value , which stands for r,g,b,alpha.
  *
  * @fn qtvplugin_geomarker::string2color(const QString & s)
  * @param s the string color.
@@ -371,9 +370,7 @@ QColor qtvplugin_geomarker::string2color(const QString & s)
 	return QColor(r,g,b,a);
 }
 /*! for convenience, color is stored in plain text in XML and UI.
- * the plain text color is 5 sub value , which stands for r,g,b,alpha.
- * the fifth value is a integer, equals to
- * (col.alpha()<<24) +(col.blue()<<16) + (col.green()<<8) + (col.red());
+ * the plain text color is 4 sub value , which stands for r,g,b,alpha.
  *
  * @fn qtvplugin_geomarker::color2string(const QColor & col)
  * @param col the  color object.
@@ -381,12 +378,11 @@ QColor qtvplugin_geomarker::string2color(const QString & s)
 */
 QString qtvplugin_geomarker::color2string(const QColor & col)
 {
-	quint32 cv =(col.alpha()<<24) +(col.blue()<<16) + (col.green()<<8) + (col.red());
-	QString str = QString("%1,%2,%3,%4,%5").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha()).arg(cv);
+	QString str = QString("%1,%2,%3,%4").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
 	return str;
 }
 
-QString qtvplugin_geomarker::inifile()
+QString qtvplugin_geomarker::ini_file()
 {
 	if (m_SLLibPath.size())
 		return m_SLLibPath + QString("%1").arg(m_nInstance) + ".ini";

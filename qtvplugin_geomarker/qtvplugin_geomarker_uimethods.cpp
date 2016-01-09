@@ -131,9 +131,9 @@ void qtvplugin_geomarker::on_pushButton_pickToLine2_clicked()
 }
 
 
-void qtvplugin_geomarker::saveSettingsToIni()
+void qtvplugin_geomarker::ini_save()
 {
-	QSettings settings(inifile(),QSettings::IniFormat);
+	QSettings settings(ini_file(),QSettings::IniFormat);
 	int radioButton_tool_point = 0;
 	if (ui->radioButton_tool_line->isChecked()==true) radioButton_tool_point = 1;
 	else if (ui->radioButton_tool_polygon->isChecked()==true) radioButton_tool_point = 2;
@@ -172,9 +172,9 @@ void qtvplugin_geomarker::saveSettingsToIni()
 
 }
 
-void qtvplugin_geomarker::loadSettingsFromIni()
+void qtvplugin_geomarker::ini_load()
 {
-	QSettings settings(inifile(),QSettings::IniFormat);
+	QSettings settings(ini_file(),QSettings::IniFormat);
 	int radioButton_tool_point =  settings.value("ui/radioButton_tool_point",0).toInt();
 	switch (radioButton_tool_point)
 	{
@@ -255,7 +255,7 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 	if (m_pVi==0 || !m_pScene)
 		return;
 	QString name = ui->lineEdit_currentID->text();
-	saveSettingsToIni();
+	ini_save();
 
 	//Get pen and brush settings
 	Qt::PenStyle pst [] ={
@@ -389,7 +389,7 @@ void qtvplugin_geomarker::on_pushButton_del_clicked()
 
 void qtvplugin_geomarker::on_pushButton_prop_update_clicked()
 {
-	saveSettingsToIni();
+	ini_save();
 	QString name = ui->lineEdit_currentID->text();
 	//Fill in the pages
 	QTVP_GEOMARKER::geoItemBase * item = m_pScene->geoitem_by_name(name);
@@ -592,14 +592,14 @@ void qtvplugin_geomarker::refreshProps(QTVP_GEOMARKER::geoItemBase * itm)
 }
 void qtvplugin_geomarker::on_pushButton_save_clicked()
 {
-	QSettings settings(inifile(),QSettings::IniFormat);
+	QSettings settings(ini_file(),QSettings::IniFormat);
 	QString strLastSaveImgDir = settings.value("history/last_save_xml_dir","./").toString();
 	QString newfm = QFileDialog::getSaveFileName(this,tr("save to xml"),strLastSaveImgDir,
 								 "xml (*.xml);;All files(*.*)"
 								 );
 	if (newfm.size()>2)
 	{
-		if (true==saveToXml(newfm))
+		if (true==xml_save(newfm))
 		{
 			settings.setValue("history/last_save_xml_dir",newfm);
 			QMessageBox::information(this,tr("succeed"),tr("Successfully saved XML file") + newfm);
@@ -611,14 +611,14 @@ void qtvplugin_geomarker::on_pushButton_save_clicked()
 
 void qtvplugin_geomarker::on_pushButton_load_clicked()
 {
-	QSettings settings(inifile(),QSettings::IniFormat);
+	QSettings settings(ini_file(),QSettings::IniFormat);
 	QString strLastSaveImgDir = settings.value("history/last_open_xml_dir","./").toString();
 	QString newfm = QFileDialog::getOpenFileName(this,tr("load from xml"),strLastSaveImgDir,
 								 "xml (*.xml);;All files(*.*)"
 								 );
 	if (newfm.size()>2)
 	{
-		if (true==loadFromXml(newfm))
+		if (true==xml_load(newfm))
 		{
 			settings.setValue("history/last_open_xml_dir",newfm);
 			QMessageBox::information(this,tr("succeed"),tr("Successfully load XML file") + newfm);

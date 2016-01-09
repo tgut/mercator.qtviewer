@@ -6,6 +6,7 @@
 #include <QStandardItemModel>
 #include <QMap>
 #include <QXmlStreamAttributes>
+#include <functional>
 #include "geographicsscene.h"
 #include "../qtviewer_planetosm/osmtiles/layer_interface.h"
 #include "../qtviewer_planetosm/osmtiles/viewer_interface.h"
@@ -86,17 +87,16 @@ private:
 
 	//persistent functions
 private:
-	void saveSettingsToIni();
-	void loadSettingsFromIni();
-	bool saveToXml(QString xml);
-	bool loadFromXml(QString xml);
-	bool readMark(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
-	bool readGeo(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
-	bool readStyle(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
-	bool readProps(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
-	QMap<QString,QString> attribs(const QXmlStreamAttributes & ats);
-	void loadTranslations();
-	QString inifile();
+	QString		ini_file();
+	void		ini_save();
+	void		ini_load();
+	bool		xml_save		(QString xml);
+	bool		xml_load		(QString xml);
+	bool		xml_readMark	(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
+	bool		xml_readGeo		(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
+	bool		xml_readStyle	(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
+	bool		xml_readProps	(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
+	QMap<QString,QString> xml_attribs_map(const QXmlStreamAttributes & ats);
 
 	//UI refreshing functions
 private:
@@ -108,14 +108,28 @@ private:
 	QString color2string(const QColor & c);
 	//Geo mark updating functions
 private:
+	//update methopd for UI
 	template <class T>
 	QTVP_GEOMARKER::geoItemBase *	update_point		(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush);
-	QTVP_GEOMARKER::geoItemBase *	update_point		(const QMap<QString, QVariant> &);
 	QTVP_GEOMARKER::geoItemBase *	update_line			(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen);
-	QTVP_GEOMARKER::geoItemBase *	update_line			(const QMap<QString, QVariant> &);
 	QTVP_GEOMARKER::geoItemBase *	update_polygon		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush);
-	QTVP_GEOMARKER::geoItemBase *	update_polygon		(const QMap<QString, QVariant> &);
-	bool							update_mark			(tag_xml_mark & mark);
+	//update method for XML
+	bool							xml_update_mark		(tag_xml_mark & mark);
+	//update method for plugin function calls
+	QMap<QString, QVariant>			func_update_point	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_update_line	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_update_polygon	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_update_props	(const QMap<QString, QVariant> &);
+	//other function calls
+private:
+	void initialBindPluginFuntions();
+	QMap<QString,
+		std::function	<
+			QMap<QString, QVariant> (const QMap<QString, QVariant> &)
+						>
+		> m_map_pluginFunctions;
+	QMap<QString, QVariant>			func_exists		(const QMap<QString, QVariant> &);
+
 
 	//overloaded virtual funtions
 protected:
@@ -135,7 +149,7 @@ protected:
 
 	void		timerEvent(QTimerEvent * e);
 	QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> & /*paras*/);
-
+	void loadTranslations();
 	//ui slots
 protected slots:
 	void on_pushButton_update_clicked();

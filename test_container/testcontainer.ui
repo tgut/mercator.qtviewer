@@ -135,6 +135,20 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_test_line">
+       <property name="text">
+        <string>line</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_test_polygon">
+       <property name="text">
+        <string>polygon</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
