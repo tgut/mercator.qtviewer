@@ -133,6 +133,7 @@ private:
 	QMap<QString, QVariant>			func_delete_props	(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_mark_names		(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_mark			(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_props			(const QMap<QString, QVariant> &);
 
 	//overloaded virtual funtions
 protected:

@@ -152,7 +152,7 @@ void testcontainer::on_pushButton_test_layers_clicked()
 	{
 		QVariant vt_name = ui->axWidget_map1->dynamicCall("osm_layer_get_name(int)",i);
 		QString strname = vt_name.toString();
-		strLayerNames += strname + ";";
+		strLayerNames += strname + ";\n";
 	}
 	QMessageBox::information(this,"layer count",QString("osm_layer_get_count() returns  %1\n%2").arg(n_num).arg(strLayerNames) );
 
@@ -249,6 +249,8 @@ void testcontainer::on_pushButton_test_grid_getPolygon_clicked()
 				"osm_layer_call_function(QString,QString)",
 				"grid1",
 				"function=get_polygon;").toString();
+	res.replace(";",";\n");
+	res.replace("=","=\t");
 	QMessageBox::information(this,"grid1::get_polygon",res);
 
 }
@@ -373,4 +375,25 @@ void testcontainer::timerEvent(QTimerEvent * e)
 		}
 
 	}
+}
+
+void testcontainer::on_pushButton_test_request_clicked()
+{
+	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=mark_names;").toString();
+	res.replace(";",";\n");
+	res.replace("=","\t=");
+	QMessageBox::information(this,"geomarker1::mark_names",res);
+
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=mark;name=ID1").toString();
+	res.replace(";",";\n");
+	res.replace("=","\t=");
+	QMessageBox::information(this,"geomarker1::mark",res);
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=props;name=ID1").toString();
+	res.replace(";",";\n");
+	res.replace("=","\t=");
+	QMessageBox::information(this,"geomarker1::props",res);
 }

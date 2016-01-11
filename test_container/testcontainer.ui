@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>811</width>
     <height>600</height>
    </rect>
   </property>
@@ -146,6 +146,13 @@
       <widget class="QPushButton" name="pushButton_test_polygon">
        <property name="text">
         <string>polygon</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_test_request">
+       <property name="text">
+        <string>request</string>
        </property>
       </widget>
      </item>

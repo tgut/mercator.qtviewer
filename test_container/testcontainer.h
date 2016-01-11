@@ -35,6 +35,7 @@ protected slots:
 	void on_pushButton_test_mark_clicked();
 	void on_pushButton_test_line_clicked();
 	void on_pushButton_test_polygon_clicked();
+	void on_pushButton_test_request_clicked();
 };
 
 #endif // TESTCONTAINER_H
