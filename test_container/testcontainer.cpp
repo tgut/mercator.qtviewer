@@ -255,6 +255,11 @@ void testcontainer::on_pushButton_test_grid_getPolygon_clicked()
 void testcontainer::on_pushButton_test_mark_clicked()
 {
 	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=delete_marks;name0=ID3;name1=ID4;").toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::delete_marks",res);
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
 												 "function=update_point;name=ID1;type=1;"
 												 "lat=31.3737;lon=121.3783474;"
 												 "style_pen=2;color_pen=0,0,255,128;width_pen=3;"
@@ -296,6 +301,11 @@ void testcontainer::on_pushButton_test_mark_clicked()
 void testcontainer::on_pushButton_test_line_clicked()
 {
 	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=delete_marks;name0=ID1;name1=ID2;name2=ID4;").toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::delete_marks",res);
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
 												 "function=update_line;name=ID3;type=3;"
 												 "lat0=31.3737;lon0=121.3783474;"
 												 "lat1=40.3737;lon1=111.34347;"
@@ -303,11 +313,23 @@ void testcontainer::on_pushButton_test_line_clicked()
 												 "width_pen=2;").toString();
 	if (res.contains("error"))
 		QMessageBox::information(this,"geomarker1::update_line",res);
+
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=update_props;name=ID3;"
+												 "LABEL=HighWay;").toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::update_point",res);
 }
 
 void testcontainer::on_pushButton_test_polygon_clicked()
 {
 	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=delete_marks;name0=ID1;name1=ID2;name2=ID3;").toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::delete_marks",res);
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
 												 "function=update_polygon;name=ID4;type=4;"
 												 "lat0=12.2;lon0=67.3;"
 												 "lat1=14.3;lon1=62.8;"
@@ -318,6 +340,12 @@ void testcontainer::on_pushButton_test_polygon_clicked()
 												 "width_pen=3;style_brush=1;color_brush=0,255,0,128;").toString();
 	if (res.contains("error"))
 		QMessageBox::information(this,"geomarker1::update_polygon",res);
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=update_props;name=ID4;"
+												 "LABEL=Region;").toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::update_point",res);
 }
 
 void testcontainer::timerEvent(QTimerEvent * e)

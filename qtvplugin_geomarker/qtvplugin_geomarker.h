@@ -128,8 +128,11 @@ private:
 			QMap<QString, QVariant> (const QMap<QString, QVariant> &)
 						>
 		> m_map_pluginFunctions;
-	QMap<QString, QVariant>			func_exists		(const QMap<QString, QVariant> &);
-
+	QMap<QString, QVariant>			func_exists			(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_delete_marks	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_delete_props	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_mark_names		(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_mark			(const QMap<QString, QVariant> &);
 
 	//overloaded virtual funtions
 protected:

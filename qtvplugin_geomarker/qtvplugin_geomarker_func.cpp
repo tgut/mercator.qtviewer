@@ -15,6 +15,8 @@
  * 1.function=update_point
  * 2.function=update_line
  * 3.function=update_polygon
+ * 4.function=update_props
+ * 5.function=exists
  * @param paras	the key-value style paraments.
  * @return QMap<QString, QVariant>	the key-value style return values.
  */
@@ -41,15 +43,25 @@ void qtvplugin_geomarker::initialBindPluginFuntions()
 	m_map_pluginFunctions["update_polygon"] = std::bind(&qtvplugin_geomarker::func_update_polygon,this,std::placeholders::_1);
 	m_map_pluginFunctions["update_props"] = std::bind(&qtvplugin_geomarker::func_update_props,this,std::placeholders::_1);
 	m_map_pluginFunctions["exists"] = std::bind(&qtvplugin_geomarker::func_exists,this,std::placeholders::_1);
+	m_map_pluginFunctions["delete_marks"] = std::bind(&qtvplugin_geomarker::func_delete_marks,this,std::placeholders::_1);
+	m_map_pluginFunctions["delete_props"] = std::bind(&qtvplugin_geomarker::func_delete_props,this,std::placeholders::_1);
+	m_map_pluginFunctions["mark_names"] = std::bind(&qtvplugin_geomarker::func_mark_names,this,std::placeholders::_1);
+	m_map_pluginFunctions["mark"] = std::bind(&qtvplugin_geomarker::func_mark,this,std::placeholders::_1);
 }
 
 QMap<QString, QVariant> qtvplugin_geomarker::func_update_point		(const QMap<QString, QVariant> & paras)
 {
 	QMap<QString, QVariant> res;
+	if (paras.contains("name")==false || paras.contains("lat")==false || paras.contains("lon")==false)
+	{
+		res["error"] = tr("name, lat, lon must  exist in paraments.");
+		return std::move(res);
+
+	}
 	QString name = paras["name"].toString();
 	if (name.size()==0)
 	{
-		res["error"] = tr("name does not exist in paraments.");
+		res["error"] = tr("name could not be empty.");
 		return std::move(res);
 	}
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
@@ -196,10 +208,17 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_point		(const QMap<QStr
 QMap<QString, QVariant>  qtvplugin_geomarker::func_update_line		(const QMap<QString, QVariant> & paras)
 {
 	QMap<QString, QVariant> res;
+	if (paras.contains("name")==false || paras.contains("lat0")==false || paras.contains("lon0")==false
+			|| paras.contains("lat1")==false || paras.contains("lon1")==false)
+	{
+		res["error"] = tr("name, lat0, lon0,lat1,lon1 must  exist in paraments.");
+		return std::move(res);
+	}
+
 	QString name = paras["name"].toString();
 	if (name.size()==0)
 	{
-		res["error"] = tr("name does not exist in paraments.");
+		res["error"] = tr("name could not be empty.");
 		return std::move(res);
 	}
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
@@ -283,10 +302,18 @@ QMap<QString, QVariant>  qtvplugin_geomarker::func_update_line		(const QMap<QStr
 QMap<QString, QVariant> qtvplugin_geomarker::func_update_polygon		(const QMap<QString, QVariant> & paras)
 {
 	QMap<QString, QVariant> res;
+
+	if (paras.contains("name")==false)
+	{
+		res["error"] = tr("name must  exist in paraments.");
+		return std::move(res);
+	}
+
+
 	QString name = paras["name"].toString();
 	if (name.size()==0)
 	{
-		res["error"] = tr("name does not exist in paraments.");
+		res["error"] = tr("name could not be empty.");
 		return std::move(res);
 	}
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
@@ -383,6 +410,8 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_polygon		(const QMap<QS
 	}
 	if (pl.size()>2)
 		newitem = update_polygon(name,pl,pen,brush);
+	else
+		res["error"] = tr("polygon must contain at least 3 points,lat0,lat1,lat2 and lon0,lon1, lon2.");
 
 	if (newitem)
 	{
@@ -427,7 +456,7 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_props(const QMap<QStrin
 	{
 		foreach (QString key , paras.keys())
 		{
-			if (key!="name")
+			if (key!="name" && key!="function")
 				base->set_prop_data(key,paras[key]);
 		}
 		scheduleRefreshMarks();
@@ -454,5 +483,94 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_exists		(const QMap<QString,
 	}
 	else
 		res["return"] = 0;
+	return std::move(res);
+}
+QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_marks	(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
+
+	QSet<QString> set_names;
+	int ct = 0;
+	do{
+		QString keystr = QString("name%1").arg(ct++);
+		if (paras.contains(keystr)==false)
+			break;
+		set_names.insert(paras[keystr].toString());
+	}while (ct<1024*1024*1024);
+	if (set_names.size())
+	{
+		ct = 0;
+		foreach (QString key,set_names)
+		{
+			QString keystr = QString("name%1").arg(ct++);
+			QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(key);
+			if (base)
+			{
+				m_pScene->removeItem(base,0);
+				res[keystr] = 1;
+			}
+			else
+				res[keystr] = 0;
+		}
+	}
+	else
+	{
+		QList< QTVP_GEOMARKER::geoItemBase *  > lst = m_pScene->geo_items();
+		foreach (QTVP_GEOMARKER::geoItemBase * key,lst)
+			m_pScene->removeItem(key,0);
+		res["ALL"] = 1;
+	}
+
+	return std::move(res);
+}
+
+QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_props	(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
+	if (paras.contains("name")==false)
+	{
+		res["error"] = tr("name must  exist in paraments.");
+		return std::move(res);
+	}
+	QString name = paras["name"].toString();
+	if (name.size()==0)
+	{
+		res["error"] = tr("name could not be empty.");
+		return std::move(res);
+	}
+	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
+	if (base)
+	{
+		int ct = 0;
+		do{
+			QString keystr = QString("prop%1").arg(ct++);
+			if (paras.contains(keystr)==false)
+				break;
+			QString prop_name = paras[keystr].toString();
+			base->del_prop(prop_name);
+		}while (ct<1024*1024*1024);
+	}
+	else
+		res["error"] = tr("the mark name.") + name + tr(" does not exist in current scene.");
+
+	return std::move(res);
+}
+
+QMap<QString, QVariant>			qtvplugin_geomarker::func_mark_names		(const QMap<QString, QVariant> & /*paras*/)
+{
+	QMap<QString, QVariant> res;
+	QList< QTVP_GEOMARKER::geoItemBase *  > lst = m_pScene->geo_items();
+	int ct = 0;
+	foreach (QTVP_GEOMARKER::geoItemBase * key,lst)
+	{
+		QString keystr = QString("name%1").arg(ct++);
+		res[keystr] = key->item_name();
+	}
+	return std::move(res);
+}
+
+QMap<QString, QVariant>			qtvplugin_geomarker::func_mark			(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
 	return std::move(res);
 }
