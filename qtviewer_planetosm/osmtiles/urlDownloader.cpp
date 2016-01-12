@@ -110,16 +110,23 @@ namespace QTVOSM{
 		QString uniqueKey = sourceUrl + ":" +  DestinDir +":" + filename;
 		m_mutex_protect.lock();
 		if (m_set_tileAddress.contains(uniqueKey)==true)
-			m_listTask.removeAll(tk);
+		{
+			if (newerFirst)
+			{
+				m_listTask.removeAll(tk);
+				m_listTask.push_front(tk);
+			}
+		}
 		else
+		{
 			m_set_tileAddress.insert(uniqueKey);
-		if (m_map_pendingTasks.size()<m_nMaxAsynThread)
-			bNeedEmit = true;
-		if (newerFirst)
-			m_listTask.push_front(tk);
-		else
-			m_listTask.push_back(tk);
-
+			if (m_map_pendingTasks.size()<m_nMaxAsynThread)
+				bNeedEmit = true;
+			if (newerFirst)
+				m_listTask.push_front(tk);
+			else
+				m_listTask.push_back(tk);
+		}
 		m_mutex_protect.unlock();
 		if (bNeedEmit)
 			emit evt_doNextJob();

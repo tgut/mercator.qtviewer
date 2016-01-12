@@ -63,8 +63,8 @@ namespace QTVOSM{
 	void layer_tiles_page::slot_message(QString message)
 	{
 		m_pPendingTasksModel->appendRow(new QStandardItem(message));
-		if (m_pPendingTasksModel->rowCount()>256)
-			m_pPendingTasksModel->removeRows(0,m_pPendingTasksModel->rowCount()-256);
-
+		if (m_pPendingTasksModel->rowCount()>128)
+			m_pPendingTasksModel->removeRows(0,m_pPendingTasksModel->rowCount()-128);
+		ui->listView_messages->scrollToBottom();
 	}
 }
