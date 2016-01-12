@@ -36,6 +36,10 @@ public:
 public slots:
 	QString osm_get_remote_address(QString layerName) const;
 	void	osm_set_remote_address (QString layerName, QString addr);
+	QString osm_get_local_cache(QString layerName) const;
+	void	osm_set_local_cache (QString layerName, QString addr);
+	int		osm_get_cache_expire_days(QString layerName);
+	int		osm_set_cache_expire_days(QString layerName,int days);
 	void	osm_set_auto_download (QString layerName, int flag);
 	int		osm_get_auto_download(QString layerName);
 	//Navigate

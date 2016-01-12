@@ -85,6 +85,60 @@ QString qtaxviewer_planetosm::osm_get_remote_address(QString layerName) const
 	return res;
 }
 
+QString qtaxviewer_planetosm::osm_get_local_cache(QString layerName) const
+{
+	QString res = "./OSMCache";
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		layer_tiles * lt = dynamic_cast<layer_tiles *>(la);
+		if (lt)
+			res = lt->localCache();
+	}
+	return res;
+}
+void	qtaxviewer_planetosm::osm_set_local_cache (QString layerName, QString addr)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		layer_tiles * lt = dynamic_cast<layer_tiles *>(la);
+		if (lt)
+			lt->setLocalCache(addr);
+	}
+}
+int		qtaxviewer_planetosm::osm_get_cache_expire_days(QString layerName)
+{
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		layer_tiles * lt = dynamic_cast<layer_tiles *>(la);
+		if (lt)
+			return lt->cacheExpireDays();
+	}
+	return 0;
+}
+
+int		qtaxviewer_planetosm::osm_set_cache_expire_days(QString layerName,int days)
+{
+	int res = 0;
+	tilesviewer * pv = this->ui->widget_mainMap ;
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		layer_tiles * lt = dynamic_cast<layer_tiles *>(la);
+		if (lt)
+		{
+			lt->setCacheExpireDays(days);
+			res = days;
+		}
+	}
+	return res;
+}
+
 /*!
  \brief This function is equal to check the "auto download" checkbox in UI
 	when the tile is not exist in local cache, layer will start a

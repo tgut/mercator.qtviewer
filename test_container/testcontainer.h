@@ -26,6 +26,7 @@ private:
 protected slots:
 	void slot_message(QString);
 	void on_pushButton_test_adds_clicked();
+	void on_pushButton_test_cache_clicked();
 	void on_pushButton_test_autodl_clicked();
 	void on_pushButton_test_navigate_clicked();
 	void on_pushButton_test_layers_clicked();

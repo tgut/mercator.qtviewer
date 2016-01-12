@@ -32,8 +32,6 @@ namespace QTVOSM{
 		urlDownloader(QObject * pParent, int nMaxAsynThread = 5);
 		~urlDownloader();
 		void addDownloadUrl(const QString &sourceUrl,const QString & DestinDir, const QString & filename,bool newerFirst = true);
-		//view CurrentTasks
-		QVector<tag_download_tasks> current_tasks();
 	protected:
 		//the QSet to avoid repeatedly download same tile.
 		QSet<QString> m_set_tileAddress;
@@ -48,6 +46,7 @@ namespace QTVOSM{
 	signals:
 		void evt_all_taskFinished();
 		void evt_doNextJob();
+		void evt_message(QString);
 	};
 }
 #endif // URLDOWNLOADER_H

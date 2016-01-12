@@ -2,6 +2,7 @@
 #include <QCoreApplication>
 #include <QPainter>
 #include <QSettings>
+#include <QFileInfo>
 #include "layer_tiles.h"
 #include "tilesviewer.h"
 namespace QTVOSM{
@@ -12,7 +13,8 @@ namespace QTVOSM{
 	 \param parent	parent objects
 	*/
 	layer_tiles::layer_tiles(QObject *parent) :
-		QObject(parent)
+		QObject(parent),
+		m_nCacheExpireDays(30)
 	{
 		m_bActive = false;
 		m_bVisible = false;
@@ -46,6 +48,12 @@ namespace QTVOSM{
 		settings.setValue(QString("settings/LocalCache_%1").arg(get_name()), m_strLocalCache);
 		emit cacheChanged(cache);
 	}
+	void layer_tiles::setCacheExpireDays(int nCacheExpireDays)
+	{
+		m_nCacheExpireDays = nCacheExpireDays;
+		QSettings settings(QCoreApplication::applicationFilePath()+".ini",QSettings::IniFormat);
+		settings.setValue(QString("settings/CacheExpireDays_%1").arg(get_name()), m_nCacheExpireDays);
+	}
 
 	/*!
 	 \brief When the tileviewer enter its paint_event function, this callback will be called.
@@ -75,13 +83,10 @@ namespace QTVOSM{
 			int nCurrRightX = ceil((nCenter_X+m_pViewer->width()/2)/256.0);
 			int nCurrBottomY = ceil((nCenter_Y+m_pViewer->height()/2)/256.0);
 
-			//!2.4 draw images
-			bool needreg = false;
-			int reg_left = sz_whole_idx,reg_right = -1,reg_bottom = -1,reg_top = sz_whole_idx;
-			//!2.5 a repeat from tileindx left to right.
+			//!2.4 a repeat from tileindx left to right.
 			for (int col = nCurrLeftX;col<=nCurrRightX;col++)
 			{
-				//!2.5.1 a repeat from tileindx top to bottom.
+				//!2.4.1 a repeat from tileindx top to bottom.
 				for (int row = nCurrTopY;row<=nCurrBottomY;row++)
 				{
 					QImage image_source;
@@ -92,16 +97,8 @@ namespace QTVOSM{
 						req_col = col % sz_whole_idx;
 					if (col<0)
 						req_col = (col + (1-col/sz_whole_idx)*sz_whole_idx) % sz_whole_idx;
-					//!2.5.2 call getTileImage to query the image .
-					if (false==this->getTileImage(m_pViewer->level(),req_col,req_row,image_source))
-					{
-						needreg = true;
-						if (reg_left>=req_col) reg_left = req_col;
-						if (reg_right<=req_col) reg_right = req_col;
-						if (reg_top>=req_row) reg_top = req_row;
-						if (reg_bottom<=req_row) reg_bottom = req_row;
-					}
-					else
+					//!2.4.2 call getTileImage to query the image .
+					if (true==this->getTileImage(m_pViewer->level(),req_col,req_row,image_source))
 					{
 						//bitblt
 						int nTileOffX = (col-nCenX)*256;
@@ -117,9 +114,6 @@ namespace QTVOSM{
 					}
 				}
 			}
-			//!2.6 if some image is not exists in local cache, tried to download
-			if (needreg==true)
-				RegImages(reg_left,reg_right,reg_top,reg_bottom,m_pViewer->level());
 		}
 
 	}
@@ -210,13 +204,17 @@ namespace QTVOSM{
 		QSettings settings(QCoreApplication::applicationFilePath()+".ini",QSettings::IniFormat);
 		m_strServerURL = settings.value(QString("settings/ServerURL_%1").arg(m_name),"http://c.tile.openstreetmap.org/%1/%2/%3.png").toString();
 		m_strLocalCache = settings.value(QString("settings/LocalCache_%1").arg(m_name), QCoreApplication::applicationDirPath() +"/OSMCache").toString();
+		m_nCacheExpireDays = settings.value(QString("settings/CacheExpireDays_%1").arg(m_name), 30).toInt();
 		return this;
 	}
 
 	QWidget * layer_tiles::load_prop_window()
 	{
 		if (!m_propPage)
+		{
 			m_propPage = new layer_tiles_page(this,0);
+			connect (m_downloader,&urlDownloader::evt_message,m_propPage,&layer_tiles_page::slot_message,Qt::QueuedConnection);
+		}
 		return m_propPage;
 	}
 
@@ -250,22 +248,27 @@ namespace QTVOSM{
 		strVal += ".png";
 
 		bool res = true;
+		bool needReg = false;
 		if (res)
 		{
 			QByteArray array_out;
 			QFile file(strVal);
+			QFileInfo info(strVal);
 			if (file.open(QIODevice::ReadOnly)==true)
 			{
 				array_out = file.readAll();
 				image = QImage::fromData(array_out);
 				if (image.isNull()==true)
-					res = false;
+					res = false, needReg = true;
+				else if (m_nCacheExpireDays > 0 && info.lastModified().secsTo(QDateTime::currentDateTime()) > this->m_nCacheExpireDays * 3600 * 24 )
+					needReg = true;
 			}
 			else
-				res = false;
+				res = false, needReg = true;
 		}
+		if (needReg)
+			RegImages(nX,nY,nLevel);
 		return res;
-
 	}
 
 	void layer_tiles::UpdateLayer()
@@ -306,46 +309,32 @@ namespace QTVOSM{
 	 \brief RegImages will download images from tile address.
 
 	 \fn layer_tiles::RegImages
-	 \param nLeft	Left col (x) tile id og this level nLevel
-	 \param nRight	Right col (x) tile id og this level nLevel
-	 \param nTop	Top row (y) tile id og this level nLevel
-	 \param nBottom	Bottom row (y) tile id og this level nLevel
+	 \param nX	col (x) tile id og this level nLevel
+	 \param nY	row (y) tile id og this level nLevel
 	 \param nLevel	current level. In osm, nlevel often take 0~18
 	 \return bool	succeeded.
 	*/
-	bool layer_tiles::RegImages(int nLeft,int nRight,int nTop,int nBottom,int nLevel)
+	bool layer_tiles::RegImages(int nX, int nY,int nLevel)
 	{
 		if (!m_pViewer || m_bVisible==false) return true;
 		if (m_bconnected==false)
 			return true;
-		for (int nX = nLeft; nX <=nRight ; ++nX)
-		{
-			for (int nY = nTop; nY <= nBottom ; ++nY)
-			{
-				QString LFix;
-				QString strSourceUrl, strDestinDir, strFileName;
-				LFix += '/';
-				LFix += QString::number(nLevel,10);
-				LFix += '/';
-				LFix += QString::number(nX,10);
-				strDestinDir = m_strLocalCache + "/" + m_name + "/" + LFix;
-				LFix += '/';
-				LFix += QString::number(nY,10);
-				LFix += ".png";
-				strFileName = QString::number(nY,10);
-				strFileName += ".png";
-				strSourceUrl = m_strServerURL.arg(nLevel).arg(nX).arg(nY);
+		QString LFix;
+		QString strSourceUrl, strDestinDir, strFileName;
+		LFix += '/';
+		LFix += QString::number(nLevel,10);
+		LFix += '/';
+		LFix += QString::number(nX,10);
+		strDestinDir = m_strLocalCache + "/" + m_name + "/" + LFix;
+		LFix += '/';
+		LFix += QString::number(nY,10);
+		LFix += ".png";
+		strFileName = QString::number(nY,10);
+		strFileName += ".png";
+		strSourceUrl = m_strServerURL.arg(nLevel).arg(nX).arg(nY);
 
-				this->m_downloader->addDownloadUrl(strSourceUrl,strDestinDir,strFileName);
-			}
-		}
+		this->m_downloader->addDownloadUrl(strSourceUrl,strDestinDir,strFileName);
 		return true;
 	}
-	QVector< tag_download_tasks >  layer_tiles::current_tasks()
-	{
-		if (m_downloader)
-			return m_downloader->current_tasks();
-		else
-			return QVector< tag_download_tasks >();
-	}
+
 }

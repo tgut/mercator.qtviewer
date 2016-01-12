@@ -26,12 +26,11 @@ namespace QTVOSM{
 
 		QString serverUrl() {return m_strServerURL; }
 		QString localCache() {return m_strLocalCache; }
+		int cacheExpireDays() {return m_nCacheExpireDays; }
 
 		bool isConnected(){return m_bconnected;}
 		void connectToTilesServer(bool bconnected);
 		void UpdateLayer();
-		//!Get downloadTask
-		QVector< tag_download_tasks > current_tasks();
 	public:
 		virtual layer_interface * load_initial_plugin(QString strSLibPath,viewer_interface  * viewer);
 		virtual QWidget * load_prop_window();
@@ -63,6 +62,7 @@ namespace QTVOSM{
 		QString m_name;
 	private:
 		bool m_bconnected;
+		int	m_nCacheExpireDays;
 		QString m_strLocalCache;
 		QString m_strServerURL;
 		//The download tools
@@ -75,10 +75,11 @@ namespace QTVOSM{
 		//! get single tile from web service
 		bool getTileImage(int nLevel,int nX,int nY,QImage & image);
 		//! regisit images to web service
-		bool RegImages(int nLeft,int nRight,int nTop,int nBottom,int nLevel);
+		bool RegImages(int nX, int nY,int nLevel);
 	public slots:
 		void setServerUrl(QString url);
 		void setLocalCache(QString cache);
+		void setCacheExpireDays(int nCacheExpireDays);
 	signals:
 		void connected(bool);
 		void svrurlChanged(QString);

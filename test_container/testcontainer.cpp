@@ -397,3 +397,14 @@ void testcontainer::on_pushButton_test_request_clicked()
 	res.replace("=","\t=");
 	QMessageBox::information(this,"geomarker1::props",res);
 }
+void testcontainer::on_pushButton_test_cache_clicked()
+{
+	QString res = ui->axWidget_map1->dynamicCall("osm_get_local_cache(QString)","OSM").toString();
+	QMessageBox::information(this,"geomarker1::osm_get_local_cache",res);
+	res = ui->axWidget_map1->dynamicCall("osm_set_local_cache(QString, QString)","OSM","/OSMCache").toString();
+	QMessageBox::information(this,"geomarker1::osm_set_local_cache",res);
+	res = ui->axWidget_map1->dynamicCall("osm_get_cache_expire_days(QString)","OSM").toString();
+	QMessageBox::information(this,"geomarker1::osm_get_cache_expire_days",res);
+	res = ui->axWidget_map1->dynamicCall("osm_set_cache_expire_days(QString,int)","OSM",res.toInt()+1).toString();
+	QMessageBox::information(this,"geomarker1::osm_get_cache_expire_days",res);
+}

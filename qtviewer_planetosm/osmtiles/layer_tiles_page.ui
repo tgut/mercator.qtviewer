@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>332</width>
-    <height>305</height>
+    <height>334</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,19 +21,12 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Pending tasks</string>
+      <string>messages</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QTableView" name="tableView_pendingTasks">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
+    <widget class="QListView" name="listView_messages"/>
    </item>
    <item>
     <widget class="QLabel" name="label">
@@ -60,6 +53,34 @@
         <iconset resource="../resource/resource.qrc">
          <normaloff>:/ui/icons/cn11.png</normaloff>
          <normalon>:/ui/icons/cn6.png</normalon>:/ui/icons/cn11.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Cahce Expire</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_cacheExpireDays">
+       <property name="maximum">
+        <number>365</number>
+       </property>
+       <property name="value">
+        <number>30</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Days</string>
        </property>
       </widget>
      </item>
@@ -100,6 +121,7 @@
   </layout>
  </widget>
  <resources>
+  <include location="../resource/resource.qrc"/>
   <include location="../resource/resource.qrc"/>
  </resources>
  <connections/>

@@ -23,15 +23,13 @@ namespace QTVOSM{
 		~layer_tiles_page();
 		//re-translat
 		void reTransUI();
-	protected:
-		void timerEvent(QTimerEvent * e);
-
 	private:
-		int m_nTimerID;
 		Ui::layer_tiles_page *ui ;
 		layer_tiles * m_pLayer ;
 		QStandardItemModel * m_pPendingTasksModel;
 	public slots:
+		void slot_message(QString);
+	protected slots:
 		void on_toolButton_browser_clicked();
 		void on_pushButton_apply_clicked();
 		void on_checkBox_connect_clicked(bool);

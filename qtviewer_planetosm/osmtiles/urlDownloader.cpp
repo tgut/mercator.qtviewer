@@ -24,6 +24,8 @@ namespace QTVOSM{
 		bool allFinished = false;
 		bool succeeded = false;
 		m_mutex_protect.lock();
+		QString errMsg;
+		QString sourceUrl;
 		if (m_map_pendingTasks.contains(rply)==true)
 		{
 			const tag_download_tasks & tk = m_map_pendingTasks[rply];
@@ -41,11 +43,12 @@ namespace QTVOSM{
 					file.write(rply->readAll());
 					file.close();
 					succeeded = true;
+					sourceUrl = m_map_pendingTasks[rply].str_url;
 				}
 			}
 			else
 			{
-				qCritical()<<rply->errorString();
+				qCritical()<<(errMsg = rply->errorString());
 			}
 			QString uniqueKey = tk.str_url + ":" +  tk.str_destinDir +":" + tk.str_destinFile;
 			m_set_tileAddress.remove(uniqueKey);
@@ -63,6 +66,18 @@ namespace QTVOSM{
 			emit evt_doNextJob();
 		if (allFinished == true && succeeded)
 			emit evt_all_taskFinished();
+
+		if (succeeded)
+		{
+			QString strMsg = tr("task succeeded: %1").arg(sourceUrl);
+			emit evt_message(strMsg);
+		}
+		else
+		{
+			QString strMsg = tr("task failed: %1,msg %2").arg(sourceUrl).arg(errMsg);
+			emit evt_message(strMsg);
+		}
+
 	}
 
 	void urlDownloader::newTaskAdded()
@@ -108,14 +123,7 @@ namespace QTVOSM{
 		m_mutex_protect.unlock();
 		if (bNeedEmit)
 			emit evt_doNextJob();
-	}
-	QVector<tag_download_tasks> urlDownloader::current_tasks()
-	{
-		QVector<tag_download_tasks> ret;
-		m_mutex_protect.lock();
-		foreach (tag_download_tasks t, m_listTask)
-			ret.push_back(t);
-		m_mutex_protect.unlock();
-		return ret;
+		QString strMsg = tr("Add task %1").arg(sourceUrl);
+		emit evt_message(strMsg);
 	}
 }
