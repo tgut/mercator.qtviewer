@@ -115,6 +115,8 @@ namespace QTVOSM{
 			{
 				m_listTask.removeAll(tk);
 				m_listTask.push_front(tk);
+				QString strMsg = tr("Bring task %1 to front.").arg(sourceUrl);
+				emit evt_message(strMsg);
 			}
 		}
 		else
@@ -126,11 +128,12 @@ namespace QTVOSM{
 				m_listTask.push_front(tk);
 			else
 				m_listTask.push_back(tk);
+			QString strMsg = tr("Add task %1").arg(sourceUrl);
+			emit evt_message(strMsg);
 		}
 		m_mutex_protect.unlock();
 		if (bNeedEmit)
 			emit evt_doNextJob();
-		QString strMsg = tr("Add task %1").arg(sourceUrl);
-		emit evt_message(strMsg);
+
 	}
 }
