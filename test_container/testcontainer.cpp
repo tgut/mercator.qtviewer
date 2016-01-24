@@ -132,7 +132,7 @@ void testcontainer::on_pushButton_test_navigate_clicked()
 	QMessageBox::information(this,"osm_get_center_latlon",QString("lat = %1, lon=%2").arg(lat).arg(lon) );
 
 	//Set a new center position
-	lat = 31; lon = 121;
+	lat = rand()%1700/10.0-85; lon = rand()%3600/10.0-180;
 	ui->axWidget_map1->dynamicCall("osm_set_center_pos(double,double)",lat,lon);
 
 	//Get map center position
@@ -262,12 +262,15 @@ void testcontainer::on_pushButton_test_mark_clicked()
 		QMessageBox::information(this,"geomarker1::delete_marks",res);
 
 	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
-												 "function=update_point;name=ID1;type=1;"
-												 "lat=31.3737;lon=121.3783474;"
+										 QString("function=update_point;name=ID1;type=1;"
+												 "lat=%1;lon=%2;"
 												 "style_pen=2;color_pen=0,0,255,128;width_pen=3;"
 												 "style_brush=1;color_brush=0,255,0,128;"
 												 "color_label=0,0,255,96;weight_label=99;size_label=12;"
-												 "width=16;height=20;").toString();
+												 "width=16;height=20;")
+										 .arg(rand()%1700/10.0-85)
+										 .arg(rand()%3600/10.0-180)
+										 ).toString();
 	if (res.contains("error"))
 		QMessageBox::information(this,"geomarker1::update_point",res);
 
@@ -308,11 +311,16 @@ void testcontainer::on_pushButton_test_line_clicked()
 		QMessageBox::information(this,"geomarker1::delete_marks",res);
 
 	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
-												 "function=update_line;name=ID3;type=3;"
-												 "lat0=31.3737;lon0=121.3783474;"
-												 "lat1=40.3737;lon1=111.34347;"
+										 QString("function=update_line;name=ID3;type=3;"
+												 "lat0=%1;lon0=%2;"
+												 "lat1=%3;lon1=%4;"
 												 "style_pen=4;color_pen=255,0,0,96;"
-												 "width_pen=2;").toString();
+												 "width_pen=2;")
+										 .arg(rand()%1700/10.0-85)
+										 .arg(rand()%3600/10.0-180)
+										 .arg(rand()%1700/10.0-85)
+										 .arg(rand()%3600/10.0-180)
+										 ).toString();
 	if (res.contains("error"))
 		QMessageBox::information(this,"geomarker1::update_line",res);
 
@@ -354,7 +362,7 @@ void testcontainer::timerEvent(QTimerEvent * e)
 {
 	if (e->timerId()==m_nAnTimer)
 	{
-		static double tposlat = 31, tposlon=121;
+		static double tposlat = rand()%1700/10.0-85 , tposlon= rand()%3600/10.0-180;
 		tposlat += sin(tposlon * 3.14/180.0)/5+0.1;
 		tposlon -= cos(tposlat * 3.14/180.0)/5+0.1;
 		if (tposlat > 85 ) tposlat = -85;
@@ -407,4 +415,14 @@ void testcontainer::on_pushButton_test_cache_clicked()
 	QMessageBox::information(this,"geomarker1::osm_get_cache_expire_days",res);
 	res = ui->axWidget_map1->dynamicCall("osm_set_cache_expire_days(QString,int)","OSM",res.toInt()+1).toString();
 	QMessageBox::information(this,"geomarker1::osm_get_cache_expire_days",res);
+}
+void testcontainer::on_pushButton_test_xml_clicked()
+{
+	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=load_xml;xml=.//test.xml;").toString();
+	QMessageBox::information(this,"geomarker1::load_xml",res);
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=save_xml;xml=.//test.xml;").toString();
+	QMessageBox::information(this,"geomarker1::save_xml",res);
+
 }

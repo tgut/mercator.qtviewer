@@ -23,6 +23,8 @@ namespace QTVOSM{
 		bool needDo = false;
 		bool allFinished = false;
 		bool succeeded = false;
+		bool redirect = false;
+		tag_download_tasks redirect_tk;
 		m_mutex_protect.lock();
 		QString errMsg;
 		QString sourceUrl;
@@ -31,19 +33,42 @@ namespace QTVOSM{
 			const tag_download_tasks & tk = m_map_pendingTasks[rply];
 			if (rply->error()==QNetworkReply::NoError)
 			{
-				QString strDir = tk.str_destinDir;
-				QString strFile = tk.str_destinFile;
-				//mkdir
-				QDir dir(strDir);
-				dir.mkpath(strDir);
-				//saveFile
-				QFile file(strDir+"/"+strFile);
-				if (file.open(QIODevice::WriteOnly)==true)
+				if (rply->bytesAvailable())
 				{
-					file.write(rply->readAll());
-					file.close();
-					succeeded = true;
-					sourceUrl = m_map_pendingTasks[rply].str_url;
+					QString strDir = tk.str_destinDir;
+					QString strFile = tk.str_destinFile;
+					//mkdir
+					QDir dir(strDir);
+					dir.mkpath(strDir);
+					//saveFile
+					QFile file(strDir+"/"+strFile);
+					if (file.open(QIODevice::WriteOnly)==true)
+					{
+						file.write(rply->readAll());
+						file.close();
+						succeeded = true;
+						sourceUrl = m_map_pendingTasks[rply].str_url;
+					}
+				}
+				else
+				{
+					QVariant vaurl = rply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+					if (vaurl.type()==QVariant::Url)
+					{
+						QUrl urlRd = vaurl.toUrl();
+						if (urlRd.isRelative())
+							urlRd = rply->request().url().resolved(urlRd);
+
+						redirect_tk = tk;
+						redirect_tk.str_url = urlRd.toString();
+						errMsg = tr("task redirected: %1").arg(redirect_tk.str_url);
+						redirect = true;
+						succeeded = true;
+					}
+					else
+					{
+						errMsg = tr("reply is empty: %1").arg(tk.str_url);
+					}
 				}
 			}
 			else
@@ -62,14 +87,10 @@ namespace QTVOSM{
 		if (m_listTask.empty()==true && m_map_pendingTasks.empty()==true)
 			allFinished = true;
 		m_mutex_protect.unlock();
-		if (needDo)
-			emit evt_doNextJob();
-		if (allFinished == true && succeeded)
-			emit evt_all_taskFinished();
 
 		if (succeeded)
 		{
-			QString strMsg = tr("task succeeded: %1").arg(sourceUrl);
+			QString strMsg = tr("task succeeded: %1;%2").arg(sourceUrl).arg(errMsg);
 			emit evt_message(strMsg);
 		}
 		else
@@ -77,6 +98,15 @@ namespace QTVOSM{
 			QString strMsg = tr("task failed: %1,msg %2").arg(sourceUrl).arg(errMsg);
 			emit evt_message(strMsg);
 		}
+		if (redirect)
+		{
+			addDownloadUrl(redirect_tk.str_url,redirect_tk.str_destinDir,redirect_tk.str_destinFile,true);
+		}
+
+		if (needDo)
+			emit evt_doNextJob();
+		if (allFinished == true && succeeded)
+			emit evt_all_taskFinished();
 
 	}
 

@@ -27,11 +27,11 @@ namespace QTVOSM
 			int nCenX = nCenter_X/256;
 			int nCenY = nCenter_Y/256;
 			//current left top tile idx
-			int nCurrLeftX = floor((nCenter_X-m_pViewer->width()/2)/256.0);
-			int nCurrTopY = floor((nCenter_Y-m_pViewer->height()/2)/256.0);
+			int nCurrLeftX = floor((nCenter_X-m_pViewer->windowWidth()/2)/256.0);
+			int nCurrTopY = floor((nCenter_Y-m_pViewer->windowHeight()/2)/256.0);
 			//current right btm
-			int nCurrRightX = ceil((nCenter_X+m_pViewer->width()/2)/256.0);
-			int nCurrBottomY = ceil((nCenter_Y+m_pViewer->height()/2)/256.0);
+			int nCurrRightX = ceil((nCenter_X+m_pViewer->windowWidth()/2)/256.0);
+			int nCurrBottomY = ceil((nCenter_Y+m_pViewer->windowHeight()/2)/256.0);
 
 			//draw images
 
@@ -58,8 +58,8 @@ namespace QTVOSM
 						int zero_offX = int(nCenter_X+0.5) % 256;
 						int zero_offY = int(nCenter_Y+0.5) % 256;
 						//bitblt cood
-						int tar_x = m_pViewer->width()/2-zero_offX+nTileOffX;
-						int tar_y = m_pViewer->height()/2-zero_offY+nTileOffY;
+						int tar_x = m_pViewer->windowWidth()/2-zero_offX+nTileOffX;
+						int tar_y = m_pViewer->windowHeight()/2-zero_offY+nTileOffY;
 						//bitblt
 						pImage->drawImage(tar_x,tar_y,image_source);
 					}
@@ -83,8 +83,8 @@ namespace QTVOSM
 		bool res = false;
 		if (event->button()==Qt::LeftButton)
 		{
-			int nOffsetX = event->pos().x()-m_pViewer->width()/2;
-			int nOffsetY = event->pos().y()-m_pViewer->height()/2;
+			int nOffsetX = event->pos().x()-m_pViewer->windowWidth()/2;
+			int nOffsetY = event->pos().y()-m_pViewer->windowHeight()/2;
 			m_pViewer->DragView(-nOffsetX,-nOffsetY);
 			res = true;
 		}
@@ -95,7 +95,7 @@ namespace QTVOSM
 
 	layer_interface * layer_browser::load_initial_plugin(QString /*strSLibPath*/,viewer_interface  * viewer)
 	{
-		m_pViewer =dynamic_cast<tilesviewer *>(viewer);
+		m_pViewer =dynamic_cast<viewer_interface *>(viewer);
 		if (m_pViewer==0)
 			return 0;
 		return this;

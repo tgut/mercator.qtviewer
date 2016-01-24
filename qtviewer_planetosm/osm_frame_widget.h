@@ -42,6 +42,8 @@ protected:
 	void UpdateLayerTable();
 	bool AppendLayer(QString SLName,layer_interface * interface);
 	void EnumPlugins();
+
+	void mousePressEvent(QMouseEvent *);
 protected slots:
 	void delacmd_refresh_layer_view();
 	void on_tabWidget_main_tabCloseRequested(int index);

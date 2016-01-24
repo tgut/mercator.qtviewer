@@ -96,7 +96,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="lineEdit_cacheFolder"/>
      </item>
      <item>
       <widget class="QToolButton" name="toolButton_browser">

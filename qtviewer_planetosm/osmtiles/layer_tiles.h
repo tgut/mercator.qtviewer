@@ -54,7 +54,7 @@ namespace QTVOSM{
 		bool is_exclusive(){return true;}
 		void set_active(bool at) { m_bActive = at;}
 	protected:
-		tilesviewer * m_pViewer;
+		viewer_interface * m_pViewer;
 		layer_tiles_page * m_propPage;
 		bool m_bActive;
 		bool m_bVisible;
@@ -76,6 +76,8 @@ namespace QTVOSM{
 		bool getTileImage(int nLevel,int nX,int nY,QImage & image);
 		//! regisit images to web service
 		bool RegImages(int nX, int nY,int nLevel);
+	protected slots:
+		void updateViewer();
 	public slots:
 		void setServerUrl(QString url);
 		void setLocalCache(QString cache);
@@ -84,6 +86,7 @@ namespace QTVOSM{
 		void connected(bool);
 		void svrurlChanged(QString);
 		void cacheChanged(QString);
+		void cacheExpireChanged(int);
 	};
 }
 #endif // LAYER_TILES_H

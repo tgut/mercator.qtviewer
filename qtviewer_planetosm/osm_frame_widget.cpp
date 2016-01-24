@@ -93,6 +93,8 @@ osm_frame_widget::osm_frame_widget(QWidget *parent) :
 	QTVOSM_DEBUG("The osm_frame_widget class constructed.");
 	EnumPlugins();
 	UpdateLayerTable();
+	//Dock is closable
+	ui->dockWidget_side->installEventFilter(this);
 	m_mutex_proteced.unlock();
 }
 void osm_frame_widget::UpdateLayerTable()
@@ -117,27 +119,9 @@ tilesviewer * osm_frame_widget::viewer()
 
 bool osm_frame_widget::eventFilter(QObject *obj, QEvent *event)
 {
-	if (event->type() == QEvent::Close && !( obj==ui->tab_map))
+	if (event->type() == QEvent::Close)
 	{
-		if (m_PropPageslayer.contains(obj))
-		{
-			QWidget * wig = qobject_cast<QWidget *>(obj);
-			if (wig)
-			{
-				Qt::WindowFlags flg = wig->windowFlags();
-				flg &= ~(Qt::WindowMinMaxButtonsHint|Qt::WindowStaysOnTopHint|Qt::Window );
-				wig->setWindowFlags(flg);
-				ui->tabWidget_main->addTab(
-							wig,
-							m_PropPageslayer[obj]->get_name()
-						);
-			}
-			return true;
-		}
-	}
-	else if (obj==ui->tab_map)//Map
-	{
-		if (event->type() == QEvent::Close)
+		if (obj == ui->tab_map)
 		{
 			QWidget * wig = qobject_cast<QWidget *>(obj);
 			if (wig)
@@ -152,6 +136,33 @@ bool osm_frame_widget::eventFilter(QObject *obj, QEvent *event)
 				return true;
 			}
 		}
+		else if (obj == ui->dockWidget_side)
+		{
+			ui->dockWidget_side->hide();
+			QMargins m = this->layout()->contentsMargins();
+			this->layout()->setContentsMargins(m.left(),m.top(),12,m.bottom());
+			return true;
+		}
+		else if (m_PropPageslayer.contains(obj))
+		{
+			QWidget * wig = qobject_cast<QWidget *>(obj);
+			if (wig)
+			{
+				Qt::WindowFlags flg = wig->windowFlags();
+				flg &= ~(Qt::WindowMinMaxButtonsHint|Qt::WindowStaysOnTopHint|Qt::Window );
+				wig->setWindowFlags(flg);
+				ui->tabWidget_main->addTab(
+							wig,
+							m_PropPageslayer[obj]->get_name()
+							);
+			}
+			return true;
+		}
+		else
+		{
+
+		}
+
 	}
 	// standard event processing
 	return QObject::eventFilter(obj, event);
@@ -179,7 +190,21 @@ osm_frame_widget::~osm_frame_widget()
 {
 	delete ui;
 }
+void osm_frame_widget::mousePressEvent(QMouseEvent * e)
+{
+	if (e->pos().x() >= this->rect().right()-12)
+	{
+		if (ui->dockWidget_side->isVisible()==false)
+		{
+			ui->dockWidget_side->show();
 
+			QMargins m = this->layout()->contentsMargins();
+			this->layout()->setContentsMargins(m.left(),m.top(),m.left(),m.bottom());
+		}
+	}
+
+	QWidget::mousePressEvent(e);
+}
 void osm_frame_widget::EnumPlugins()
 {
 	QTVOSM_DEBUG("The osm_frame_widget is enuming plugins.");

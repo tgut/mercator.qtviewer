@@ -33,7 +33,7 @@ namespace QTVOSM{
 		QString get_name() {return m_name;}
 		void set_name(QString vb) { m_name = vb; }
 	protected:
-		tilesviewer * m_pViewer;
+		viewer_interface * m_pViewer;
 		QString m_name;
 	private:
 		//get single tile from web service

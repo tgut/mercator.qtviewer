@@ -18,7 +18,7 @@ namespace QTVOSM{
 		QString strServerURL = settings.value(QString("settings/ServerURL_%1").arg(layer->get_name()),"http://c.tile.openstreetmap.org/%1/%2/%3.png").toString();
 		QString strLocalCache = settings.value(QString("settings/LocalCache_%1").arg(layer->get_name()), QCoreApplication::applicationDirPath() +"/OSMCache").toString();
 		int nCacheExpireDays = settings.value(QString("settings/CacheExpireDays_%1").arg(layer->get_name()), 30).toInt();
-		ui->lineEdit->setText(strLocalCache);
+		ui->lineEdit_cacheFolder->setText(strLocalCache);
 		ui->lineEdit_addressUrl->setText(strServerURL);
 		ui->spinBox_cacheExpireDays->setValue(nCacheExpireDays);
 		this->setWindowTitle(layer->get_name());
@@ -28,6 +28,8 @@ namespace QTVOSM{
 
 		connect (layer, &layer_tiles::connected ,this->ui->checkBox_connect, &QCheckBox::setChecked);
 		connect (layer, &layer_tiles::svrurlChanged ,this->ui->lineEdit_addressUrl, &QLineEdit::setText);
+		connect (layer, &layer_tiles::cacheChanged ,this->ui->lineEdit_cacheFolder, &QLineEdit::setText);
+		connect (layer, &layer_tiles::cacheExpireChanged ,this->ui->spinBox_cacheExpireDays, &QSpinBox::setValue);
 		ui->checkBox_connect->setChecked(layer->isConnected());
 	}
 	void layer_tiles_page::reTransUI()
@@ -45,12 +47,12 @@ namespace QTVOSM{
 		QString strLocalCache = settings.value(QString("settings/LocalCache_%1").arg(m_pLayer->get_name()), QCoreApplication::applicationDirPath() +"/OSMCache").toString();
 		QString strFolder = QFileDialog::getExistingDirectory(this,tr("Select the local cache"),strLocalCache,QFileDialog::ShowDirsOnly);
 		if (strFolder.length())
-			ui->lineEdit->setText(strFolder);
+			ui->lineEdit_cacheFolder->setText(strFolder);
 	}
 
 	void layer_tiles_page::on_pushButton_apply_clicked()
 	{
-		m_pLayer->setLocalCache(ui->lineEdit->text());
+		m_pLayer->setLocalCache(ui->lineEdit_cacheFolder->text());
 		m_pLayer->setServerUrl(ui->lineEdit_addressUrl->text());
 		m_pLayer->setCacheExpireDays(ui->spinBox_cacheExpireDays->value());
 		m_pLayer->UpdateLayer();

@@ -101,11 +101,6 @@ namespace QTVOSM{
 		void moveLayerTop(layer_interface *);
 		void moveLayerBottom(layer_interface *);
 		void updateLayerGridView();
-	public slots:
-		//set current level
-		void setLevel(int n);
-		//set current br level to n-4
-		void setBrLevel(int n);
 		//force update
 		void UpdateWindow();
 		//set center LLA
@@ -113,8 +108,15 @@ namespace QTVOSM{
 		//set center LLA, not emit centerChanged
 		void setBrCenterLLA(double lat, double lon);
 		virtual QRect windowRect(){return this->rect();}
+		virtual int windowWidth() {return width();}
+		virtual int windowHeight() {return height();}
 		bool saveToImage(const QString & strFm);
 
+	public slots:
+		//set current level
+		void setLevel(int n);
+		//set current br level to n-4
+		void setBrLevel(int n);
 	protected slots:
 		void _do_next_evts();
 	signals:

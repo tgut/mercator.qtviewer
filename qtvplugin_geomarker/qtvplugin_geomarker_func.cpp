@@ -57,6 +57,8 @@ void qtvplugin_geomarker::initialBindPluginFuntions()
 	m_map_pluginFunctions["mark_names"]		= std::bind(&qtvplugin_geomarker::func_mark_names,		this,std::placeholders::_1);
 	m_map_pluginFunctions["mark"]			= std::bind(&qtvplugin_geomarker::func_mark,			this,std::placeholders::_1);
 	m_map_pluginFunctions["props"]			= std::bind(&qtvplugin_geomarker::func_props,			this,std::placeholders::_1);
+	m_map_pluginFunctions["load_xml"]		= std::bind(&qtvplugin_geomarker::func_load_xml,		this,std::placeholders::_1);
+	m_map_pluginFunctions["save_xml"]		= std::bind(&qtvplugin_geomarker::func_save_xml,		this,std::placeholders::_1);
 }
 
 /**
@@ -863,4 +865,60 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_props			(const QMap<QString,
 		res["error"] = tr("the mark name.") + name + tr(" does not exist in current scene.");
 	//! return value is the user-defined key-pairs.
 	return std::move(res);
+}
+/**
+ * @brief func_save_xml is a internal function for plugin call_func "save_xml"
+ *
+ * the paraments used by paras is listed below.
+ * function=props;
+ * @param paras The key-value style paraments.
+ * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
+ */
+QMap<QString, QVariant>			qtvplugin_geomarker::func_save_xml		(const QMap<QString, QVariant> & paras)
+{
+	//!xml: user should specify xml filename or the function calll will fail;
+	QMap<QString, QVariant> res;
+	if (paras.contains("xml")==false)
+	{
+		res["error"] = tr("xml must  exist in paraments.");
+		return std::move(res);
+	}
+	QString name = paras["xml"].toString();
+	if (name.size()==0)
+	{
+		res["error"] = tr("xml could not be empty.");
+		return std::move(res);
+	}
+
+	bool ok = this->xml_save(name);
+	res ["return"] = ok;
+	return res;
+}
+/**
+ * @brief func_save_xml is a internal function for plugin call_func "save_xml"
+ *
+ * the paraments used by paras is listed below.
+ * function=props;
+ * @param paras The key-value style paraments.
+ * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
+ */
+QMap<QString, QVariant>			qtvplugin_geomarker::func_load_xml		(const QMap<QString, QVariant> & paras)
+{
+	//!xml: user should specify xml filename or the function calll will fail;
+	QMap<QString, QVariant> res;
+	if (paras.contains("xml")==false)
+	{
+		res["error"] = tr("xml must  exist in paraments.");
+		return std::move(res);
+	}
+	QString name = paras["xml"].toString();
+	if (name.size()==0)
+	{
+		res["error"] = tr("xml could not be empty.");
+		return std::move(res);
+	}
+
+	bool ok = this->xml_load(name);
+	res ["return"] = ok;
+	return res;
 }

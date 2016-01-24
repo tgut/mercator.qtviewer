@@ -53,6 +53,7 @@ namespace QTVOSM{
 		m_nCacheExpireDays = nCacheExpireDays;
 		QSettings settings(QCoreApplication::applicationFilePath()+".ini",QSettings::IniFormat);
 		settings.setValue(QString("settings/CacheExpireDays_%1").arg(get_name()), m_nCacheExpireDays);
+		emit cacheExpireChanged(m_nCacheExpireDays);
 	}
 
 	/*!
@@ -77,11 +78,11 @@ namespace QTVOSM{
 			int nCenX = nCenter_X/256;
 			int nCenY = nCenter_Y/256;
 			//!2.2 calculate current left top tile idx
-			int nCurrLeftX = floor((nCenter_X-m_pViewer->width()/2)/256.0);
-			int nCurrTopY = floor((nCenter_Y-m_pViewer->height()/2)/256.0);
+			int nCurrLeftX = floor((nCenter_X-m_pViewer->windowWidth()/2)/256.0);
+			int nCurrTopY = floor((nCenter_Y-m_pViewer->windowHeight()/2)/256.0);
 			//!2.3 calculate current right bottom idx
-			int nCurrRightX = ceil((nCenter_X+m_pViewer->width()/2)/256.0);
-			int nCurrBottomY = ceil((nCenter_Y+m_pViewer->height()/2)/256.0);
+			int nCurrRightX = ceil((nCenter_X+m_pViewer->windowWidth()/2)/256.0);
+			int nCurrBottomY = ceil((nCenter_Y+m_pViewer->windowHeight()/2)/256.0);
 
 			//!2.4 a repeat from tileindx left to right.
 			for (int col = nCurrLeftX;col<=nCurrRightX;col++)
@@ -107,8 +108,8 @@ namespace QTVOSM{
 						int zero_offX = int(nCenter_X+0.5) % 256;
 						int zero_offY = int(nCenter_Y+0.5) % 256;
 						//bitblt cood
-						int tar_x = m_pViewer->width()/2-zero_offX+nTileOffX;
-						int tar_y = m_pViewer->height()/2-zero_offY+nTileOffY;
+						int tar_x = m_pViewer->windowWidth()/2-zero_offX+nTileOffX;
+						int tar_y = m_pViewer->windowHeight()/2-zero_offY+nTileOffY;
 						//bitblt
 						pPainter->drawImage(tar_x,tar_y,image_source);
 					}
@@ -137,8 +138,8 @@ namespace QTVOSM{
 		}
 		else if (event->button()==Qt::RightButton)
 		{
-			int nOffsetX = event->pos().x()-m_pViewer->width()/2;
-			int nOffsetY = event->pos().y()-m_pViewer->height()/2;
+			int nOffsetX = event->pos().x()-m_pViewer->windowWidth()/2;
+			int nOffsetY = event->pos().y()-m_pViewer->windowHeight()/2;
 			m_pViewer->DragView(-nOffsetX,-nOffsetY);
 			res = true;
 		}
@@ -196,16 +197,22 @@ namespace QTVOSM{
 
 	layer_interface * layer_tiles::load_initial_plugin(QString /*strSLibPath*/,viewer_interface  * viewer)
 	{
-		m_pViewer = dynamic_cast<tilesviewer *>(viewer);
+		m_pViewer = dynamic_cast<viewer_interface *>(viewer);
 		if (!m_pViewer)
 			return 0;
-		connect(m_downloader,SIGNAL(evt_all_taskFinished()),m_pViewer,SLOT(UpdateWindow()));
+		connect(m_downloader,SIGNAL(evt_all_taskFinished()),this,SLOT(updateViewer()));
 		//Get Cache Address
 		QSettings settings(QCoreApplication::applicationFilePath()+".ini",QSettings::IniFormat);
 		m_strServerURL = settings.value(QString("settings/ServerURL_%1").arg(m_name),"http://c.tile.openstreetmap.org/%1/%2/%3.png").toString();
 		m_strLocalCache = settings.value(QString("settings/LocalCache_%1").arg(m_name), QCoreApplication::applicationDirPath() +"/OSMCache").toString();
 		m_nCacheExpireDays = settings.value(QString("settings/CacheExpireDays_%1").arg(m_name), 30).toInt();
 		return this;
+	}
+	void layer_tiles::updateViewer()
+	{
+		if (!m_pViewer)
+			return ;
+		m_pViewer->UpdateWindow();
 	}
 
 	QWidget * layer_tiles::load_prop_window()
@@ -273,7 +280,7 @@ namespace QTVOSM{
 
 	void layer_tiles::UpdateLayer()
 	{
-		m_pViewer->update();
+		m_pViewer->UpdateWindow();
 	}
 
 
@@ -290,7 +297,7 @@ namespace QTVOSM{
 	{
 		this->m_bconnected = bconnected;
 		if (!m_pViewer) return;
-		m_pViewer->update();
+		m_pViewer->UpdateWindow();
 		emit connected(m_bconnected);
 		//! 1. source=MAIN_MAP,  destin = ALL, msg = CONNECTION
 		if (this->is_active())

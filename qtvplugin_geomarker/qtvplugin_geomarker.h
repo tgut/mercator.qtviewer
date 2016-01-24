@@ -41,6 +41,7 @@ class qtvplugin_geomarker : public QWidget,public layer_interface
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID OSMLayerInterface_iid )
 	Q_INTERFACES(QTVOSM::layer_interface)
+	typedef QMap<QString, QVariant> (tpfunc_call)(const QMap<QString, QVariant> &);
 private:
 	struct tag_xml_mark{
 		QString name;
@@ -123,17 +124,15 @@ private:
 	//other function calls
 private:
 	void initialBindPluginFuntions();
-	QMap<QString,
-		std::function	<
-			QMap<QString, QVariant> (const QMap<QString, QVariant> &)
-						>
-		> m_map_pluginFunctions;
+	QMap<QString,std::function <tpfunc_call> > m_map_pluginFunctions;
 	QMap<QString, QVariant>			func_exists			(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_delete_marks	(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_delete_props	(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_mark_names		(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_mark			(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_props			(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_save_xml		(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_load_xml		(const QMap<QString, QVariant> &);
 
 	//overloaded virtual funtions
 protected:

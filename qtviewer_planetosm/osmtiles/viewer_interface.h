@@ -90,6 +90,8 @@ namespace QTVOSM{
 		virtual void updateLayerGridView()= 0;
 		//!	get the windows device size in pixels
 		virtual QRect windowRect() = 0;
+		virtual int windowWidth() = 0;
+		virtual int windowHeight() = 0;
 		//!	force update
 		virtual void UpdateWindow() = 0;
 		//!	drag image for special pixes
