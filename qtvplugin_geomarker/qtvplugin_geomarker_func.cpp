@@ -200,7 +200,7 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_point		(const QMap<QStr
 	double lon = paras["lon"].toDouble();
 
 	int tpn = paras["type"].toInt();
-	if (tpn > 1 || tpn <0) tpn = 0;
+	if (tpn > 2 || tpn <1) tpn = 1;
 	QTVP_GEOMARKER::geo_item_type tpe = static_cast< QTVP_GEOMARKER::geo_item_type > (tpn);
 	//update using same function in UI
 	if (tpe==QTVP_GEOMARKER::ITEAMTYPE_RECT_POINT)
@@ -606,6 +606,7 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_marks	(const QMap<QSt
 			break;
 		set_names.insert(paras[keystr].toString());
 	}while (ct<1024*1024*1024);
+	bool needUpdate = false;
 	if (set_names.size())
 	{
 		ct = 0;
@@ -617,6 +618,7 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_marks	(const QMap<QSt
 			{
 				m_pScene->removeItem(base,0);
 				res[keystr] = 1;
+				needUpdate = true;
 			}
 			else
 				res[keystr] = 0;
@@ -628,6 +630,11 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_marks	(const QMap<QSt
 		foreach (QTVP_GEOMARKER::geoItemBase * key,lst)
 			m_pScene->removeItem(key,0);
 		res["ALL"] = 1;
+	}
+	if (needUpdate)
+	{
+		scheduleRefreshMarks();
+		scheduleUpdateMap();
 	}
 
 	return std::move(res);
@@ -662,6 +669,7 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_props	(const QMap<QSt
 	 * prop0=TIME;prop1=Profit;Prop2=Address;Prop3=tel;
 	 */
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
+	bool needUpdate = false;
 	if (base)
 	{
 		int ct = 0;
@@ -671,11 +679,17 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_props	(const QMap<QSt
 				break;
 			QString prop_name = paras[keystr].toString();
 			base->del_prop(prop_name);
+			needUpdate = true;
 		}while (ct<1024*1024*1024);
 	}
 	else
 		res["error"] = tr("the mark name.") + name + tr(" does not exist in current scene.");
 
+	if (needUpdate)
+	{
+		scheduleRefreshMarks();
+		scheduleUpdateMap();
+	}
 	return std::move(res);
 }
 
