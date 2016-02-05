@@ -38,6 +38,7 @@ namespace QTVOSM{
 		virtual bool cb_mousePressEvent ( QMouseEvent * event );
 		virtual bool cb_mouseReleaseEvent ( QMouseEvent * event );
 		virtual bool cb_mouseMoveEvent(QMouseEvent * event);
+		virtual bool cb_mouseDoubleClickEvent(QMouseEvent *);
 		virtual bool cb_wheelEvent ( QWheelEvent * event );
 		virtual void cb_resizeEvent ( QResizeEvent * event);
 		virtual void cb_levelChanged(int nLevel);

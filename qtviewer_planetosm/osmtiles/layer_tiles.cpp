@@ -135,14 +135,7 @@ namespace QTVOSM{
 		{
 			this->m_nStartPosX = event->pos().x();
 			this->m_nStartPosY = event->pos().y();
-		}
-		else if (event->button()==Qt::RightButton)
-		{
-			int nOffsetX = event->pos().x()-m_pViewer->windowWidth()/2;
-			int nOffsetY = event->pos().y()-m_pViewer->windowHeight()/2;
-			m_pViewer->DragView(-nOffsetX,-nOffsetY);
-			res = true;
-		}
+		}		
 		return res;
 	}
 
@@ -160,6 +153,20 @@ namespace QTVOSM{
 				this->m_nStartPosX = this->m_nStartPosY = -1;
 				res = true;
 			}
+		}
+		return res;
+	}
+
+	bool layer_tiles::cb_mouseDoubleClickEvent( QMouseEvent * event )
+	{
+		if (!m_pViewer || m_bVisible==false || m_bActive==false) return false;
+		bool res = false;
+		if (event->button()==Qt::LeftButton)
+		{
+			int nOffsetX = event->pos().x()-m_pViewer->windowWidth()/2;
+			int nOffsetY = event->pos().y()-m_pViewer->windowHeight()/2;
+			m_pViewer->DragView(-nOffsetX,-nOffsetY);
+			res = true;
 		}
 		return res;
 	}
