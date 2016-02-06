@@ -27,7 +27,9 @@ namespace QTVP_GEOMARKER{
 			"ELLIPSE_POINT",
 			"RECT_POINT",
 			"LINE",
-			"POLYGON"
+			"POLYGON",
+			"ICON",
+			"ERROR"
 		};
 		return names[(int)tp];
 	}

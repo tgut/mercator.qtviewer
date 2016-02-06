@@ -50,6 +50,15 @@ private:
 		QMap<QString, QString> styles;
 		QMap<QString, QString> props;
 	};
+	struct tag_icon{
+		QString name;
+		QString filename;
+		QPixmap icon;
+		int centerx;
+		int centery;
+	};
+	//The global icon map
+	QMap<QString,tag_icon> m_map_icons;
 
 public:
 	qtvplugin_geomarker(QWidget *parent = 0);
@@ -85,6 +94,7 @@ private:
 	QStandardItemModel * m_pFillStyleModel;
 	QStandardItemModel * m_pGeoItemModel;
 	QStandardItemModel * m_pGeoPropModel;
+	QStandardItemModel * m_pIconsModel;
 
 	//persistent functions
 private:
@@ -107,6 +117,8 @@ private:
 	void refreshProps(QTVP_GEOMARKER::geoItemBase * itm);
 	QColor string2color(const QString & s);
 	QString color2string(const QColor & c);
+
+	void refreshIconModel();
 	//Geo mark updating functions
 private:
 	//update methopd for UI
@@ -114,6 +126,7 @@ private:
 	QTVP_GEOMARKER::geoItemBase *	update_point		(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush);
 	QTVP_GEOMARKER::geoItemBase *	update_line			(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen);
 	QTVP_GEOMARKER::geoItemBase *	update_polygon		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush);
+	QTVP_GEOMARKER::geoItemBase *	update_icon			(const QString & name,double lat, double lon, int centerx, int centery, QString id);
 	//update method for XML
 	bool							xml_update_mark		(tag_xml_mark & mark);
 	//update method for plugin function calls
@@ -155,6 +168,7 @@ protected:
 	void loadTranslations();
 	//ui slots
 protected slots:
+	void on_comboBox_icons_currentIndexChanged(int index);
 	void on_pushButton_update_clicked();
 	void on_radioButton_tool_point_toggled(bool);
 	void on_radioButton_tool_line_toggled(bool);
@@ -172,6 +186,7 @@ protected slots:
 	void on_pushButton_getPolygon_clicked();
 	void on_pushButton_save_clicked();
 	void on_pushButton_load_clicked();
+	void on_pushButton_import_icon_clicked();
 };
 
 template <class T>

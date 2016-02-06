@@ -15,6 +15,7 @@
 #include "geographicsrectitem.h"
 #include "geographicslineitem.h"
 #include "geographicspolygonitem.h"
+#include "geographicspixmapitem.h"
 QMutex mutex_instances;
 QMap<viewer_interface *,  qtvplugin_geomarker * > map_instances;
 QMap<QString,  int > count_instances;
@@ -71,6 +72,20 @@ qtvplugin_geomarker::qtvplugin_geomarker(QWidget *parent) :
 	m_pFillStyleModel->appendRow(new QStandardItem("FDiagPattern"));
 	m_pFillStyleModel->appendRow(new QStandardItem("DiagCrossPattern"));
 	ui->comboBox_fillPad->setModel(m_pFillStyleModel);
+
+	//insert 2 icons
+	tag_icon icon;
+	icon.name = "://icons/Medical.png";
+	icon.filename = "://icons/Medical.png";
+	icon.centerx = 16;
+	icon.centery = 16;
+	if (icon.icon.load(icon.filename))
+		m_map_icons[icon.name] = icon;
+
+
+	m_pIconsModel = new QStandardItemModel(this);
+	refreshIconModel();
+	ui->comboBox_icons->setModel(m_pIconsModel);
 
 	m_bNeedRefresh = false;
 	m_bNeedUpdateView = false;
@@ -272,6 +287,8 @@ bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 	m_pVi->CV_DP2LLA(mouse_view_pt.x(),mouse_view_pt.y(),&mlat,&mlon);
 	ui->lineEdit_point_lat->setText(QString("%1").arg(mlat,0,'f',7));
 	ui->lineEdit_point_lon->setText(QString("%1").arg(mlon,0,'f',7));
+	ui->lineEdit_icon_lat->setText(QString("%1").arg(mlat,0,'f',7));
+	ui->lineEdit_icon_lon->setText(QString("%1").arg(mlon,0,'f',7));
 	//Warp
 	while (wx < 0) wx += winsz;
 	while (wx > winsz-1) wx -= winsz;
@@ -473,14 +490,62 @@ QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_polygon		(const QStr
 	QTVP_GEOMARKER::geoGraphicsPolygonItem * pitem = base?dynamic_cast<QTVP_GEOMARKER::geoGraphicsPolygonItem  *>(base):0;
 	if (!pitem)
 		pitem	= new QTVP_GEOMARKER::geoGraphicsPolygonItem(name,
-						this->m_pVi,
-						latlons);
+															 this->m_pVi,
+															 latlons);
 
 	pitem->setPen(pen);
 	pitem->setBrush(brush);
 	if (base == pitem)
 	{
 		pitem->setGeo(latlons);
+		res = pitem;
+	}
+	else if (false==this->m_pScene->addItem(pitem,0))
+	{
+		if (base != pitem)
+			delete pitem;
+	}
+	else
+	{
+		int cs = propNames.size();
+		for (int i=0;i<cs && base != pitem;++i)
+		{
+			pitem->set_prop_data(propNames.first(), propValues.first());
+			propNames.pop_front();
+			propValues.pop_front();
+		}
+		res = pitem;
+	}
+	return res;
+}
+QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & name,double lat, double lon, int centerx, int centery, QString id)
+{
+	QTVP_GEOMARKER::geoItemBase *  res = 0;
+	//Get raw Item by name
+	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
+	//Get Props
+	QStringList propNames;
+	QVariantList propValues;
+	if (base)
+	{
+		propNames = base->prop_names();
+		propValues = base->prop_values();
+	}
+	//type convertion to T
+	QTVP_GEOMARKER::geoGraphicsPixmapItem * pitem = base?dynamic_cast<QTVP_GEOMARKER::geoGraphicsPixmapItem  *>(base):0;
+	if (!pitem)
+	{
+		pitem	= new QTVP_GEOMARKER::geoGraphicsPixmapItem(name,this->m_pVi,
+															lat,lon,
+															centerx,centery
+															);
+		if (m_map_icons.contains(id))
+			pitem->setPixmap(m_map_icons[id].icon);
+	}
+	if (base == pitem)
+	{
+		pitem->setGeo(lat,lon);
+		pitem->setCenterOffset(centerx,centery);
 		res = pitem;
 	}
 	else if (false==this->m_pScene->addItem(pitem,0))

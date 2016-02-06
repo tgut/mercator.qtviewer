@@ -23,6 +23,7 @@ namespace QTVP_GEOMARKER{
 
 	{
 		assert(vi()!=0);
+		this->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 		double px,py;
 		vi()->CV_LLA2World(m_lat,m_lon,&px,&py);
 		setOffset(px - m_center_offsetx, py - m_center_offsety);
@@ -41,7 +42,7 @@ namespace QTVP_GEOMARKER{
 		}
 	}
 
-	void geoGraphicsPixmapItem::setCenterOffset(qreal center_offsetx,qreal center_offsety)
+	void geoGraphicsPixmapItem::setCenterOffset(int center_offsetx,int center_offsety)
 	{
 		double px,py;
 		vi()->CV_LLA2World(m_lat,m_lon,&px,&py);

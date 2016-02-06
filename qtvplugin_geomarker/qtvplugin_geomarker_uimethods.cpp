@@ -173,7 +173,10 @@ void qtvplugin_geomarker::ini_save()
 
 	settings.setValue("ui/spinBox_textWeight",ui->spinBox_textWeight->value());
 	settings.setValue("ui/spinBox_fontSize",ui->spinBox_fontSize->value());
-
+	settings.setValue("ui/spinBox_icon_cenoffx",ui->spinBox_icon_cenoffx->value());
+	settings.setValue("ui/spinBox_icon_cenoffy",ui->spinBox_icon_cenoffy->value());
+	settings.setValue("ui/lineEdit_icon_lat",ui->lineEdit_icon_lat->text());
+	settings.setValue("ui/lineEdit_icon_lon",ui->lineEdit_icon_lon->text());
 }
 
 void qtvplugin_geomarker::ini_load()
@@ -253,6 +256,16 @@ void qtvplugin_geomarker::ini_load()
 
 	int spinBox_textWeight = settings.value("ui/spinBox_textWeight",16).toInt();
 	ui->spinBox_textWeight->setValue(spinBox_textWeight);
+
+	int spinBox_icon_cenoffx = settings.value("ui/spinBox_icon_cenoffx",0).toInt();
+	ui->spinBox_icon_cenoffx->setValue(spinBox_icon_cenoffx);
+	int spinBox_icon_cenoffy = settings.value("ui/spinBox_icon_cenoffy",0).toInt();
+	ui->spinBox_icon_cenoffy->setValue(spinBox_icon_cenoffy);
+
+	QString lineEdit_icon_lat = settings.value("ui/lineEdit_icon_lat","0").toString();
+	ui->lineEdit_icon_lat->setText(lineEdit_icon_lat);
+	QString lineEdit_icon_lon = settings.value("ui/lineEdit_icon_lon","0").toString();
+	ui->lineEdit_icon_lon->setText(lineEdit_icon_lon);
 }
 void qtvplugin_geomarker::on_pushButton_update_clicked()
 {
@@ -354,6 +367,15 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 		if (latlons.size())
 			newitem = update_polygon(name,latlons,pen,brush);
 
+	}
+	else if (ui->radioButton_tool_bitmaps->isChecked())
+	{
+		double lat = ui->lineEdit_icon_lat->text().toDouble();
+		double lon = ui->lineEdit_icon_lon->text().toDouble();
+		int cenx = ui->spinBox_icon_cenoffx->value();
+		int ceny = ui->spinBox_icon_cenoffy->value();
+		QString iconname = ui->comboBox_icons->currentText();
+		newitem = update_icon(name,lat,lon,cenx,ceny,iconname);
 	}
 	else
 		return;
@@ -577,6 +599,17 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 	}//end if item
 
 }
+void qtvplugin_geomarker::refreshIconModel()
+{
+	m_pIconsModel->clear();
+	foreach (QString key, m_map_icons.keys())
+	{
+		QStandardItem * item =  new QStandardItem(key);
+		QIcon icon(m_map_icons[key].icon);
+		item->setIcon(icon);
+		m_pIconsModel->appendRow(item);
+	}
+}
 
 void qtvplugin_geomarker::refreshProps(QTVP_GEOMARKER::geoItemBase * itm)
 {
@@ -632,4 +665,18 @@ void qtvplugin_geomarker::on_pushButton_load_clicked()
 	}
 	scheduleRefreshMarks();
 	m_pVi->UpdateWindow();
+}
+void qtvplugin_geomarker::on_comboBox_icons_currentIndexChanged(int index)
+{
+	QString strKey = ui->comboBox_icons->itemText(index);
+	if (m_map_icons.contains(strKey))
+	{
+		tag_icon & icon = m_map_icons[strKey];
+		ui->spinBox_icon_cenoffx->setValue(icon.centerx);
+		ui->spinBox_icon_cenoffy->setValue(icon.centery);
+	}
+}
+void qtvplugin_geomarker::on_pushButton_import_icon_clicked()
+{
+
 }

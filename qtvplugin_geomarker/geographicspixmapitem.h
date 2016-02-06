@@ -1,5 +1,5 @@
-#ifndef GEOGRAPHICSRECTITEM_H
-#define GEOGRAPHICSRECTITEM_H
+#ifndef GEOGRAPHICSPIXMAPITEM_H
+#define GEOGRAPHICSPIXMAPITEM_H
 
 #include <QGraphicsPixmapItem>
 #include "geoitembase.h"
@@ -9,8 +9,8 @@ namespace QTVP_GEOMARKER{
 	protected:
 		qreal m_lat;
 		qreal m_lon;
-		qreal m_center_offsetx;
-		qreal m_center_offsety;
+		int m_center_offsetx;
+		int m_center_offsety;
 	protected:
 		void mousePressEvent(QGraphicsSceneMouseEvent * event);
 		void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
@@ -24,9 +24,9 @@ namespace QTVP_GEOMARKER{
 	public:
 		qreal lat() const {return m_lat;}
 		qreal lon() const {return m_lon;}
-		qreal centerx() const {return m_center_offsetx;}
-		qreal centery() const {return m_center_offsety;}
-		void setCenterOffset(qreal center_offsetx,qreal center_offsety);
+		int centerx() const {return m_center_offsetx;}
+		int centery() const {return m_center_offsety;}
+		void setCenterOffset(int center_offsetx,int center_offsety);
 		void setGeo(qreal cent_lat,qreal cent_lon);
 		void adjust_coords(int ncurrLevel);
 		QPointF label_pos();
