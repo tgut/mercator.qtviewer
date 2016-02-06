@@ -53,7 +53,7 @@ namespace QTVP_GEOMARKER{
 		adjustLabelPos();
 	}
 
-	void geoGraphicsEllipseItem::setCenter(qreal cent_lat,qreal cent_lon)
+	void geoGraphicsEllipseItem::setGeo(qreal cent_lat,qreal cent_lon)
 	{
 		m_lat = cent_lat;
 		m_lon = cent_lon;

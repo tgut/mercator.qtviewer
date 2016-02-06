@@ -17,7 +17,8 @@ namespace QTVP_GEOMARKER{
 		ITEAMTYPE_ELLIPSE_POINT = 1,
 		ITEAMTYPE_RECT_POINT = 2,
 		ITEAMTYPE_LINE = 3,
-		ITEAMTYPE_POLYGON = 4
+		ITEAMTYPE_POLYGON = 4,
+		ITEAMTYPE_PIXMAP = 5
 	};
 	inline const  QString & item_name_by_enum(geo_item_type tp)
 	{

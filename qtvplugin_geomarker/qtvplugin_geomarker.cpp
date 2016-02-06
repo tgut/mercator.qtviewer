@@ -433,7 +433,7 @@ QTVP_GEOMARKER::geoItemBase *  qtvplugin_geomarker::update_line(const QString & 
 
 	if (base == pitem)
 	{
-		pitem->setGeoLine(lat1,lon1,lat2,lon2);
+		pitem->setGeo(lat1,lon1,lat2,lon2);
 		res = pitem;
 	}
 	else if (false==this->m_pScene->addItem(pitem,0))
@@ -480,7 +480,7 @@ QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_polygon		(const QStr
 	pitem->setBrush(brush);
 	if (base == pitem)
 	{
-		pitem->setGeoPolygon(latlons);
+		pitem->setGeo(latlons);
 		res = pitem;
 	}
 	else if (false==this->m_pScene->addItem(pitem,0))

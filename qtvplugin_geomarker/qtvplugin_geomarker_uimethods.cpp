@@ -93,6 +93,10 @@ void qtvplugin_geomarker::on_radioButton_tool_polygon_toggled(bool b)
 {
 	if (b) ui->stackedWidget_marks->setCurrentIndex(2);
 }
+void qtvplugin_geomarker::on_radioButton_tool_bitmaps_toggled(bool b )
+{
+	if (b) ui->stackedWidget_marks->setCurrentIndex(3);
+}
 
 void qtvplugin_geomarker::on_toolButton_selColorPen_clicked()
 {

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>446</width>
-    <height>457</height>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -88,6 +88,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_tool_bitmaps">
+            <property name="text">
+             <string>bitmaps</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -146,6 +153,9 @@
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_8">
+     <property name="spacing">
+      <number>1</number>
+     </property>
      <item>
       <widget class="QStackedWidget" name="stackedWidget_marks">
        <property name="sizePolicy">
@@ -168,8 +178,26 @@
        </property>
        <widget class="QWidget" name="page_points">
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>1</number>
+         </property>
+         <property name="leftMargin">
+          <number>1</number>
+         </property>
+         <property name="topMargin">
+          <number>1</number>
+         </property>
+         <property name="rightMargin">
+          <number>1</number>
+         </property>
+         <property name="bottomMargin">
+          <number>1</number>
+         </property>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <property name="spacing">
+            <number>1</number>
+           </property>
            <item>
             <widget class="QLabel" name="label_4">
              <property name="text">
@@ -194,6 +222,9 @@
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <property name="spacing">
+            <number>1</number>
+           </property>
            <property name="sizeConstraint">
             <enum>QLayout::SetDefaultConstraint</enum>
            </property>
@@ -351,6 +382,21 @@
        </widget>
        <widget class="QWidget" name="page_polygon">
         <layout class="QVBoxLayout" name="verticalLayout_4">
+         <property name="spacing">
+          <number>1</number>
+         </property>
+         <property name="leftMargin">
+          <number>1</number>
+         </property>
+         <property name="topMargin">
+          <number>1</number>
+         </property>
+         <property name="rightMargin">
+          <number>1</number>
+         </property>
+         <property name="bottomMargin">
+          <number>1</number>
+         </property>
          <item>
           <widget class="QLabel" name="label_13">
            <property name="text">
@@ -391,6 +437,7 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="page_bitmap"/>
       </widget>
      </item>
      <item>

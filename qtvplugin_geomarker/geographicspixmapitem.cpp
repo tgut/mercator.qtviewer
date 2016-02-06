@@ -1,77 +1,67 @@
-#include "geographicspolygonitem.h"
+#include "geographicspixmapitem.h"
 #include "../qtviewer_planetosm/osmtiles/viewer_interface.h"
 #include <assert.h>
-#include <QGraphicsSceneMouseEvent>
 #include <math.h>
+#include <QGraphicsSceneMouseEvent>
+#include <QMessageBox>
 #include "geographicsscene.h"
 #include "qtvplugin_geomarker.h"
 namespace QTVP_GEOMARKER{
-	geoGraphicsPolygonItem::geoGraphicsPolygonItem(
+	geoGraphicsPixmapItem::geoGraphicsPixmapItem(
 			QString name,
-			QTVOSM::viewer_interface * pVi,const QPolygonF & lla_polygon)
-		:QGraphicsPolygonItem(0)
-		,geoItemBase(name,QTVP_GEOMARKER::ITEAMTYPE_POLYGON,pVi)
+			QTVOSM::viewer_interface * pVi,
+			qreal lat,
+			qreal lon,
+			qreal center_offsetx,
+			qreal center_offsety)
+		:QGraphicsPixmapItem (0)
+		,geoItemBase(name,ITEAMTYPE_PIXMAP,pVi)
+		,m_lat(lat)
+		,m_lon(lon)
+		,m_center_offsetx(center_offsetx)
+		,m_center_offsety(center_offsety)
+
 	{
 		assert(vi()!=0);
-		m_llap = lla_polygon;
-		unwarrp();
-		QPolygonF wp;
-		foreach (const QPointF & pt, m_llap)
-		{
-			double px,py;
-			vi()->CV_LLA2World(pt.y(),pt.x(),&px,&py);
-			wp<<QPointF(px,py);
-		}
-		setPolygon(wp);
+		double px,py;
+		vi()->CV_LLA2World(m_lat,m_lon,&px,&py);
+		setOffset(px - m_center_offsetx, py - m_center_offsety);
 	}
-
-	void geoGraphicsPolygonItem::unwarrp()
+	void geoGraphicsPixmapItem::adjust_coords(int ncurrLevel)
 	{
-		int sz = m_llap.size();
-		if (sz<2)
-			return;
-		if (m_llap.first() != m_llap.last())
-		{
-			++sz;
-			m_llap.push_back(m_llap.first());
-		}
-		for (int i=1;i<sz;++i)
-		{
-			qreal m_lon1 = m_llap[i-1].x();
-			qreal m_lon2 = m_llap[i].x();
-			while (m_lon2 - m_lon1 < -180)
-				m_lon2 += 360;
-			while (m_lon2 - m_lon1 > 180)
-				m_lon2 -= 360;
-			m_llap[i].setX(m_lon2);
-		}
-	}
-
-	void geoGraphicsPolygonItem::adjust_coords(int nNewLevel)
-	{
-		if (vi() && nNewLevel != level())
+		if (vi() && ncurrLevel != level())
 		{
 			/** Since the map is zooming from level() to current level,
 			 * the map size zoom ratio can be calculated using pow below.
 			 * We can get new coord for current zoom level by multiplicative.
 			*/
-			double ratio = pow(2.0,(nNewLevel - level()));
-			QPolygonF p = this->polygon();
-			int sz = p.size();
-			for (int i=0;i<sz;++i)
-			{
-				qreal x = p[i].x() * ratio;
-				qreal y = p[i].y() * ratio;
-				p[i].setX(x);
-				p[i].setY(y);
-			}
-			this->setPolygon(p);
+			double ratio = pow(2.0,(ncurrLevel - level()));
+			QPointF offset = this->offset();
+			setOffset(offset.x()*ratio, offset.y()*ratio);
 		}
 	}
 
-	void geoGraphicsPolygonItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+	void geoGraphicsPixmapItem::setCenterOffset(qreal center_offsetx,qreal center_offsety)
 	{
-		QGraphicsPolygonItem::mousePressEvent(event);
+		double px,py;
+		vi()->CV_LLA2World(m_lat,m_lon,&px,&py);
+		m_center_offsetx = center_offsetx;
+		m_center_offsety = center_offsety;
+		setOffset(px - m_center_offsetx, py - m_center_offsety);
+	}
+
+	void geoGraphicsPixmapItem::setGeo(qreal cent_lat,qreal cent_lon)
+	{
+		m_lat = cent_lat;
+		m_lon = cent_lon;
+		double px,py;
+		vi()->CV_LLA2World(cent_lat,cent_lon,&px,&py);
+		setOffset(px - m_center_offsetx, py - m_center_offsety);
+		adjustLabelPos();
+	}
+	void geoGraphicsPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+	{
+		QGraphicsPixmapItem ::mousePressEvent(event);
 		bool bshow = this->props_visible();
 		this->show_props(!bshow);
 		//post enent
@@ -102,9 +92,10 @@ namespace QTVP_GEOMARKER{
 
 		}
 	}
-	void geoGraphicsPolygonItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+
+	void geoGraphicsPixmapItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 	{
-		QGraphicsPolygonItem::mouseDoubleClickEvent(event);
+		QGraphicsPixmapItem ::mouseDoubleClickEvent(event);
 		//post enent
 		QMap<QString, QVariant > map_evt;
 		geoGraphicsScene * pscene = dynamic_cast<geoGraphicsScene *>(this->scene());
@@ -134,37 +125,10 @@ namespace QTVP_GEOMARKER{
 		}
 	}
 
-	QPointF geoGraphicsPolygonItem::label_pos()
-	{
-		QPolygonF p = this->polygon();
-		int sz = p.size();
-		double x = 0, y = 0;
-		for (int i=0;i<sz;++i)
-		{
-			x += p[i].x();
-			y += p[i].y();
-		}
-		if (sz)
-		{
-			x /= sz;
-			y /= sz;
-		}
 
-		return QPointF(x,y);
-	}
 
-	void geoGraphicsPolygonItem::setGeo(const QPolygonF & lla_polygon)
+	QPointF geoGraphicsPixmapItem::label_pos()
 	{
-		m_llap = lla_polygon;
-		unwarrp();
-		QPolygonF wp;
-		foreach (const QPointF & pt, m_llap)
-		{
-			double px,py;
-			vi()->CV_LLA2World(pt.y(),pt.x(),&px,&py);
-			wp<<QPointF(px,py);
-		}
-		setPolygon(wp);
-		adjustLabelPos();
+		return QPointF(offset().x()+this->boundingRect().width(),offset().y()-8);
 	}
 }

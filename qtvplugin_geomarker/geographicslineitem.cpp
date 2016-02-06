@@ -135,7 +135,7 @@ namespace QTVP_GEOMARKER{
 					(line().y1() + line().y2())/2 );
 	}
 
-	void geoGraphicsLineItem::setGeoLine(qreal lat1, qreal lon1, qreal lat2, qreal lon2)
+	void geoGraphicsLineItem::setGeo(qreal lat1, qreal lon1, qreal lat2, qreal lon2)
 	{
 		m_lat1 = lat1;	m_lon1 = lon1;
 		m_lat2 = lat2;	m_lon2 = lon2;

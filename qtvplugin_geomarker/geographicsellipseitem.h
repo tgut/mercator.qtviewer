@@ -26,7 +26,7 @@ namespace QTVP_GEOMARKER{
 		qreal width() const {return m_width;}
 		qreal height() const {return m_height;}
 		void setSize(qreal pxwidth,qreal pxheight);
-		void setCenter(qreal cent_lat,qreal cent_lon);
+		void setGeo(qreal cent_lat,qreal cent_lon);
 		void adjust_coords(int nNewLevel);
 		QPointF label_pos();
 	};

@@ -159,6 +159,7 @@ protected slots:
 	void on_radioButton_tool_point_toggled(bool);
 	void on_radioButton_tool_line_toggled(bool);
 	void on_radioButton_tool_polygon_toggled(bool);
+	void on_radioButton_tool_bitmaps_toggled(bool);
 	void on_toolButton_selColorPen_clicked();
 	void on_toolButton_selColorFill_clicked();
 	void on_toolButton_selColorText_clicked();
@@ -199,7 +200,7 @@ QTVP_GEOMARKER::geoItemBase * qtvplugin_geomarker::update_point(const QString & 
 
 	if (base == pitem)
 	{
-		pitem->setCenter(lat,lon);
+		pitem->setGeo(lat,lon);
 		pitem->setSize(width,height);
 		res = pitem;
 	}

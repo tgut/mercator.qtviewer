@@ -20,7 +20,7 @@ namespace QTVP_GEOMARKER{
 				);
 	public:
 		QPolygonF llas() const {return m_llap;}
-		void setGeoPolygon(const QPolygonF & lla_polygon);
+		void setGeo(const QPolygonF & lla_polygon);
 		void adjust_coords(int nNewLevel);
 		QPointF label_pos();
 	};

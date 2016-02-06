@@ -22,7 +22,8 @@ SOURCES += \
     geographicslineitem.cpp \
     geographicspolygonitem.cpp \
     qtvplugin_geomarker_func.cpp \
-    qtvplugin_geomarker_xml.cpp
+    qtvplugin_geomarker_xml.cpp \
+    geographicspixmapitem.cpp
 
 HEADERS +=\
     ../qtviewer_planetosm/osmtiles/layer_interface.h \
@@ -33,7 +34,8 @@ HEADERS +=\
     geographicsscene.h \
     geographicsrectitem.h \
     geographicslineitem.h \
-    geographicspolygonitem.h
+    geographicspolygonitem.h \
+    geographicspixmapitem.h
 
 FORMS += \
     qtvplugin_geomarker.ui

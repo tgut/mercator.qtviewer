@@ -28,7 +28,7 @@ namespace QTVP_GEOMARKER{
 		qreal lon1() const {return m_lon1;}
 		qreal lat2() const {return m_lat2;}
 		qreal lon2() const {return m_lon2;}
-		void setGeoLine(qreal lat1, qreal lon1, qreal lat2, qreal lon2);
+		void setGeo(qreal lat1, qreal lon1, qreal lat2, qreal lon2);
 		void adjust_coords(int nNewLevel);
 		QPointF label_pos();
 	};

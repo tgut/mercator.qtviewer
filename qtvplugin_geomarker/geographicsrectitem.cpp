@@ -54,7 +54,7 @@ namespace QTVP_GEOMARKER{
 		setRect(px - pxwidth/2, py - pxheight/2, pxwidth, pxheight);
 	}
 
-	void geoGraphicsRectItem::setCenter(qreal cent_lat,qreal cent_lon)
+	void geoGraphicsRectItem::setGeo(qreal cent_lat,qreal cent_lon)
 	{
 		m_lat = cent_lat;
 		m_lon = cent_lon;
