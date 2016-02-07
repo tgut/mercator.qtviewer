@@ -141,6 +141,7 @@ void qtvplugin_geomarker::ini_save()
 	int radioButton_tool_point = 0;
 	if (ui->radioButton_tool_line->isChecked()==true) radioButton_tool_point = 1;
 	else if (ui->radioButton_tool_polygon->isChecked()==true) radioButton_tool_point = 2;
+	else if (ui->radioButton_tool_bitmaps->isChecked()==true) radioButton_tool_point = 3;
 	else radioButton_tool_point = 0;
 	settings.setValue("ui/radioButton_tool_point",radioButton_tool_point);
 
@@ -193,6 +194,9 @@ void qtvplugin_geomarker::ini_load()
 		break;
 	case 2:
 		ui->radioButton_tool_polygon->setChecked(true);
+		break;
+	case 3:
+		ui->radioButton_tool_bitmaps->setChecked(true);
 		break;
 	default:
 		ui->radioButton_tool_point->setChecked(true);
@@ -257,9 +261,9 @@ void qtvplugin_geomarker::ini_load()
 	int spinBox_textWeight = settings.value("ui/spinBox_textWeight",16).toInt();
 	ui->spinBox_textWeight->setValue(spinBox_textWeight);
 
-	int spinBox_icon_cenoffx = settings.value("ui/spinBox_icon_cenoffx",0).toInt();
+	int spinBox_icon_cenoffx = settings.value("ui/spinBox_icon_cenoffx",16).toInt();
 	ui->spinBox_icon_cenoffx->setValue(spinBox_icon_cenoffx);
-	int spinBox_icon_cenoffy = settings.value("ui/spinBox_icon_cenoffy",0).toInt();
+	int spinBox_icon_cenoffy = settings.value("ui/spinBox_icon_cenoffy",16).toInt();
 	ui->spinBox_icon_cenoffy->setValue(spinBox_icon_cenoffy);
 
 	QString lineEdit_icon_lat = settings.value("ui/lineEdit_icon_lat","0").toString();

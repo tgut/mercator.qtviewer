@@ -38,7 +38,9 @@ namespace QTVP_GEOMARKER{
 			*/
 			double ratio = pow(2.0,(ncurrLevel - level()));
 			QPointF offset = this->offset();
-			setOffset(offset.x()*ratio, offset.y()*ratio);
+			double oldlefttop_x = offset.x() + m_center_offsetx;
+			double oldlefttop_y = offset.y() + m_center_offsety;
+			setOffset(oldlefttop_x*ratio - m_center_offsetx, oldlefttop_y*ratio - m_center_offsety);
 		}
 	}
 
