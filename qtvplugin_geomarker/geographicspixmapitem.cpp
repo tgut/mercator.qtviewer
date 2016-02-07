@@ -7,26 +7,23 @@
 #include "geographicsscene.h"
 #include "qtvplugin_geomarker.h"
 namespace QTVP_GEOMARKER{
-	geoGraphicsPixmapItem::geoGraphicsPixmapItem(
-			QString name,
-			QTVOSM::viewer_interface * pVi,
-			qreal lat,
-			qreal lon,
-			qreal center_offsetx,
-			qreal center_offsety)
+	geoGraphicsPixmapItem::geoGraphicsPixmapItem(QString name,QTVOSM::viewer_interface * pVi
+												 ,const tag_icon * pIcon,
+												 qreal lat/* = 90*/,
+												 qreal lon/* = 0*/)
 		:QGraphicsPixmapItem (0)
 		,geoItemBase(name,ITEAMTYPE_PIXMAP,pVi)
 		,m_lat(lat)
 		,m_lon(lon)
-		,m_center_offsetx(center_offsetx)
-		,m_center_offsety(center_offsety)
+		,m_pIcon(pIcon)
 
 	{
 		assert(vi()!=0);
 		this->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 		double px,py;
 		vi()->CV_LLA2World(m_lat,m_lon,&px,&py);
-		setOffset(px - m_center_offsetx, py - m_center_offsety);
+		setOffset(px - m_pIcon->centerx, py - m_pIcon->centery);
+		QGraphicsPixmapItem::setPixmap(m_pIcon->icon);
 	}
 	void geoGraphicsPixmapItem::adjust_coords(int ncurrLevel)
 	{
@@ -38,19 +35,21 @@ namespace QTVP_GEOMARKER{
 			*/
 			double ratio = pow(2.0,(ncurrLevel - level()));
 			QPointF offset = this->offset();
-			double oldlefttop_x = offset.x() + m_center_offsetx;
-			double oldlefttop_y = offset.y() + m_center_offsety;
-			setOffset(oldlefttop_x*ratio - m_center_offsetx, oldlefttop_y*ratio - m_center_offsety);
+			double oldlefttop_x = offset.x() + m_pIcon->centerx;
+			double oldlefttop_y = offset.y() + m_pIcon->centery;
+			setOffset(oldlefttop_x*ratio - m_pIcon->centerx, oldlefttop_y*ratio - m_pIcon->centery);
 		}
 	}
 
-	void geoGraphicsPixmapItem::setCenterOffset(int center_offsetx,int center_offsety)
+	void geoGraphicsPixmapItem::setPixmap(const tag_icon &icon)
 	{
+		this->m_pIcon = &icon;
+		QGraphicsPixmapItem::setPixmap(icon.icon);
+
 		double px,py;
 		vi()->CV_LLA2World(m_lat,m_lon,&px,&py);
-		m_center_offsetx = center_offsetx;
-		m_center_offsety = center_offsety;
-		setOffset(px - m_center_offsetx, py - m_center_offsety);
+		setOffset(px - m_pIcon->centerx, py - m_pIcon->centery);
+
 	}
 
 	void geoGraphicsPixmapItem::setGeo(qreal cent_lat,qreal cent_lon)
@@ -59,7 +58,7 @@ namespace QTVP_GEOMARKER{
 		m_lon = cent_lon;
 		double px,py;
 		vi()->CV_LLA2World(cent_lat,cent_lon,&px,&py);
-		setOffset(px - m_center_offsetx, py - m_center_offsety);
+		setOffset(px - m_pIcon->centerx, py - m_pIcon->centery);
 		adjustLabelPos();
 	}
 	void geoGraphicsPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent * event)

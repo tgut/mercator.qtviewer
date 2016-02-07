@@ -73,12 +73,12 @@ qtvplugin_geomarker::qtvplugin_geomarker(QWidget *parent) :
 	m_pFillStyleModel->appendRow(new QStandardItem("DiagCrossPattern"));
 	ui->comboBox_fillPad->setModel(m_pFillStyleModel);
 
-	//insert 2 icons
-	tag_icon icon;
-	icon.name = "://icons/Medical.png";
-	icon.filename = "://icons/Medical.png";
-	icon.centerx = 16;
-	icon.centery = 16;
+	//insert 1 icons
+	QTVP_GEOMARKER::tag_icon icon;
+	icon.name = "default";
+	icon.filename = "://icons/default.png";
+	icon.centerx = 8;
+	icon.centery = 8;
 	if (icon.icon.load(icon.filename))
 		m_map_icons[icon.name] = icon;
 
@@ -518,7 +518,7 @@ QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_polygon		(const QStr
 	}
 	return res;
 }
-QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & name,double lat, double lon, int centerx, int centery, QString id)
+QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & name,double lat, double lon, QString id)
 {
 	QTVP_GEOMARKER::geoItemBase *  res = 0;
 	//Get raw Item by name
@@ -535,17 +535,24 @@ QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & n
 	QTVP_GEOMARKER::geoGraphicsPixmapItem * pitem = base?dynamic_cast<QTVP_GEOMARKER::geoGraphicsPixmapItem  *>(base):0;
 	if (!pitem)
 	{
-		pitem	= new QTVP_GEOMARKER::geoGraphicsPixmapItem(name,this->m_pVi,
-															lat,lon,
-															centerx,centery
-															);
+		const QTVP_GEOMARKER::tag_icon * iconp = 0;
 		if (m_map_icons.contains(id))
-			pitem->setPixmap(m_map_icons[id].icon);
+			iconp = &m_map_icons[id];
+		else
+			iconp = &m_map_icons["default"];
+
+		pitem	= new QTVP_GEOMARKER::geoGraphicsPixmapItem(name,this->m_pVi,
+															iconp,
+															lat,lon
+															);
 	}
 	if (base == pitem)
 	{
 		pitem->setGeo(lat,lon);
-		pitem->setCenterOffset(centerx,centery);
+		if (m_map_icons.contains(id))
+			pitem->setPixmap(m_map_icons[id]);
+		else
+			pitem->setPixmap(m_map_icons["default"]);
 		res = pitem;
 	}
 	else if (false==this->m_pScene->addItem(pitem,0))

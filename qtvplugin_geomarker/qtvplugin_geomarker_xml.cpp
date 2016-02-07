@@ -128,6 +128,22 @@ bool qtvplugin_geomarker::xml_save(QString xml)
 			}
 		}
 			break;
+		case QTVP_GEOMARKER::ITEAMTYPE_PIXMAP:
+		{
+			QTVP_GEOMARKER::geoGraphicsPixmapItem * pU = dynamic_cast<QTVP_GEOMARKER::geoGraphicsPixmapItem *>(item);
+			if (pU)
+			{
+				//1.2. geo
+				stream.writeStartElement("geo");
+				stream.writeAttribute("coords","1");
+				stream.writeTextElement("cod",QString("%1,%2").arg(pU->lat(),0,'f',7).arg(pU->lon(),0,'f',7));
+				stream.writeEndElement(); // geo
+				//1.2 style
+				stream.writeStartElement("style");
+				stream.writeTextElement("icon",QString("%1").arg(pU->icon()->name));
+			}
+		}
+			break;
 		default:
 			break;
 		}
@@ -410,8 +426,16 @@ bool qtvplugin_geomarker::xml_update_mark(tag_xml_mark & mark)
 	{
 		newitem = update_polygon(name,mark.geoPoints,pen,brush);
 	}
+	else if (mark.type==QTVP_GEOMARKER::ITEAMTYPE_PIXMAP)
+	{
+		double lat = mark.geoPoints.first().y();
+		double lon = mark.geoPoints.first().x();
+		QString iconName = mark.styles["icon"];
+		newitem = update_icon(name,lat,lon,iconName);
+	}
 	else
 		return false;
+
 	if (newitem)
 	{
 		int fontSz = mark.styles["size_label"].toInt();

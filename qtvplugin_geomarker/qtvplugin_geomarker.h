@@ -10,6 +10,7 @@
 #include "geographicsscene.h"
 #include "../qtviewer_planetosm/osmtiles/layer_interface.h"
 #include "../qtviewer_planetosm/osmtiles/viewer_interface.h"
+#include "geographicspixmapitem.h"
 #include "geoitembase.h"
 namespace Ui {
 	class qtvplugin_geomarker;
@@ -50,15 +51,8 @@ private:
 		QMap<QString, QString> styles;
 		QMap<QString, QString> props;
 	};
-	struct tag_icon{
-		QString name;
-		QString filename;
-		QPixmap icon;
-		int centerx;
-		int centery;
-	};
 	//The global icon map
-	QMap<QString,tag_icon> m_map_icons;
+	QMap<QString,QTVP_GEOMARKER::tag_icon> m_map_icons;
 
 public:
 	qtvplugin_geomarker(QWidget *parent = 0);
@@ -126,7 +120,7 @@ private:
 	QTVP_GEOMARKER::geoItemBase *	update_point		(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush);
 	QTVP_GEOMARKER::geoItemBase *	update_line			(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen);
 	QTVP_GEOMARKER::geoItemBase *	update_polygon		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush);
-	QTVP_GEOMARKER::geoItemBase *	update_icon			(const QString & name,double lat, double lon, int centerx, int centery, QString id);
+	QTVP_GEOMARKER::geoItemBase *	update_icon			(const QString & name,double lat, double lon, QString id);
 	//update method for XML
 	bool							xml_update_mark		(tag_xml_mark & mark);
 	//update method for plugin function calls
@@ -168,7 +162,6 @@ protected:
 	void loadTranslations();
 	//ui slots
 protected slots:
-	void on_comboBox_icons_currentIndexChanged(int index);
 	void on_pushButton_update_clicked();
 	void on_radioButton_tool_point_toggled(bool);
 	void on_radioButton_tool_line_toggled(bool);

@@ -4,30 +4,35 @@
 #include <QGraphicsPixmapItem>
 #include "geoitembase.h"
 namespace QTVP_GEOMARKER{
+	struct tag_icon{
+		QString name;
+		QString filename;
+		QPixmap icon;
+		int centerx;
+		int centery;
+	};
+
 	class geoGraphicsPixmapItem : public QGraphicsPixmapItem , public geoItemBase
 	{
 	protected:
 		qreal m_lat;
 		qreal m_lon;
-		int m_center_offsetx;
-		int m_center_offsety;
+		const tag_icon * m_pIcon;
 	protected:
 		void mousePressEvent(QGraphicsSceneMouseEvent * event);
 		void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
 	public:
-		explicit geoGraphicsPixmapItem(QString name,QTVOSM::viewer_interface * pVi,
-							   qreal cent_lat = 90,
-							   qreal cent_lon = 0,
-							   qreal center_offsetx = 0,
-							   qreal center_offsety = 0);
+		explicit geoGraphicsPixmapItem(QString name,QTVOSM::viewer_interface * pVi
+									   ,const tag_icon * pIcon,
+									   qreal cent_lat = 90,
+									   qreal cent_lon = 0);
 	public:
+		const tag_icon *  icon(){return m_pIcon;}
 		qreal lat() const {return m_lat;}
 		qreal lon() const {return m_lon;}
-		int centerx() const {return m_center_offsetx;}
-		int centery() const {return m_center_offsety;}
-		void setCenterOffset(int center_offsetx,int center_offsety);
 		void setGeo(qreal cent_lat,qreal cent_lon);
+		void setPixmap(const tag_icon &icon);
 		void adjust_coords(int ncurrLevel);
 		QPointF label_pos();
 	};

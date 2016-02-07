@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/people.ico</file>
-        <file>icons/Medical.png</file>
+        <file>icons/default.png</file>
     </qresource>
 </RCC>

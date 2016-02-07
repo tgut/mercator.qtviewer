@@ -12,6 +12,7 @@
 #include "geographicsrectitem.h"
 #include "geographicslineitem.h"
 #include "geographicspolygonitem.h"
+#include "dialogselecticon.h"
 
 void		qtvplugin_geomarker::timerEvent(QTimerEvent * e)
 {
@@ -174,8 +175,6 @@ void qtvplugin_geomarker::ini_save()
 
 	settings.setValue("ui/spinBox_textWeight",ui->spinBox_textWeight->value());
 	settings.setValue("ui/spinBox_fontSize",ui->spinBox_fontSize->value());
-	settings.setValue("ui/spinBox_icon_cenoffx",ui->spinBox_icon_cenoffx->value());
-	settings.setValue("ui/spinBox_icon_cenoffy",ui->spinBox_icon_cenoffy->value());
 	settings.setValue("ui/lineEdit_icon_lat",ui->lineEdit_icon_lat->text());
 	settings.setValue("ui/lineEdit_icon_lon",ui->lineEdit_icon_lon->text());
 }
@@ -260,11 +259,6 @@ void qtvplugin_geomarker::ini_load()
 
 	int spinBox_textWeight = settings.value("ui/spinBox_textWeight",16).toInt();
 	ui->spinBox_textWeight->setValue(spinBox_textWeight);
-
-	int spinBox_icon_cenoffx = settings.value("ui/spinBox_icon_cenoffx",16).toInt();
-	ui->spinBox_icon_cenoffx->setValue(spinBox_icon_cenoffx);
-	int spinBox_icon_cenoffy = settings.value("ui/spinBox_icon_cenoffy",16).toInt();
-	ui->spinBox_icon_cenoffy->setValue(spinBox_icon_cenoffy);
 
 	QString lineEdit_icon_lat = settings.value("ui/lineEdit_icon_lat","0").toString();
 	ui->lineEdit_icon_lat->setText(lineEdit_icon_lat);
@@ -376,10 +370,8 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 	{
 		double lat = ui->lineEdit_icon_lat->text().toDouble();
 		double lon = ui->lineEdit_icon_lon->text().toDouble();
-		int cenx = ui->spinBox_icon_cenoffx->value();
-		int ceny = ui->spinBox_icon_cenoffy->value();
 		QString iconname = ui->comboBox_icons->currentText();
-		newitem = update_icon(name,lat,lon,cenx,ceny,iconname);
+		newitem = update_icon(name,lat,lon,iconname);
 	}
 	else
 		return;
@@ -670,17 +662,13 @@ void qtvplugin_geomarker::on_pushButton_load_clicked()
 	scheduleRefreshMarks();
 	m_pVi->UpdateWindow();
 }
-void qtvplugin_geomarker::on_comboBox_icons_currentIndexChanged(int index)
-{
-	QString strKey = ui->comboBox_icons->itemText(index);
-	if (m_map_icons.contains(strKey))
-	{
-		tag_icon & icon = m_map_icons[strKey];
-		ui->spinBox_icon_cenoffx->setValue(icon.centerx);
-		ui->spinBox_icon_cenoffy->setValue(icon.centery);
-	}
-}
 void qtvplugin_geomarker::on_pushButton_import_icon_clicked()
 {
-
+	DialogSelectIcon dlg(this);
+	dlg.iniFileName = ini_file();
+	if (dlg.exec()==QDialog::Accepted)
+	{
+		m_map_icons[dlg.m_icon.name] = dlg.m_icon;
+		refreshIconModel();
+	}
 }

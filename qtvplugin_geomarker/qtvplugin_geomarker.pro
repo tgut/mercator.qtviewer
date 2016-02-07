@@ -23,7 +23,8 @@ SOURCES += \
     geographicspolygonitem.cpp \
     qtvplugin_geomarker_func.cpp \
     qtvplugin_geomarker_xml.cpp \
-    geographicspixmapitem.cpp
+    geographicspixmapitem.cpp \
+    dialogselecticon.cpp
 
 HEADERS +=\
     ../qtviewer_planetosm/osmtiles/layer_interface.h \
@@ -35,10 +36,12 @@ HEADERS +=\
     geographicsrectitem.h \
     geographicslineitem.h \
     geographicspolygonitem.h \
-    geographicspixmapitem.h
+    geographicspixmapitem.h \
+    dialogselecticon.h
 
 FORMS += \
-    qtvplugin_geomarker.ui
+    qtvplugin_geomarker.ui \
+    dialogselecticon.ui
 
 TRANSLATIONS += qtvplugin_geomarker_zh_CN.ts
 
