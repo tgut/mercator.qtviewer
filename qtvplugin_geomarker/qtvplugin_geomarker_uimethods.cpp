@@ -177,6 +177,8 @@ void qtvplugin_geomarker::ini_save()
 	settings.setValue("ui/spinBox_fontSize",ui->spinBox_fontSize->value());
 	settings.setValue("ui/lineEdit_icon_lat",ui->lineEdit_icon_lat->text());
 	settings.setValue("ui/lineEdit_icon_lon",ui->lineEdit_icon_lon->text());
+	settings.setValue("ui/lineEdit_icon_rotate",ui->lineEdit_icon_rotate->text());
+	settings.setValue("ui/lineEdit_icon_scale",ui->lineEdit_icon_scale->text());
 }
 
 void qtvplugin_geomarker::ini_load()
@@ -264,6 +266,11 @@ void qtvplugin_geomarker::ini_load()
 	ui->lineEdit_icon_lat->setText(lineEdit_icon_lat);
 	QString lineEdit_icon_lon = settings.value("ui/lineEdit_icon_lon","0").toString();
 	ui->lineEdit_icon_lon->setText(lineEdit_icon_lon);
+	QString lineEdit_icon_scale = settings.value("ui/lineEdit_icon_scale","1.0").toString();
+	ui->lineEdit_icon_scale->setText(lineEdit_icon_scale);
+	QString lineEdit_icon_rotate = settings.value("ui/lineEdit_icon_rotate","1.0").toString();
+	ui->lineEdit_icon_rotate->setText(lineEdit_icon_rotate);
+
 }
 void qtvplugin_geomarker::on_pushButton_update_clicked()
 {
@@ -370,8 +377,11 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 	{
 		double lat = ui->lineEdit_icon_lat->text().toDouble();
 		double lon = ui->lineEdit_icon_lon->text().toDouble();
+		qreal scale = ui->lineEdit_icon_scale->text().toFloat();
+		qreal rotate = ui->lineEdit_icon_rotate->text().toFloat();
 		QString iconname = ui->comboBox_icons->currentText();
-		newitem = update_icon(name,lat,lon,iconname);
+		int smooth = ui->checkBox_icon_smooth->isChecked()?1:0;
+		newitem = update_icon(name,lat,lon,scale,rotate,smooth,iconname);
 	}
 	else
 		return;
@@ -560,6 +570,20 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 				strPlainText += QString("%1,%2;\n").arg(p.y(),0,'f',7).arg(p.x(),0,'f',7);
 			ui->plainTextEdit_corners->setPlainText(strPlainText);
 			ui->radioButton_tool_polygon->setChecked(true);
+		}
+			break;
+		case QTVP_GEOMARKER::ITEAMTYPE_PIXMAP:
+		{
+			QTVP_GEOMARKER::geoGraphicsPixmapItem * pitem = dynamic_cast<QTVP_GEOMARKER::geoGraphicsPixmapItem *>(item);
+			if (!pitem)
+				break;
+			ui->lineEdit_icon_lat->setText(QString("%1").arg(pitem->lat(),0,'f',7));
+			ui->lineEdit_icon_lon->setText(QString("%1").arg(pitem->lon(),0,'f',7));
+			ui->radioButton_tool_bitmaps->setChecked(true);
+			ui->lineEdit_icon_rotate->setText(QString("%1").arg(pitem->rotation()));
+			ui->lineEdit_icon_scale->setText(QString("%1").arg(pitem->scale()));
+			QString nameicon = pitem->icon()->name;
+			ui->comboBox_icons->setCurrentText(nameicon);
 		}
 			break;
 		default:

@@ -452,11 +452,42 @@
             <widget class="QComboBox" name="comboBox_icons"/>
            </item>
            <item>
+            <widget class="QCheckBox" name="checkBox_icon_smooth">
+             <property name="text">
+              <string>smooth</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="pushButton_import_icon">
              <property name="text">
               <string>import</string>
              </property>
             </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_19">
+           <item>
+            <widget class="QLabel" name="label_26">
+             <property name="text">
+              <string>scale ratio</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_icon_scale"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_18">
+             <property name="text">
+              <string>rotate</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_icon_rotate"/>
            </item>
           </layout>
          </item>

@@ -141,6 +141,9 @@ bool qtvplugin_geomarker::xml_save(QString xml)
 				//1.2 style
 				stream.writeStartElement("style");
 				stream.writeTextElement("icon",QString("%1").arg(pU->icon()->name));
+				stream.writeTextElement("scale",QString("%1").arg(pU->scale()));
+				stream.writeTextElement("rotate",QString("%1").arg(pU->rotation()));
+				stream.writeTextElement("smooth",QString("%1").arg(pU->transformationMode()==Qt::SmoothTransformation?1:0));
 			}
 		}
 			break;
@@ -431,7 +434,10 @@ bool qtvplugin_geomarker::xml_update_mark(tag_xml_mark & mark)
 		double lat = mark.geoPoints.first().y();
 		double lon = mark.geoPoints.first().x();
 		QString iconName = mark.styles["icon"];
-		newitem = update_icon(name,lat,lon,iconName);
+		qreal scale = mark.styles["scale"].toFloat();
+		qreal rotate = mark.styles["rotate"].toFloat();
+		int smooth = mark.styles["smooth"].toInt();
+		newitem = update_icon(name,lat,lon,scale,rotate,smooth,iconName);
 	}
 	else
 		return false;

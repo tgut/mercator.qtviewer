@@ -228,6 +228,7 @@ void qtvplugin_geomarker::cb_levelChanged(int level)
 		return ;
 	//Adjust new Scene rect
 	QRectF rect(0,0,256*(1<<level),256*(1<<level));
+	m_pScene->setSceneRect(QRectF(0,0,1,1));
 	m_pScene->adjust_item_coords(level);
 	m_pScene->setSceneRect(rect);
 }
@@ -285,10 +286,13 @@ bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 	double mlat, mlon;
 	m_pVi->CV_DP2World(mouse_view_pt.x(),mouse_view_pt.y(),&wx,&wy);
 	m_pVi->CV_DP2LLA(mouse_view_pt.x(),mouse_view_pt.y(),&mlat,&mlon);
-	ui->lineEdit_point_lat->setText(QString("%1").arg(mlat,0,'f',7));
-	ui->lineEdit_point_lon->setText(QString("%1").arg(mlon,0,'f',7));
-	ui->lineEdit_icon_lat->setText(QString("%1").arg(mlat,0,'f',7));
-	ui->lineEdit_icon_lon->setText(QString("%1").arg(mlon,0,'f',7));
+	if (e->button()==Qt::RightButton)
+	{
+		ui->lineEdit_point_lat->setText(QString("%1").arg(mlat,0,'f',7));
+		ui->lineEdit_point_lon->setText(QString("%1").arg(mlon,0,'f',7));
+		ui->lineEdit_icon_lat->setText(QString("%1").arg(mlat,0,'f',7));
+		ui->lineEdit_icon_lon->setText(QString("%1").arg(mlon,0,'f',7));
+	}
 	//Warp
 	while (wx < 0) wx += winsz;
 	while (wx > winsz-1) wx -= winsz;
@@ -518,7 +522,7 @@ QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_polygon		(const QStr
 	}
 	return res;
 }
-QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & name,double lat, double lon, QString id)
+QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & name,double lat, double lon,qreal scale, qreal rotate,int smooth, QString id)
 {
 	QTVP_GEOMARKER::geoItemBase *  res = 0;
 	//Get raw Item by name
@@ -570,6 +574,15 @@ QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & n
 			propValues.pop_front();
 		}
 		res = pitem;
+	}
+	if (pitem)
+	{
+		pitem->setScale(scale);
+		pitem->setRotation(rotate);
+		if (smooth)
+			pitem->setTransformationMode(Qt::SmoothTransformation);
+		else
+			pitem->setTransformationMode(Qt::FastTransformation);
 	}
 	return res;
 }

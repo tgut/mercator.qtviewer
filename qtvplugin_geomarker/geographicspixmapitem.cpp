@@ -24,6 +24,8 @@ namespace QTVP_GEOMARKER{
 		vi()->CV_LLA2World(m_lat,m_lon,&px,&py);
 		setOffset(px - m_pIcon->centerx, py - m_pIcon->centery);
 		QGraphicsPixmapItem::setPixmap(m_pIcon->icon);
+		QGraphicsPixmapItem::setTransformOriginPoint(px,py);
+		QGraphicsPixmapItem::setTransformationMode(Qt::FastTransformation );
 	}
 	void geoGraphicsPixmapItem::adjust_coords(int ncurrLevel)
 	{
@@ -38,6 +40,7 @@ namespace QTVP_GEOMARKER{
 			double oldlefttop_x = offset.x() + m_pIcon->centerx;
 			double oldlefttop_y = offset.y() + m_pIcon->centery;
 			setOffset(oldlefttop_x*ratio - m_pIcon->centerx, oldlefttop_y*ratio - m_pIcon->centery);
+			QGraphicsPixmapItem::setTransformOriginPoint(oldlefttop_x*ratio, oldlefttop_y*ratio );
 		}
 	}
 
@@ -49,7 +52,7 @@ namespace QTVP_GEOMARKER{
 		double px,py;
 		vi()->CV_LLA2World(m_lat,m_lon,&px,&py);
 		setOffset(px - m_pIcon->centerx, py - m_pIcon->centery);
-
+		QGraphicsPixmapItem::setTransformOriginPoint(px, py);
 	}
 
 	void geoGraphicsPixmapItem::setGeo(qreal cent_lat,qreal cent_lon)
@@ -59,6 +62,7 @@ namespace QTVP_GEOMARKER{
 		double px,py;
 		vi()->CV_LLA2World(cent_lat,cent_lon,&px,&py);
 		setOffset(px - m_pIcon->centerx, py - m_pIcon->centery);
+		QGraphicsPixmapItem::setTransformOriginPoint(px, py);
 		adjustLabelPos();
 	}
 	void geoGraphicsPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
