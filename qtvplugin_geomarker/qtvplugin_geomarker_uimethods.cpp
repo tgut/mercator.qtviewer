@@ -94,7 +94,7 @@ void qtvplugin_geomarker::on_radioButton_tool_polygon_toggled(bool b)
 {
 	if (b) ui->stackedWidget_marks->setCurrentIndex(2);
 }
-void qtvplugin_geomarker::on_radioButton_tool_bitmaps_toggled(bool b )
+void qtvplugin_geomarker::on_radioButton_tool_icons_toggled(bool b )
 {
 	if (b) ui->stackedWidget_marks->setCurrentIndex(3);
 }
@@ -142,7 +142,7 @@ void qtvplugin_geomarker::ini_save()
 	int radioButton_tool_point = 0;
 	if (ui->radioButton_tool_line->isChecked()==true) radioButton_tool_point = 1;
 	else if (ui->radioButton_tool_polygon->isChecked()==true) radioButton_tool_point = 2;
-	else if (ui->radioButton_tool_bitmaps->isChecked()==true) radioButton_tool_point = 3;
+	else if (ui->radioButton_tool_icons->isChecked()==true) radioButton_tool_point = 3;
 	else radioButton_tool_point = 0;
 	settings.setValue("ui/radioButton_tool_point",radioButton_tool_point);
 
@@ -197,7 +197,7 @@ void qtvplugin_geomarker::ini_load()
 		ui->radioButton_tool_polygon->setChecked(true);
 		break;
 	case 3:
-		ui->radioButton_tool_bitmaps->setChecked(true);
+		ui->radioButton_tool_icons->setChecked(true);
 		break;
 	default:
 		ui->radioButton_tool_point->setChecked(true);
@@ -373,7 +373,7 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 			newitem = update_polygon(name,latlons,pen,brush);
 
 	}
-	else if (ui->radioButton_tool_bitmaps->isChecked())
+	else if (ui->radioButton_tool_icons->isChecked())
 	{
 		double lat = ui->lineEdit_icon_lat->text().toDouble();
 		double lon = ui->lineEdit_icon_lon->text().toDouble();
@@ -579,7 +579,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 				break;
 			ui->lineEdit_icon_lat->setText(QString("%1").arg(pitem->lat(),0,'f',7));
 			ui->lineEdit_icon_lon->setText(QString("%1").arg(pitem->lon(),0,'f',7));
-			ui->radioButton_tool_bitmaps->setChecked(true);
+			ui->radioButton_tool_icons->setChecked(true);
 			ui->lineEdit_icon_rotate->setText(QString("%1").arg(pitem->rotation()));
 			ui->lineEdit_icon_scale->setText(QString("%1").arg(pitem->scale()));
 			QString nameicon = pitem->icon()->name;

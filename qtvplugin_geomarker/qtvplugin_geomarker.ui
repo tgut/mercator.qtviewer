@@ -89,9 +89,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_tool_bitmaps">
+           <widget class="QRadioButton" name="radioButton_tool_icons">
             <property name="text">
-             <string>bitmaps</string>
+             <string>icons</string>
             </property>
            </widget>
           </item>
@@ -437,7 +437,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="page_bitmap">
+       <widget class="QWidget" name="page_icon">
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_18">

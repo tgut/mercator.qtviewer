@@ -169,7 +169,7 @@ protected slots:
 	void on_radioButton_tool_point_toggled(bool);
 	void on_radioButton_tool_line_toggled(bool);
 	void on_radioButton_tool_polygon_toggled(bool);
-	void on_radioButton_tool_bitmaps_toggled(bool);
+	void on_radioButton_tool_icons_toggled(bool);
 	void on_toolButton_selColorPen_clicked();
 	void on_toolButton_selColorFill_clicked();
 	void on_toolButton_selColorText_clicked();
