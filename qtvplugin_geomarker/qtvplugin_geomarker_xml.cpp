@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QXmlStreamAttributes>
 #include <QMap>
+#include <QFileInfo>
 bool qtvplugin_geomarker::xml_save(QString xml)
 {
 	QFile fp(xml);
@@ -463,4 +464,145 @@ bool qtvplugin_geomarker::xml_update_mark(tag_xml_mark & mark)
 	}
 
 	return true;
+}
+bool		qtvplugin_geomarker::xml_icon_save	(QString xml)
+{
+	QFile fp(xml);
+	QFileInfo smlinfo(xml);
+	if (fp.open(QIODevice::WriteOnly)==false)
+		return false;
+
+	QXmlStreamWriter stream(&fp);
+	stream.setAutoFormatting(true);
+
+	//0. Start Document
+	stream.writeStartDocument();
+
+	stream.writeStartElement("geomarker_icons");
+	stream.writeAttribute("version","1.0");
+
+	//1. for each icon, write a root element
+	QList<QString> keys = m_map_icons.keys();
+	foreach (QString keystr, keys)
+	{
+		const QTVP_GEOMARKER::tag_icon & item = m_map_icons[keystr];
+		//1.1. icon
+		stream.writeStartElement("icon");
+		stream.writeAttribute("name",item.name);
+		//1.1.1 center
+		stream.writeTextElement("centerx",QString("%1").arg(item.centerx));
+		stream.writeTextElement("centery",QString("%1").arg(item.centery));
+		QString fmSave = smlinfo.absoluteFilePath() + "_"+ item.name+".png";
+		QString fmRel = item.name+".png";
+		stream.writeTextElement("filename",fmRel);
+		item.icon.save(fmSave);
+		// 1.1mark
+		stream.writeEndElement();
+	}
+	stream.writeEndElement();
+	//0. End Document
+	stream.writeEndDocument();
+	fp.flush();
+	fp.close();
+	return true;
+}
+
+bool		qtvplugin_geomarker::xml_icon_load	(QString xmlfile)
+{
+	bool res = true;
+	QString errMessage;
+	QFile fp(xmlfile);
+	QFileInfo smlinfo(xmlfile);
+	if (fp.open(QIODevice::ReadOnly)==false)
+		return false;
+	QXmlStreamReader xml(&fp);
+	if (xml.readNextStartElement())
+	{
+		if (xml.name()=="geomarker_icons")
+		{
+			QMap<QString,QString>  att_geoMarker = xml_attribs_map(xml.attributes());
+			if (att_geoMarker["version"].toDouble()>=1)
+			{
+				while (!xml.atEnd() && res)
+				{
+					xml.readNext();
+					if (xml.tokenType()==QXmlStreamReader::StartElement)
+					{
+						if (xml.name()=="icon")
+						{
+							QTVP_GEOMARKER::tag_icon icon;
+							//icon
+							QMap<QString,QString >  att_marker = xml_attribs_map(xml.attributes());
+							icon.name	= att_marker["name"];
+							if (icon.name.size()==0)
+							{
+								errMessage = tr("icon name is null or type error .");
+								res = false;
+							}
+							else
+							{
+								while (xml.readNextStartElement()&& res)
+								{
+									if (xml.name()=="centerx")
+									{
+										icon.centerx = xml.readElementText().toInt();
+									}
+									else if (xml.name()=="centery")
+									{
+										icon.centery = xml.readElementText().toInt();
+									}
+									else if (xml.name()=="filename")
+									{
+										QString fm = xml.readElementText();
+										QString fmOpen = smlinfo.absoluteFilePath() + "_"+ fm;
+										if (icon.icon.load(fmOpen)==false)
+											res = false;
+										else
+											icon.filename = fmOpen;
+									}
+									else
+										;
+								}//end while next start element
+								if (res)
+									m_map_icons[icon.name] = icon;
+							}//end if name is valide
+
+
+						}//end if ele is "icon:"
+					}//end if start Doc
+				}//end while is not end of file
+			}
+			else
+			{
+				res = false;
+				errMessage = tr("Version must >=1.0.");
+			}
+
+		}//end if version is valid
+		else
+		{
+			res = false;
+			errMessage = tr("This XML is not a geomarker_icons format file.");
+		}// version is not valis
+	}//end if file is not empty
+	else
+	{
+		res = false;
+		errMessage = tr("Empty XML.");
+	}
+	fp.close();
+	if (res==false)
+	{
+		QMap<QString,QVariant> evt_error;
+		evt_error["source"] = get_name();
+		evt_error["destin"] = "ALL";
+		evt_error["name"] = "error";
+		evt_error["class"] = "QXmlStreamReader";
+		evt_error["file"] = xmlfile;
+		evt_error["detail"] = errMessage;
+		m_pVi->post_event(evt_error);
+
+	}
+
+	return res;
 }

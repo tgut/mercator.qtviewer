@@ -659,7 +659,7 @@ void qtvplugin_geomarker::on_pushButton_save_clicked()
 		if (true==xml_save(newfm))
 		{
 			settings.setValue("history/last_save_xml_dir",newfm);
-			QMessageBox::information(this,tr("succeed"),tr("Successfully saved XML file") + newfm);
+			//QMessageBox::information(this,tr("succeed"),tr("Successfully saved XML file") + newfm);
 		}
 		else
 			QMessageBox::warning(this,tr("failed"),tr("Save XML file") + newfm + tr(" Failed"));
@@ -678,7 +678,7 @@ void qtvplugin_geomarker::on_pushButton_load_clicked()
 		if (true==xml_load(newfm))
 		{
 			settings.setValue("history/last_open_xml_dir",newfm);
-			QMessageBox::information(this,tr("succeed"),tr("Successfully load XML file") + newfm);
+			//QMessageBox::information(this,tr("succeed"),tr("Successfully load XML file") + newfm);
 		}
 		else
 			QMessageBox::warning(this,tr("failed"),tr("Load XML file") + newfm + tr(" Failed"));
@@ -694,5 +694,43 @@ void qtvplugin_geomarker::on_pushButton_import_icon_clicked()
 	{
 		m_map_icons[dlg.m_icon.name] = dlg.m_icon;
 		refreshIconModel();
+	}
+}
+void qtvplugin_geomarker::on_pushButton_load_icons_clicked()
+{
+	QSettings settings(ini_file(),QSettings::IniFormat);
+	QString strLastSaveImgDir = settings.value("history/last_load_icon_xml_dir","./").toString();
+	QString newfm = QFileDialog::getOpenFileName(this,tr("load from xml"),strLastSaveImgDir,
+								 "xml (*.xml);;All files(*.*)"
+								 );
+	if (newfm.size()>2)
+	{
+		if (true==xml_icon_load(newfm))
+		{
+			settings.setValue("history/last_load_icon_xml_dir",newfm);
+			//QMessageBox::information(this,tr("succeed"),tr("Successfully load XML file") + newfm);
+		}
+		else
+			QMessageBox::warning(this,tr("failed"),tr("Load XML file") + newfm + tr(" Failed"));
+	}
+	this->refreshIconModel();
+}
+
+void qtvplugin_geomarker::on_pushButton_save_icons_clicked()
+{
+	QSettings settings(ini_file(),QSettings::IniFormat);
+	QString strLastSaveImgDir = settings.value("history/last_save_icon_xml_dir","./").toString();
+	QString newfm = QFileDialog::getSaveFileName(this,tr("save to xml"),strLastSaveImgDir,
+								 "xml (*.xml);;All files(*.*)"
+								 );
+	if (newfm.size()>2)
+	{
+		if (true==xml_icon_save(newfm))
+		{
+			settings.setValue("history/last_save_icon_xml_dir",newfm);
+			//QMessageBox::information(this,tr("succeed"),tr("Successfully saved XML file") + newfm);
+		}
+		else
+			QMessageBox::warning(this,tr("failed"),tr("Save XML file") + newfm + tr(" Failed"));
 	}
 }

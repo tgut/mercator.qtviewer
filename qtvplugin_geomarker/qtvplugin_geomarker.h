@@ -103,6 +103,9 @@ private:
 	bool		xml_readProps	(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
 	QMap<QString,QString> xml_attribs_map(const QXmlStreamAttributes & ats);
 
+	bool		xml_icon_save	(QString xml);
+	bool		xml_icon_load	(QString xml);
+
 	//UI refreshing functions
 private:
 	void scheduleRefreshMarks();
@@ -180,6 +183,8 @@ protected slots:
 	void on_pushButton_save_clicked();
 	void on_pushButton_load_clicked();
 	void on_pushButton_import_icon_clicked();
+	void on_pushButton_load_icons_clicked();
+	void on_pushButton_save_icons_clicked();
 };
 
 template <class T>
