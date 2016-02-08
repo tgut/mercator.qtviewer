@@ -12,11 +12,12 @@ class DialogSelectIcon : public QDialog
 	Q_OBJECT
 
 public:
-	explicit DialogSelectIcon(QWidget *parent = 0);
+	explicit DialogSelectIcon(QString iniFile,QWidget *parent = 0);
 	~DialogSelectIcon();
-	QString iniFileName;
+
 	QTVP_GEOMARKER::tag_icon m_icon;
 private:
+	QString iniFileName;
 	Ui::DialogSelectIcon *ui;
 protected slots:
 	void on_pushButton_ok_clicked();

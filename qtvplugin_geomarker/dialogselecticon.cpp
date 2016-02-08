@@ -5,9 +5,10 @@
 #include <QPixmap>
 #include <QMessageBox>
 #include <QFileInfo>
-DialogSelectIcon::DialogSelectIcon(QWidget *parent) :
+DialogSelectIcon::DialogSelectIcon(QString inifile,QWidget *parent) :
 	QDialog(parent),
-	ui(new Ui::DialogSelectIcon)
+	ui(new Ui::DialogSelectIcon),
+	iniFileName(inifile)
 {
 	ui->setupUi(this);
 	QSettings settings(iniFileName,QSettings::IniFormat);

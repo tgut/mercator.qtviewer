@@ -822,6 +822,20 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_mark			(const QMap<QString, 
 			}
 		}
 			break;
+		case QTVP_GEOMARKER::ITEAMTYPE_PIXMAP:
+		{
+			QTVP_GEOMARKER::geoGraphicsPixmapItem * pU = dynamic_cast<QTVP_GEOMARKER::geoGraphicsPixmapItem *>(item);
+			if (pU)
+			{
+				res["lat"] = QString("%1").arg(pU->lat(),0,'f',7);
+				res["lon"] = QString("%1").arg(pU->lon(),0,'f',7);
+				res["icon"] = pU->icon()->name;
+				res["scale"] =  pU->scale();
+				res["rotate"] =  pU->rotation();
+				res["smooth"] = pU->transformationMode()==Qt::SmoothTransformation?1:0;
+			}
+		}
+			break;
 		default:
 			break;
 		}

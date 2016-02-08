@@ -688,18 +688,17 @@ void qtvplugin_geomarker::on_pushButton_load_clicked()
 }
 void qtvplugin_geomarker::on_pushButton_import_icon_clicked()
 {
-	DialogSelectIcon dlg(this);
-	dlg.iniFileName = ini_file();
+	DialogSelectIcon dlg (ini_file()) ;
 	if (dlg.exec()==QDialog::Accepted)
 	{
 		m_map_icons[dlg.m_icon.name] = dlg.m_icon;
-		refreshIconModel();
 	}
+	refreshIconModel();
 }
 void qtvplugin_geomarker::on_pushButton_load_icons_clicked()
 {
 	QSettings settings(ini_file(),QSettings::IniFormat);
-	QString strLastSaveImgDir = settings.value("history/last_load_icon_xml_dir","./").toString();
+	QString strLastSaveImgDir = settings.value("history/last_save_icon_xml_dir","./").toString();
 	QString newfm = QFileDialog::getOpenFileName(this,tr("load from xml"),strLastSaveImgDir,
 								 "xml (*.xml);;All files(*.*)"
 								 );

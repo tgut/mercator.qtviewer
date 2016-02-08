@@ -174,7 +174,7 @@
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page_points">
         <layout class="QVBoxLayout" name="verticalLayout_2">
