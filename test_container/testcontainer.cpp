@@ -8,6 +8,10 @@ testcontainer::testcontainer(QWidget *parent) :
 	ui(new Ui::testcontainer)
 {
 	ui->setupUi(this);
+	QFont ft;
+	ft.setPixelSize(9);
+	ui->tableView_msg->setFont(ft);
+	ui->tableView_msg->verticalHeader()->setDefaultSectionSize(16);
 	Qt::WindowFlags flg =  this->windowFlags();
 	flg |= Qt::WindowMinMaxButtonsHint;
 	this->setWindowFlags(flg);
@@ -306,6 +310,7 @@ void testcontainer::on_pushButton_test_mark_clicked()
 												 "function=update_icon;name=ID7;"
 												 "lat=1.233;lon=2.28373;"
 												 "scale=2;rotate=0;smooth=1;"
+												 "color_label=255,0,0,128;weight_label=99;size_label=9;"
 												 "icon=default;").toString();
 
 	if (res.contains("error"))
@@ -313,9 +318,9 @@ void testcontainer::on_pushButton_test_mark_clicked()
 
 	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
 												 "function=update_props;name=ID7;"
-												 "LABEL=COSCO;EXPRESS=YangChunHe;Pero=IMMD;"
+												 "LABEL=COSCO;EXPRESS=TianTian;Pero=IMMD;"
 												 "CheckTime=2012-12-30 07:18:32;"
-												 "From=PEKING;To=YIKH").toString();
+												 "From=PEKING;To=LONDON;CAR=Apple Watch;").toString();
 	if (res.contains("error"))
 		QMessageBox::information(this,"geomarker1::update_props",res);
 
@@ -380,23 +385,26 @@ void testcontainer::timerEvent(QTimerEvent * e)
 {
 	if (e->timerId()==m_nAnTimer)
 	{
-		static double tposlat = rand()%1700/10.0-85 , tposlon= rand()%3600/10.0-180;
-		tposlat += sin(tposlon * 3.14/180.0)/5+0.1;
-		tposlon -= cos(tposlat * 3.14/180.0)/5+0.1;
-		if (tposlat > 85 ) tposlat = -85;
-		if (tposlat < -85 ) tposlat = 85;
-		if (tposlon < -180 ) tposlon = 180;
-		if (tposlon > 180 ) tposlon = -180;
 		QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
-													 "function=exists;name=ID1;").toString();
+													 "function=exists;name=ID7;").toString();
 		QMap<QString, QVariant> mres = string_to_map(res);
 		if (mres["return"].toInt())
 		{
+			//Get info of this mark
+			res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=mark;name=ID7").toString();
+			QMap<QString, QVariant> mparas = string_to_map(res);
+			double lat = mparas["lat"].toDouble() + 0.173245467333;
+			double lon = mparas["lon"].toDouble() + 0.245546767673;
+			qreal rot = mparas["rotate"].toReal()+1.38745738457;
+			if (rot>360) rot = 0;
+			if (lat >=85) lat = -85;
+			if (lon >=180) lon = -180;
 			ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
-										   QString("function=update_point;name=ID1;type=1;lat=%1;lon=%2;")
-										   .arg(tposlat)
-										   .arg(tposlon)
-										   ).toString();
+										   QString("function=update_icon;name=ID7;lat=%1;lon=%2;rotate=%4;")
+										   .arg(lat)
+										   .arg(lon).arg(rot)
+										   );
 
 		}
 
@@ -407,28 +415,30 @@ void testcontainer::on_pushButton_test_request_clicked()
 {
 	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
 												 "function=mark_names;").toString();
-	res.replace(";",";\n");
-	res.replace("=","\t=");
-	QMessageBox::information(this,"geomarker1::mark_names",res);
+	slot_message("geomarker1::mark_names:"+res);
+
+	QMap<QString,QVariant> mp =  string_to_map(res);
+	foreach (QString key, mp.keys())
+	{
+		res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+											 "function=mark;name="+mp[key].toString()).toString();
+
+		slot_message("geomarker1::mark:"+res);
+		res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+													 "function=props;name="+mp[key].toString()).toString();
+		slot_message("geomarker1::props:"+res);
+	}
 
 
-	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
-												 "function=mark;name=ID1").toString();
-	res.replace(";",";\n");
-	res.replace("=","\t=");
-	QMessageBox::information(this,"geomarker1::mark",res);
-	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
-												 "function=props;name=ID1").toString();
-	res.replace(";",";\n");
-	res.replace("=","\t=");
-	QMessageBox::information(this,"geomarker1::props",res);
 }
 void testcontainer::on_pushButton_test_cache_clicked()
 {
+	//Get the address of local cache
 	QString res = ui->axWidget_map1->dynamicCall("osm_get_local_cache(QString)","OSM").toString();
 	QMessageBox::information(this,"geomarker1::osm_get_local_cache",res);
+	//set it to /
 	res = ui->axWidget_map1->dynamicCall("osm_set_local_cache(QString, QString)","OSM","/OSMCache").toString();
-	QMessageBox::information(this,"geomarker1::osm_set_local_cache",res);
+	//Get expire Days
 	res = ui->axWidget_map1->dynamicCall("osm_get_cache_expire_days(QString)","OSM").toString();
 	QMessageBox::information(this,"geomarker1::osm_get_cache_expire_days",res);
 	res = ui->axWidget_map1->dynamicCall("osm_set_cache_expire_days(QString,int)","OSM",res.toInt()+1).toString();
@@ -442,5 +452,9 @@ void testcontainer::on_pushButton_test_xml_clicked()
 	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
 												 "function=save_xml;xml=.//test.xml;").toString();
 	QMessageBox::information(this,"geomarker1::save_xml",res);
+
+}
+void testcontainer::on_pushButton_test_resource_clicked()
+{
 
 }
