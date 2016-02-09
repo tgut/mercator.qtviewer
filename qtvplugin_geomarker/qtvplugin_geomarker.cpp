@@ -583,6 +583,7 @@ QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & n
 			pitem->setTransformationMode(Qt::SmoothTransformation);
 		else
 			pitem->setTransformationMode(Qt::FastTransformation);
+		pitem->adjustLabelPos();
 	}
 	return res;
 }

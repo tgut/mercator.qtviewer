@@ -15,13 +15,14 @@
  * 1.update_point		Insert or Update a point mark.
  * 2.update_line		Insert or Update a line mark.
  * 3.update_polygon		Insert or Update a polygon mark.
- * 4.update_props		Insert or Update a mark's user-defind properties.
- * 5.exists				Test whether a special mark is exist.
- * 6.delete_marks		Delete marks.
- * 7.delete_props		Delete user-defined properties for a mark.
- * 8.mark_names			return All mark names owned by this plugin.
- * 9.mark				return All styles and geo points for a special mark.
- * 10.props				return All user-defined properties for a special mark.
+ * 4.update_icon		Insert or Update a icon mark.
+ * 5.update_props		Insert or Update a mark's user-defind properties.
+ * 6.exists				Test whether a special mark is exist.
+ * 7.delete_marks		Delete marks.
+ * 8.delete_props		Delete user-defined properties for a mark.
+ * 9.mark_names			return All mark names owned by this plugin.
+ * 10.mark				return All styles and geo points for a special mark.
+ * 11.props				return All user-defined properties for a special mark.
  * @param paras	the key-value style paraments.
  * @return QMap<QString, QVariant>	the key-value style return values.
  */
@@ -50,6 +51,7 @@ void qtvplugin_geomarker::initialBindPluginFuntions()
 	m_map_pluginFunctions["update_point"]	= std::bind(&qtvplugin_geomarker::func_update_point,	this,std::placeholders::_1);
 	m_map_pluginFunctions["update_line"]	= std::bind(&qtvplugin_geomarker::func_update_line,		this,std::placeholders::_1);
 	m_map_pluginFunctions["update_polygon"]	= std::bind(&qtvplugin_geomarker::func_update_polygon,	this,std::placeholders::_1);
+	m_map_pluginFunctions["update_icon"]	= std::bind(&qtvplugin_geomarker::func_update_icon,		this,std::placeholders::_1);
 	m_map_pluginFunctions["update_props"]	= std::bind(&qtvplugin_geomarker::func_update_props,	this,std::placeholders::_1);
 	m_map_pluginFunctions["exists"]			= std::bind(&qtvplugin_geomarker::func_exists,			this,std::placeholders::_1);
 	m_map_pluginFunctions["delete_marks"]	= std::bind(&qtvplugin_geomarker::func_delete_marks,	this,std::placeholders::_1);
@@ -237,6 +239,110 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_point		(const QMap<QStr
 		res["error"] = tr("can not create graphical object, the pointer is zero.");
 	return std::move(res);
 }
+/**
+ * @brief func_update_icon is a internal function for plugin call_func "update_icon"
+ *
+ * the paraments used by paras is listed below.
+ * function=update_icon;
+ * @param paras The key-value style paraments.
+ * @return QMap<QString, QVariant> if error happens, a property called "error" will store the most possible reason.
+ */
+QMap<QString, QVariant>			qtvplugin_geomarker:: func_update_icon	(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
+	//!name, lat, lon has no default values. user should specify these values or the function calll will fail;
+	if (paras.contains("name")==false || paras.contains("lat")==false || paras.contains("lon")==false)
+	{
+		res["error"] = tr("name, lat, lon must  exist in paraments.");
+		return std::move(res);
+
+	}
+	QString name = paras["name"].toString();
+	if (name.size()==0)
+	{
+		res["error"] = tr("name could not be empty.");
+		return std::move(res);
+	}
+	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
+	QString icon_name = "default";
+	qreal scale = 1.0;
+	qreal rot = 0.0;
+	int smooth = 0;
+	//if the mark is already exist, we will get its orgional style as default .
+	if (base)
+	{
+		QTVP_GEOMARKER::geoGraphicsPixmapItem * it = dynamic_cast<QTVP_GEOMARKER::geoGraphicsPixmapItem * >(base);
+		if (it)
+		{
+			icon_name = it->icon()->name;
+			scale = it->scale();
+			rot = it->rotation();
+			smooth = it->transformationMode()==Qt::SmoothTransformation?1:0;
+		}
+	}
+
+	//! icon is the name that this mark will use.
+	if ( paras.contains("icon"))
+	{
+		QString icn = paras["icon"].toString();
+		if (icn.length())	icon_name = icn;
+	}
+	//! scale is the zoom ratio that this icon will use, 1.0 means no zoom
+	if ( paras.contains("scale"))
+	{
+		qreal sc = paras["scale"].toReal();
+		if (sc >0 )	scale = sc;
+	}
+	//! rotate is the rotate angle that this icon will use, 0.0 means no rotate
+	if ( paras.contains("rotate"))
+	{
+		qreal rt = paras["rotate"].toReal();
+		rot = rt;
+	}
+	//!smooth is the transform mode that this icon will use. 0 mean not smooth, but faster. 1 mean smooth.
+	if ( paras.contains("smooth"))
+	{
+		int smt =paras["smooth"].toInt();
+		if (smt ==0)	smooth = 0; else smooth = 1;
+	}
+	QTVP_GEOMARKER::geoItemBase * newitem = 0;
+	/*! geo coordinate in WGS84 lattitude, longitude should be saved as lat and lon.
+	*/
+	double lat =paras["lat"].toDouble();
+	double lon = paras["lon"].toDouble();
+
+	newitem = update_icon(name,lat,lon,scale,rot,smooth,icon_name);
+	if (newitem)
+	{
+		QFont f = newitem->labelFont();
+		//! size_label stands for the text label font pixel size from 1 - 720, with a normal value 9.
+		if ( paras.contains("size_label"))
+		{
+			int fontSz = paras["size_label"].toInt();
+			if (fontSz==0)	fontSz = 9;
+			f.setPointSize(fontSz);
+		}
+		//! weight_label is the bolder rate for  text renderring, from 1 ~ 99, 99 is the heaviest.
+		if ( paras.contains("weight_label"))
+		{
+			int fontWeight = paras["weight_label"].toInt();
+			f.setWeight(fontWeight);
+		}
+		newitem->setLabelFont(f);
+		//! color_label has 4 text color band values splitted by comma, r,g,b,a
+		if ( paras.contains("color_label"))
+		{
+			QColor textColor = string2color( paras["color_label"].toString());
+			newitem->setLabelColor(textColor);
+		}
+		scheduleRefreshMarks();
+		scheduleUpdateMap();
+	}
+	else
+		res["error"] = tr("can not create graphical object, the pointer is zero.");
+	return std::move(res);
+}
+
 /**
  * @brief func_update_line is a internal function for plugin call_func "update_line"
  *

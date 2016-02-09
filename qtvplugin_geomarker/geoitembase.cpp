@@ -73,6 +73,12 @@ namespace QTVP_GEOMARKER{
 				m_pLabelItem = new QGraphicsTextItem(v.toString(),pc);
 				m_pLabelItem->setDefaultTextColor(m_LabelTextColor);
 				m_pLabelItem->setFont(m_LabelTextFont);
+				if (pc->scale()>0)
+				{
+					qreal sc = pc->scale();
+					m_pLabelItem->setScale(1.0/pc->scale());
+				}
+				m_pLabelItem->setRotation(-pc->rotation());
 			}
 			else if (m_bPropVisible==false)
 				m_pLabelItem->setPlainText(v.toString());
@@ -118,6 +124,13 @@ namespace QTVP_GEOMARKER{
 				m_pLabelItem = new QGraphicsTextItem(str,pc);
 				m_pLabelItem->setDefaultTextColor(m_LabelTextColor);
 				m_pLabelItem->setFont(m_LabelTextFont);
+				if (pc->scale()>0)
+				{
+					qreal sc = pc->scale();
+					m_pLabelItem->setScale(1.0/pc->scale());
+				}
+				m_pLabelItem->setRotation(-pc->rotation());
+
 			}
 			else
 				m_pLabelItem->setPlainText(str);
@@ -145,6 +158,13 @@ namespace QTVP_GEOMARKER{
 					m_pLabelItem = new QGraphicsTextItem(v.toString(),pc);
 					m_pLabelItem->setDefaultTextColor(m_LabelTextColor);
 					m_pLabelItem->setFont(m_LabelTextFont);
+					if (pc->scale()>0)
+					{
+						qreal sc = pc->scale();
+						m_pLabelItem->setScale(1.0/pc->scale());
+					}
+					m_pLabelItem->setRotation(-pc->rotation());
+
 				}
 				m_pLabelItem->setPlainText(v.toString());
 				m_pLabelItem->setPos(this->label_pos());
@@ -158,6 +178,18 @@ namespace QTVP_GEOMARKER{
 	void geoItemBase::adjustLabelPos()
 	{
 		if (m_pLabelItem)
+		{
+			QGraphicsItem * pc = dynamic_cast<QGraphicsItem *> (this);
+			if (pc)
+			{
+				if (pc->scale()>0)
+				{
+					qreal sc = pc->scale();
+					m_pLabelItem->setScale(1.0/pc->scale());
+				}
+				m_pLabelItem->setRotation(-pc->rotation());
+			}
 			m_pLabelItem->setPos(this->label_pos());
+		}
 	}
 }

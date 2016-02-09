@@ -281,7 +281,7 @@ void testcontainer::on_pushButton_test_mark_clicked()
 												 "CheckTime=2014-12-31 23:11:27;"
 												 "From=Shanghai;To=Beijing").toString();
 	if (res.contains("error"))
-		QMessageBox::information(this,"geomarker1::update_point",res);
+		QMessageBox::information(this,"geomarker1::update_props",res);
 
 
 	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
@@ -300,7 +300,25 @@ void testcontainer::on_pushButton_test_mark_clicked()
 												 "CheckTime=2014-12-30 07:18:32;"
 												 "From=Huhehaote;To=YinChuan").toString();
 	if (res.contains("error"))
-		QMessageBox::information(this,"geomarker1::update_point",res);
+		QMessageBox::information(this,"geomarker1::update_props",res);
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=update_icon;name=ID7;"
+												 "lat=1.233;lon=2.28373;"
+												 "scale=2;rotate=0;smooth=1;"
+												 "icon=default;").toString();
+
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::update_icon",res);
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=update_props;name=ID7;"
+												 "LABEL=COSCO;EXPRESS=YangChunHe;Pero=IMMD;"
+												 "CheckTime=2012-12-30 07:18:32;"
+												 "From=PEKING;To=YIKH").toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::update_props",res);
+
 
 }
 void testcontainer::on_pushButton_test_line_clicked()

@@ -130,8 +130,9 @@ private:
 	QMap<QString, QVariant>			func_update_point	(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_update_line	(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_update_polygon	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_update_icon	(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_update_props	(const QMap<QString, QVariant> &);
-	//other function calls
+	//other method for plugin function calls
 private:
 	void initialBindPluginFuntions();
 	QMap<QString,std::function <tpfunc_call> > m_map_pluginFunctions;
@@ -143,7 +144,10 @@ private:
 	QMap<QString, QVariant>			func_props			(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_save_xml		(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_load_xml		(const QMap<QString, QVariant> &);
-
+	//icon and its manage
+	QMap<QString, QVariant>			func_add_reource	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_save_reources	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_load_reources	(const QMap<QString, QVariant> &);
 	//overloaded virtual funtions
 protected:
 	layer_interface *		load_initial_plugin(QString strSLibPath,viewer_interface  * ptrviewer);
