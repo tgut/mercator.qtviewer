@@ -26,6 +26,7 @@ qtvplugin_geomarker::qtvplugin_geomarker(QWidget *parent) :
 	m_nInstance = 0;
 	ui->setupUi(this);
 	m_pVi = 0;
+	m_nDivideTimer = 0;
 	m_bVisible = true;
 	m_pScene = new QTVP_GEOMARKER::geoGraphicsScene(this);
 	m_pScene->setBackgroundBrush(Qt::NoBrush);

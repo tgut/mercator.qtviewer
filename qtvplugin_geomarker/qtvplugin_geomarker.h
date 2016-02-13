@@ -82,6 +82,7 @@ private:
 	int m_nTimerID_refreshUI;
 	int m_nTimerID_refreshMap;
 	int m_nTimerID_levelQueue;
+	quint64 m_nDivideTimer;
 	bool m_bNeedRefresh;
 	bool m_bNeedUpdateView;
 
