@@ -110,14 +110,16 @@ private:
 
 	//UI refreshing functions
 private:
-	void scheduleRefreshMarks();
-	void scheduleUpdateMap();
-	void refreshItemUI(QString markname);
-	void refreshProps(QTVP_GEOMARKER::geoItemBase * itm);
-	QColor string2color(const QString & s);
-	QString color2string(const QColor & c);
-
-	void refreshIconModel();
+	QList<QString> m_items_to_insert;
+	void		scheduleRefreshMarks();
+	void		scheduleUpdateMap();
+	void		refreshItemUI(QString markname);
+	void		refreshProps(QTVP_GEOMARKER::geoItemBase * itm);
+	QColor		string2color(const QString & s);
+	QString		color2string(const QColor & c);
+	void		refreshIconModel();
+	void		loadTranslations();
+	bool		too_many_items();
 	//Geo mark updating functions
 private:
 	//update methopd for UI
@@ -166,10 +168,8 @@ protected:
 	bool		cb_mouseDoubleClickEvent(QMouseEvent *);
 	bool		cb_event(const QMap<QString, QVariant>);
 
-	void		timerEvent(QTimerEvent * e);
+	void					timerEvent(QTimerEvent * e);
 	QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> & /*paras*/);
-	void loadTranslations();
-	bool		too_many_items();
 	//ui slots
 protected slots:
 	void on_pushButton_update_clicked();

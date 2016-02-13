@@ -356,7 +356,8 @@ bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 	if (m_bVisible && pwig && too_many_items()==false)
 	{
 		// Convert and deliver the mouse event to the scene.
-		QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMouseDoubleClick);
+		QGraphicsSceneMouseEvent * pmouseEvent = new QGraphicsSceneMouseEvent(QEvent::GraphicsSceneMouseDoubleClick);
+		QGraphicsSceneMouseEvent & mouseEvent = * pmouseEvent;
 		mouseEvent.setWidget(pwig);
 		mouseEvent.setButtonDownScenePos(mouse_button, mouse_scene_pt);
 		mouseEvent.setButtonDownScreenPos(mouse_button, mouse_screen_pt);
@@ -368,10 +369,8 @@ bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 		mouseEvent.setButton(e->button());
 		mouseEvent.setModifiers(e->modifiers());
 		mouseEvent.setAccepted(false);
-		QApplication::sendEvent(m_pScene, &mouseEvent);
-		bool isAccepted = mouseEvent.isAccepted();
-		e->setAccepted(isAccepted);
-		return isAccepted;
+		QApplication::postEvent(m_pScene, &mouseEvent);
+		scheduleUpdateMap();
 	}
 	return false;
 }
@@ -405,7 +404,8 @@ bool qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
 	if (m_bVisible && pwig  && too_many_items()==false)
 	{
 		// Convert and deliver the mouse event to the scene.
-		QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMousePress);
+		QGraphicsSceneMouseEvent * pmouseEvent = new QGraphicsSceneMouseEvent(QEvent::GraphicsSceneMouseDoubleClick);
+		QGraphicsSceneMouseEvent & mouseEvent = * pmouseEvent;
 		mouseEvent.setWidget(pwig);
 		mouseEvent.setButtonDownScenePos(mouse_button, mouse_scene_pt);
 		mouseEvent.setButtonDownScreenPos(mouse_button, mouse_screen_pt);
@@ -417,11 +417,8 @@ bool qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
 		mouseEvent.setButton(e->button());
 		mouseEvent.setModifiers(e->modifiers());
 		mouseEvent.setAccepted(false);
-		QApplication::sendEvent(m_pScene, &mouseEvent);
-		bool isAccepted = mouseEvent.isAccepted();
-		e->setAccepted(isAccepted);
-		//return isAccepted;
-		return true;
+		QApplication::postEvent(m_pScene, &mouseEvent);
+		scheduleUpdateMap();
 	}
 	return false;
 
@@ -472,6 +469,7 @@ void qtvplugin_geomarker::scheduleRefreshMarks()
 	//BAD performence will arise if so.
 	//We will set a flag and refresh the ui in timerEvent Instead.
 	m_bNeedRefresh = true;
+	m_items_to_insert.clear();
 }
 void qtvplugin_geomarker::scheduleUpdateMap()
 {

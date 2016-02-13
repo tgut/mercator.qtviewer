@@ -18,50 +18,38 @@ void		qtvplugin_geomarker::timerEvent(QTimerEvent * e)
 {
 	if (e->timerId()==m_nTimerID_refreshUI && m_bNeedRefresh)
 	{
-		m_bNeedRefresh = false;
 		killTimer(m_nTimerID_refreshUI);
 		m_nTimerID_refreshUI = -1;
-
-		//refersh
-		int rowCount = m_pGeoItemModel->rowCount();
-		QList<QTVP_GEOMARKER::geoItemBase *> items = m_pScene->geo_items();
-		int c = 0;
-		foreach (QTVP_GEOMARKER::geoItemBase * item, items)
+		if (m_items_to_insert.empty()==true)
 		{
-			if (c < rowCount)
-			{
-				m_pGeoItemModel->setData(
-							m_pGeoItemModel->index(c,0),
-							item->item_name()
-							);
-
-				m_pGeoItemModel->setData(
-							m_pGeoItemModel->index(c,1),
-							QTVP_GEOMARKER::item_name_by_enum(item->item_type())
-							);
-				m_pGeoItemModel->setData(
-							m_pGeoItemModel->index(c,2),
-							item->prop_counts()
-							);
-			}
-			else
-			{
-				m_pGeoItemModel->appendRow(new QStandardItem(item->item_name()));
-				m_pGeoItemModel->setData(
-							m_pGeoItemModel->index(c,1),
-							QTVP_GEOMARKER::item_name_by_enum(item->item_type())
-							);
-				m_pGeoItemModel->setData(
-							m_pGeoItemModel->index(c,2),
-							item->prop_counts()
-							);
-
-			}
-			++c;
+			m_items_to_insert = m_pScene->geo_item_names();
+			m_pGeoItemModel->clear();
 		}
-		if (c< rowCount)
-			m_pGeoItemModel->removeRows(c, rowCount - c);
-		m_nTimerID_refreshUI = startTimer(2000);
+		//refersh
+		int ct = 0;
+		//we do not use geoItemsBase pointer, because a geoItemsBase pointer may be invalid when delayed ipdate approach is taking place.
+		while (++ct < 2048 && m_items_to_insert.empty()==false)
+		{
+			QString keyname = m_items_to_insert.first();
+			m_items_to_insert.pop_front();
+			QTVP_GEOMARKER::geoItemBase * item = m_pScene->geoitem_by_name(keyname);
+			if (!item)
+				continue;
+			int c = m_pGeoItemModel->rowCount();
+			m_pGeoItemModel->appendRow(new QStandardItem(item->item_name()));
+			m_pGeoItemModel->setData(
+						m_pGeoItemModel->index(c,1),
+						QTVP_GEOMARKER::item_name_by_enum(item->item_type())
+						);
+			m_pGeoItemModel->setData(
+						m_pGeoItemModel->index(c,2),
+						item->prop_counts()
+						);
+
+		}
+		if (m_items_to_insert.empty()==true)
+			m_bNeedRefresh = false;
+		m_nTimerID_refreshUI = startTimer(217);
 	}
 	else if (m_nTimerID_refreshMap==e->timerId() && m_bNeedUpdateView==true)
 	{
@@ -69,7 +57,7 @@ void		qtvplugin_geomarker::timerEvent(QTimerEvent * e)
 		killTimer(m_nTimerID_refreshMap);
 		m_nTimerID_refreshMap = -1;
 		m_pVi->UpdateWindow();
-		m_nTimerID_refreshMap = startTimer(100);
+		m_nTimerID_refreshMap = startTimer(97);
 	}
 	else if (m_nTimerID_levelQueue == e->timerId())
 	{
@@ -82,7 +70,7 @@ void		qtvplugin_geomarker::timerEvent(QTimerEvent * e)
 			if (m_pScene->progress_queue()<0.999)
 				m_pVi->UpdateWindow();
 		}
-		m_nTimerID_levelQueue = startTimer(100);
+		m_nTimerID_levelQueue = startTimer(119);
 	}
 }
 

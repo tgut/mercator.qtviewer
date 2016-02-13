@@ -59,15 +59,16 @@ namespace QTVP_GEOMARKER{
 		void	removeItem(QGraphicsItem * item){return QGraphicsScene::removeItem(item);}
 	public :
 		//for many items, we just change level coords in timer, batch mode.
-		bool deal_level_queue();
-		double progress_queue(){return 1-m_queue_level_change.size()*1.0 / m_map_items.size();}
+		bool		deal_level_queue();
+		double		progress_queue()	{return 1-m_queue_level_change.size()*1.0 / m_map_items.size();}
 		//For mutithread opertaions, you should call lock_scene first, and call unlock scene when over
-		bool addItem(geoItemBase *item,int /*reserved*/);
-		void removeItem(geoItemBase * item, int /*reserved*/);
-		geoItemBase * geoitem_by_name(const QString & name);
-		void adjust_item_coords(int currentLevel);
-		QList<geoItemBase *> geo_items();
-		int total_items() {return m_map_items.count();}
+		bool			addItem(geoItemBase *item,int /*reserved*/);
+		void			removeItem(geoItemBase * item, int /*reserved*/);
+		geoItemBase *	geoitem_by_name(const QString & name);
+		void			adjust_item_coords(int currentLevel);
+		QList<geoItemBase *>	geo_items();
+		QList<QString>			geo_item_names();
+		int						total_items() {return m_map_items.count();}
 	};
 }
 #endif // GEOGRAPHICSSCENE_H
