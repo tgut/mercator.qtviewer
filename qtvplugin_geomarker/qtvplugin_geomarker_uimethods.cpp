@@ -73,9 +73,15 @@ void		qtvplugin_geomarker::timerEvent(QTimerEvent * e)
 	}
 	else if (m_nTimerID_levelQueue == e->timerId())
 	{
+		static int dvv = 0;
 		killTimer(m_nTimerID_levelQueue);
 		if (true==m_pScene->deal_level_queue())
 			scheduleUpdateMap();
+		if (++dvv %20 == 0)
+		{
+			if (m_pScene->progress_queue()<0.999)
+				scheduleUpdateMap();
+		}
 		m_nTimerID_levelQueue = startTimer(100);
 	}
 }

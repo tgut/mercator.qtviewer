@@ -266,6 +266,8 @@ void qtvplugin_geomarker::cb_paintEvent( QPainter * pImage )
 		pImage->drawRect(left,top,256,32);
 		pImage->setBrush(br2);
 		pImage->drawRect(left,top,256*pc,32);
+		QString strmsg= tr("Level Re-Coord %1 %%").arg(pc*100);
+		pImage->drawText(left+32,top+16,strmsg);
 	}
 }
 
