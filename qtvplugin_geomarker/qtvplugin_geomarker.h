@@ -81,6 +81,7 @@ private:
 	*/
 	int m_nTimerID_refreshUI;
 	int m_nTimerID_refreshMap;
+	int m_nTimerID_levelQueue;
 	bool m_bNeedRefresh;
 	bool m_bNeedUpdateView;
 
@@ -167,6 +168,7 @@ protected:
 	void		timerEvent(QTimerEvent * e);
 	QMap<QString, QVariant> call_func(const  QMap<QString, QVariant> & /*paras*/);
 	void loadTranslations();
+	bool		too_many_items();
 	//ui slots
 protected slots:
 	void on_pushButton_update_clicked();

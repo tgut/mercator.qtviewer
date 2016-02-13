@@ -76,7 +76,8 @@ namespace QTVP_GEOMARKER{
 				if (pc->scale()>0)
 				{
 					qreal sc = pc->scale();
-					m_pLabelItem->setScale(1.0/pc->scale());
+					if (sc)
+						m_pLabelItem->setScale(1.0/sc);
 				}
 				m_pLabelItem->setRotation(-pc->rotation());
 			}
@@ -127,7 +128,8 @@ namespace QTVP_GEOMARKER{
 				if (pc->scale()>0)
 				{
 					qreal sc = pc->scale();
-					m_pLabelItem->setScale(1.0/pc->scale());
+					if (sc)
+						m_pLabelItem->setScale(1.0/sc);
 				}
 				m_pLabelItem->setRotation(-pc->rotation());
 
@@ -161,7 +163,8 @@ namespace QTVP_GEOMARKER{
 					if (pc->scale()>0)
 					{
 						qreal sc = pc->scale();
-						m_pLabelItem->setScale(1.0/pc->scale());
+						if (sc)
+							m_pLabelItem->setScale(1.0/sc);
 					}
 					m_pLabelItem->setRotation(-pc->rotation());
 
@@ -185,7 +188,8 @@ namespace QTVP_GEOMARKER{
 				if (pc->scale()>0)
 				{
 					qreal sc = pc->scale();
-					m_pLabelItem->setScale(1.0/pc->scale());
+					if (sc)
+						m_pLabelItem->setScale(1.0/sc);
 				}
 				m_pLabelItem->setRotation(-pc->rotation());
 			}

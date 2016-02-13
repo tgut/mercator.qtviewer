@@ -1,10 +1,13 @@
 #include "geographicsscene.h"
 #include "geoitembase.h"
 #include <QGraphicsItem>
+#include <algorithm>
 namespace QTVP_GEOMARKER{
 	geoGraphicsScene::geoGraphicsScene(QObject *parent) :
 		QGraphicsScene(parent)
 	{
+		//this->setItemIndexMethod(QGraphicsScene::NoIndex);
+		currentNewLevel = 0;
 	}
 	geoGraphicsScene::geoGraphicsScene(const QRectF &sceneRect, QObject *parent )
 		:QGraphicsScene(sceneRect,parent)
@@ -70,12 +73,12 @@ namespace QTVP_GEOMARKER{
 	 */
 	void geoGraphicsScene::adjust_item_coords(int newLevel)
 	{
-		QList <QGraphicsItem * > it = this->items();
-		foreach (QGraphicsItem * t , it)
+		currentNewLevel = newLevel;
+		if (total_items()<1024)
 		{
-			geoItemBase * base = dynamic_cast<geoItemBase *>(t);
-			if (base)
+			for (QMap<QString, geoItemBase * >::iterator p = m_map_items.begin();p!=m_map_items.end();++p)
 			{
+				geoItemBase * base = p.value();
 				//when this function is called, base->level() is the old level from which
 				//  current map is zoomed.
 				base->adjust_coords(newLevel);
@@ -84,7 +87,31 @@ namespace QTVP_GEOMARKER{
 				base->setLevel(newLevel);
 			}
 		}
+		else
+			m_queue_level_change = geo_items();
+
+
 	}
+	bool geoGraphicsScene::deal_level_queue()
+	{
+		int bneedref = 0;
+		for (int i=0;i<1024 && m_queue_level_change.empty()==false;++i)
+		{
+			++bneedref;
+			geoItemBase * base = m_queue_level_change.first();
+			m_queue_level_change.pop_front();
+			//when this function is called, base->level() is the old level from which
+			//  current map is zoomed.
+			base->adjust_coords(currentNewLevel);
+			//After adjust_coords above, the item "base" is considered to
+			// have a valid coord corresponds to current  newLevel
+			base->setLevel(currentNewLevel);
+		}
+		if (m_queue_level_change.empty()==true && bneedref)
+			return true;
+		return false;
+	}
+
 	geoItemBase * geoGraphicsScene::geoitem_by_name(const QString & name)
 	{
 		geoItemBase * it = 0;

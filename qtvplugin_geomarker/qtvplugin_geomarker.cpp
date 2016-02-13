@@ -91,6 +91,7 @@ qtvplugin_geomarker::qtvplugin_geomarker(QWidget *parent) :
 	m_bNeedUpdateView = false;
 	m_nTimerID_refreshUI = startTimer(2000);
 	m_nTimerID_refreshMap = startTimer(100);
+	m_nTimerID_levelQueue = startTimer(100);
 }
 
 qtvplugin_geomarker::~qtvplugin_geomarker()
@@ -186,6 +187,21 @@ QWidget * qtvplugin_geomarker::load_prop_window()
 {
 	return this;
 }
+bool qtvplugin_geomarker::too_many_items()
+{
+	bool res = false;
+	if (!m_pVi || m_bVisible==false)
+		return res;
+	int currentLevel = m_pVi->level();
+	if (currentLevel <=7)
+	{
+		//skip painting when there are too many marks on map
+		int reduce_limit = (1<<currentLevel) * 2048;
+		if (this->m_pScene->total_items()>=reduce_limit)
+			res = true;
+	}
+	return res;
+}
 
 void qtvplugin_geomarker::cb_paintEvent( QPainter * pImage )
 {
@@ -205,32 +221,36 @@ void qtvplugin_geomarker::cb_paintEvent( QPainter * pImage )
 				rect.width(),
 				rect.height()
 				);
-	//Warpping 180, -180. because longitude +180 and -180 is the same point,
-	// but the map is plat, -180 and + 180 is quite different positions, we
-	// should draw 3 times, to slove cross 180 drawing problems.
-	for (int p = -1; p<=1 ;++p)
+	if (too_many_items()==false)
 	{
-		QRectF source(
-					leftcenx + p * winsz,
-					topceny,
-					(rightcenx - leftcenx),
-					(bottomceny - topceny)
-					);
+		//Warpping 180, -180. because longitude +180 and -180 is the same point,
+		// but the map is plat, -180 and + 180 is quite different positions, we
+		// should draw 3 times, to slove cross 180 drawing problems.
+		for (int p = -1; p<=1 ;++p)
+		{
+			QRectF source(
+						leftcenx + p * winsz,
+						topceny,
+						(rightcenx - leftcenx),
+						(bottomceny - topceny)
+						);
 
-		m_pScene->render(pImage,destin,source);
+			m_pScene->render(pImage,destin,source);
 
+		}
 	}
 }
 
 void qtvplugin_geomarker::cb_levelChanged(int level)
 {
-	if (!m_pVi)
+	if (!m_pVi || m_bVisible==false)
 		return ;
 	//Adjust new Scene rect
 	QRectF rect(0,0,256*(1<<level),256*(1<<level));
-	m_pScene->setSceneRect(QRectF(0,0,1,1));
+	this->set_visible(false);
 	m_pScene->adjust_item_coords(level);
 	m_pScene->setSceneRect(rect);
+	this->set_visible(true);
 }
 
 bool qtvplugin_geomarker::is_visible()
@@ -279,7 +299,8 @@ bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 {
 	if (!m_pVi)
 		return false;
-
+	if (m_bVisible==false)
+		return false;
 	QPoint mouse_view_pt = e->pos();
 	int winsz = 256 * (1<<m_pVi->level());
 	double wx,wy;
@@ -301,7 +322,7 @@ bool		qtvplugin_geomarker::cb_mouseDoubleClickEvent(QMouseEvent * e)
 	QPoint mouse_screen_pt = e->globalPos();
 	Qt::MouseButton mouse_button = e->button();
 	QWidget * pwig = dynamic_cast<QWidget *> (m_pVi);
-	if (m_bVisible && pwig)
+	if (m_bVisible && pwig && too_many_items()==false)
 	{
 		// Convert and deliver the mouse event to the scene.
 		QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMouseDoubleClick);
@@ -336,7 +357,8 @@ bool qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
 {
 	if (!m_pVi)
 		return false;
-
+	if (m_bVisible==false)
+		return false;
 	QPoint mouse_view_pt = e->pos();
 	int winsz = 256 * (1<<m_pVi->level());
 	double wx,wy;
@@ -349,7 +371,7 @@ bool qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
 	QPoint mouse_screen_pt = e->globalPos();
 	Qt::MouseButton mouse_button = e->button();
 	QWidget * pwig = dynamic_cast<QWidget *> (m_pVi);
-	if (m_bVisible && pwig)
+	if (m_bVisible && pwig  && too_many_items()==false)
 	{
 		// Convert and deliver the mouse event to the scene.
 		QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMousePress);
