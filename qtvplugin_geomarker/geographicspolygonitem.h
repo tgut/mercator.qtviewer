@@ -23,6 +23,7 @@ namespace QTVP_GEOMARKER{
 		void setGeo(const QPolygonF & lla_polygon);
 		void adjust_coords(int nNewLevel);
 		QPointF label_pos();
+		QPointF center_pos(){return this->polygon().first();}
 	};
 }
 #endif // GEOGRAPHICSPOLYGONITEM_H

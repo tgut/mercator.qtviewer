@@ -196,7 +196,7 @@ bool qtvplugin_geomarker::too_many_items()
 	if (currentLevel <=7)
 	{
 		//skip painting when there are too many marks on map
-		int reduce_limit = (1<<currentLevel) * 2048;
+		int reduce_limit = (1<<currentLevel) * 4096;
 		if (this->m_pScene->total_items()>=reduce_limit)
 			res = true;
 	}
@@ -239,11 +239,39 @@ void qtvplugin_geomarker::cb_paintEvent( QPainter * pImage )
 
 		}
 	}
+	else
+	{
+		QPen pen(QColor(255,0,0,128));
+		pen.setWidth(m_pVi->level()/2+1);
+		pImage->setPen(pen);
+		QList<QTVP_GEOMARKER::geoItemBase *> items
+				= m_pScene->geo_items();
+		foreach (QTVP_GEOMARKER::geoItemBase * pitem, items)
+		{
+			QPointF pt = pitem->center_pos();
+			qint32 x,y;
+			m_pVi->CV_World2DP(pt.x(),pt.y(),&x,&y);
+			pImage->drawPoint(x,y);
+		}
+	}
+	//draw progres
+	double pc = m_pScene->progress_queue();
+	if (pc<0.999)
+	{
+		QBrush br1(QColor(255,0,0,128));
+		QBrush br2(QColor(0,255,0,128));
+		pImage->setBrush(br1);
+		int left = rect.center().x()-128;
+		int top = rect.center().y()-16;
+		pImage->drawRect(left,top,256,32);
+		pImage->setBrush(br2);
+		pImage->drawRect(left,top,256*pc,32);
+	}
 }
 
 void qtvplugin_geomarker::cb_levelChanged(int level)
 {
-	if (!m_pVi || m_bVisible==false)
+	if (!m_pVi)
 		return ;
 	//Adjust new Scene rect
 	QRectF rect(0,0,256*(1<<level),256*(1<<level));

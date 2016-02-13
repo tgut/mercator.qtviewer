@@ -31,6 +31,7 @@ namespace QTVP_GEOMARKER{
 		void setGeo(qreal lat1, qreal lon1, qreal lat2, qreal lon2);
 		void adjust_coords(int nNewLevel);
 		QPointF label_pos();
+		QPointF center_pos(){return this->line().pointAt(0.5);}
 	};
 }
 #endif // GEOGRAPHICSLINEITEM_H

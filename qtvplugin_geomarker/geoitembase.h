@@ -87,6 +87,7 @@ namespace QTVP_GEOMARKER{
 	public:
 		virtual void adjust_coords(int nNewLevel) = 0;
 		virtual QPointF label_pos() = 0;
+		virtual QPointF center_pos() = 0;
 	};
 }
 #endif // GEOITEMBASE_H

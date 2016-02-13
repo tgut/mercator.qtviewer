@@ -6,7 +6,7 @@ namespace QTVP_GEOMARKER{
 	geoGraphicsScene::geoGraphicsScene(QObject *parent) :
 		QGraphicsScene(parent)
 	{
-		//this->setItemIndexMethod(QGraphicsScene::NoIndex);
+		this->setItemIndexMethod(QGraphicsScene::NoIndex);
 		currentNewLevel = 0;
 	}
 	geoGraphicsScene::geoGraphicsScene(const QRectF &sceneRect, QObject *parent )

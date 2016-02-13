@@ -60,6 +60,7 @@ namespace QTVP_GEOMARKER{
 	public :
 		//for many items, we just change level coords in timer, batch mode.
 		bool deal_level_queue();
+		double progress_queue(){return 1-m_queue_level_change.size()*1.0 / m_map_items.size();}
 		//For mutithread opertaions, you should call lock_scene first, and call unlock scene when over
 		bool addItem(geoItemBase *item,int /*reserved*/);
 		void removeItem(geoItemBase * item, int /*reserved*/);

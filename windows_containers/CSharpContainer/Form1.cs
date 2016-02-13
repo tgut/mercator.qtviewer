@@ -96,7 +96,7 @@ namespace CSharpContainer
         {
             Random rs = new Random();
             //add a lot of marks, testing navigate performance
-            for (int i=0;i<16384;++i)
+            for (int i=0;i<65536;++i)
             {
                 double lat = rs.NextDouble() * 170 - 85;
                 double lon = rs.NextDouble() * 360 - 180;

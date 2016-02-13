@@ -29,6 +29,7 @@ namespace QTVP_GEOMARKER{
 		void setGeo(qreal cent_lat,qreal cent_lon);
 		void adjust_coords(int nNewLevel);
 		QPointF label_pos();
+		QPointF center_pos(){return rect().center();}
 	};
 }
 #endif // GEOGRAPHICSELLIPSEITEM_H

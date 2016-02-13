@@ -35,6 +35,7 @@ namespace QTVP_GEOMARKER{
 		void setPixmap(const tag_icon &icon);
 		void adjust_coords(int ncurrLevel);
 		QPointF label_pos();
+		QPointF center_pos(){return offset();}
 	};
 }
 #endif // GEOGRAPHICSELLIPSEITEM_H
