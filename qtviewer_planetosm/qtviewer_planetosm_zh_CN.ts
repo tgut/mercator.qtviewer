@@ -4,24 +4,54 @@
 <context>
     <name>QTVOSM::layer_tiles_page</name>
     <message>
-        <location filename="osmtiles/layer_tiles_page.cpp" line="26"/>
         <source>url</source>
-        <translation>源地址</translation>
+        <translation type="vanished">源地址</translation>
     </message>
     <message>
-        <location filename="osmtiles/layer_tiles_page.cpp" line="27"/>
         <source>destin dir</source>
-        <translation>目的文件夹</translation>
+        <translation type="vanished">目的文件夹</translation>
     </message>
     <message>
-        <location filename="osmtiles/layer_tiles_page.cpp" line="28"/>
         <source>filename</source>
-        <translation>缓存文件名</translation>
+        <translation type="vanished">缓存文件名</translation>
     </message>
     <message>
         <location filename="osmtiles/layer_tiles_page.cpp" line="48"/>
         <source>Select the local cache</source>
         <translation>选择本地缓存路径</translation>
+    </message>
+</context>
+<context>
+    <name>QTVOSM::urlDownloader</name>
+    <message>
+        <location filename="osmtiles/urlDownloader.cpp" line="64"/>
+        <source>task redirected: %1</source>
+        <translation>下载重定向:%1</translation>
+    </message>
+    <message>
+        <location filename="osmtiles/urlDownloader.cpp" line="70"/>
+        <source>reply is empty: %1</source>
+        <translation>下载内容为空: %1</translation>
+    </message>
+    <message>
+        <location filename="osmtiles/urlDownloader.cpp" line="93"/>
+        <source>task succeeded: %1;%2</source>
+        <translation>下载成功: %1;%2</translation>
+    </message>
+    <message>
+        <location filename="osmtiles/urlDownloader.cpp" line="98"/>
+        <source>task failed: %1,msg %2</source>
+        <translation>下载失败:%1, 信息 %2</translation>
+    </message>
+    <message>
+        <location filename="osmtiles/urlDownloader.cpp" line="148"/>
+        <source>Bring task %1 to front.</source>
+        <translation>将任务 %1 提到最前.</translation>
+    </message>
+    <message>
+        <location filename="osmtiles/urlDownloader.cpp" line="161"/>
+        <source>Add task %1</source>
+        <translation>开始任务 %1</translation>
     </message>
 </context>
 <context>
@@ -32,37 +62,51 @@
         <translation>瓦片图层</translation>
     </message>
     <message>
-        <location filename="osmtiles/layer_tiles_page.ui" line="24"/>
         <source>Pending tasks</source>
-        <translation>缓存的下载任务</translation>
+        <translation type="vanished">缓存的下载任务</translation>
     </message>
     <message>
-        <location filename="osmtiles/layer_tiles_page.ui" line="41"/>
+        <location filename="osmtiles/layer_tiles_page.ui" line="24"/>
+        <source>messages</source>
+        <translation>下载情况</translation>
+    </message>
+    <message>
+        <location filename="osmtiles/layer_tiles_page.ui" line="34"/>
         <source>Address</source>
         <translation>瓦片服务地址</translation>
     </message>
     <message>
-        <location filename="osmtiles/layer_tiles_page.ui" line="50"/>
+        <location filename="osmtiles/layer_tiles_page.ui" line="43"/>
         <source>such like &quot;http://localhost/osm_tiles2/%1/%2/%3.png&quot;</source>
         <translation>类似&quot;http://localhost/osm_tiles2/%1/%2/%3.png&quot;</translation>
     </message>
     <message>
-        <location filename="osmtiles/layer_tiles_page.ui" line="57"/>
+        <location filename="osmtiles/layer_tiles_page.ui" line="50"/>
         <source>connect</source>
         <translation>联接并按需下载</translation>
     </message>
     <message>
-        <location filename="osmtiles/layer_tiles_page.ui" line="73"/>
+        <location filename="osmtiles/layer_tiles_page.ui" line="66"/>
+        <source>Cahce Expire</source>
+        <translation>本地缓存保质期</translation>
+    </message>
+    <message>
+        <location filename="osmtiles/layer_tiles_page.ui" line="83"/>
+        <source>Days</source>
+        <translation>天</translation>
+    </message>
+    <message>
+        <location filename="osmtiles/layer_tiles_page.ui" line="94"/>
         <source>Cahce Folder</source>
         <translation>本地缓存文件夹</translation>
     </message>
     <message>
-        <location filename="osmtiles/layer_tiles_page.ui" line="83"/>
+        <location filename="osmtiles/layer_tiles_page.ui" line="104"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="osmtiles/layer_tiles_page.ui" line="90"/>
+        <location filename="osmtiles/layer_tiles_page.ui" line="111"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
@@ -80,52 +124,52 @@
         <translation>地图</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="142"/>
+        <location filename="osm_frame_widget.ui" line="145"/>
         <source>Tools</source>
         <translation>工具</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="287"/>
+        <location filename="osm_frame_widget.ui" line="290"/>
         <source>Activate</source>
         <translation>激活图层</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="248"/>
+        <location filename="osm_frame_widget.ui" line="251"/>
         <source>export</source>
         <translation>截图保存</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="304"/>
+        <location filename="osm_frame_widget.ui" line="307"/>
         <source>Deactive</source>
         <translation>取消激活</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="328"/>
+        <location filename="osm_frame_widget.ui" line="331"/>
         <source>Show</source>
         <translation>显示</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="345"/>
+        <location filename="osm_frame_widget.ui" line="348"/>
         <source>Hide</source>
         <translation>隐藏</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="391"/>
+        <location filename="osm_frame_widget.ui" line="394"/>
         <source>Up</source>
         <translation>上移</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="408"/>
+        <location filename="osm_frame_widget.ui" line="411"/>
         <source>Top</source>
         <translation>置顶</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="432"/>
+        <location filename="osm_frame_widget.ui" line="435"/>
         <source>Down</source>
         <translation>下移</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.ui" line="449"/>
+        <location filename="osm_frame_widget.ui" line="452"/>
         <source>Bottom</source>
         <translation>置底</translation>
     </message>
@@ -145,7 +189,7 @@
         <translation>可见</translation>
     </message>
     <message>
-        <location filename="osm_frame_widget.cpp" line="381"/>
+        <location filename="osm_frame_widget.cpp" line="406"/>
         <source>save to image</source>
         <translation>保存到图像</translation>
     </message>

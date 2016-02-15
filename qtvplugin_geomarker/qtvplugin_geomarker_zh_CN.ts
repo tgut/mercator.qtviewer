@@ -2,6 +2,49 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
+    <name>DialogSelectIcon</name>
+    <message>
+        <source>import icon resource</source>
+        <translation>导入图标资源</translation>
+    </message>
+    <message>
+        <source>Filename</source>
+        <translation>文件名</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>centerx</source>
+        <translation>中心点x偏移</translation>
+    </message>
+    <message>
+        <source>centery</source>
+        <translation>中心点y偏移</translation>
+    </message>
+    <message>
+        <source>name</source>
+        <translation>唯一名称</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation>导入</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <source>Error open file</source>
+        <translation>打开文件失败</translation>
+    </message>
+    <message>
+        <source>load from image</source>
+        <translation>从本地文件读取</translation>
+    </message>
+</context>
+<context>
     <name>qtvplugin_geomarker</name>
     <message>
         <source>Marks</source>
@@ -197,11 +240,11 @@
     </message>
     <message>
         <source>succeed</source>
-        <translation>成功</translation>
+        <translation type="vanished">成功</translation>
     </message>
     <message>
         <source>Successfully saved XML file</source>
-        <translation>保存XML成功</translation>
+        <translation type="vanished">保存XML成功</translation>
     </message>
     <message>
         <source>failed</source>
@@ -221,7 +264,7 @@
     </message>
     <message>
         <source>Successfully load XML file</source>
-        <translation>成功从XML文件加载数据</translation>
+        <translation type="vanished">成功从XML文件加载数据</translation>
     </message>
     <message>
         <source>Load XML file</source>
@@ -230,6 +273,106 @@
     <message>
         <source>geoMarker</source>
         <translation>标记工具插件</translation>
+    </message>
+    <message>
+        <source>icons</source>
+        <translation>图标标记</translation>
+    </message>
+    <message>
+        <source>icon</source>
+        <translation>图标</translation>
+    </message>
+    <message>
+        <source>smooth</source>
+        <translation>平滑</translation>
+    </message>
+    <message>
+        <source>add</source>
+        <translation>添加</translation>
+    </message>
+    <message>
+        <source>scale ratio</source>
+        <translation>缩放比例</translation>
+    </message>
+    <message>
+        <source>rotate</source>
+        <translation>旋转角度</translation>
+    </message>
+    <message>
+        <source>load</source>
+        <translation>批量导入</translation>
+    </message>
+    <message>
+        <source>save</source>
+        <translation>批量导出</translation>
+    </message>
+    <message>
+        <source>Level Re-Coord %1 %%</source>
+        <translation>正在重新计算坐标，完成 %1 %%</translation>
+    </message>
+    <message>
+        <source>name, lat, lon must  exist in paraments.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>name could not be empty.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>can not create graphical object, the pointer is zero.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>name, lat0, lon0,lat1,lon1 must  exist in paraments.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>name must  exist in paraments.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>polygon must contain at least 3 points,lat0,lat1,lat2 and lon0,lon1, lon2.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>name does not exist in paraments.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>name does not exist in scene.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>the mark name.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source> does not exist in current scene.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>xml must  exist in paraments.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>xml could not be empty.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>name, filename, centerx,centery must  exist in paraments.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>filename could not be empty.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>icon name is null or type error .</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>This XML is not a geomarker_icons format file.</source>
+        <translation></translation>
     </message>
 </context>
 </TS>
