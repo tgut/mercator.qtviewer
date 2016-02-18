@@ -23,9 +23,9 @@
  * 9.mark_names			return All mark names owned by this plugin.
  * 10.mark				return All styles and geo points for a special mark.
  * 11.props				return All user-defined properties for a special mark.
- * 12.add_reource		add an reource (eg, icon) to current resource list. icon mark can reference icons in current resource list.
- * 13 save_reources		save current resource list to disk files.
- * 14 load_reources		load previewsly saved list file from disk to current resource list.
+ * 12.add_resource		add an resource (eg, icon) to current resource list. icon mark can reference icons in current resource list.
+ * 13 save_resources		save current resource list to disk files.
+ * 14 load_resources		load previewsly saved list file from disk to current resource list.
  * @param paras	the key-value style paraments.
  * @return QMap<QString, QVariant>	the key-value style return values.
  */
@@ -64,9 +64,9 @@ void qtvplugin_geomarker::initialBindPluginFuntions()
 	m_map_pluginFunctions["props"]			= std::bind(&qtvplugin_geomarker::func_props,			this,std::placeholders::_1);
 	m_map_pluginFunctions["load_xml"]		= std::bind(&qtvplugin_geomarker::func_load_xml,		this,std::placeholders::_1);
 	m_map_pluginFunctions["save_xml"]		= std::bind(&qtvplugin_geomarker::func_save_xml,		this,std::placeholders::_1);
-	m_map_pluginFunctions["add_reource"]	= std::bind(&qtvplugin_geomarker::func_add_reource,		this,std::placeholders::_1);
-	m_map_pluginFunctions["save_reources"]	= std::bind(&qtvplugin_geomarker::func_save_reources,	this,std::placeholders::_1);
-	m_map_pluginFunctions["load_reources"]	= std::bind(&qtvplugin_geomarker::func_load_reources,	this,std::placeholders::_1);
+	m_map_pluginFunctions["add_resource"]	= std::bind(&qtvplugin_geomarker::func_add_resource,		this,std::placeholders::_1);
+	m_map_pluginFunctions["save_resources"]	= std::bind(&qtvplugin_geomarker::func_save_resources,	this,std::placeholders::_1);
+	m_map_pluginFunctions["load_resources"]	= std::bind(&qtvplugin_geomarker::func_load_resources,	this,std::placeholders::_1);
 }
 
 /**
@@ -661,6 +661,11 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_props(const QMap<QStrin
 		}
 		scheduleRefreshMarks();
 		scheduleUpdateMap();
+		if (base->props_visible())
+		{
+			base->show_props(false);
+			base->show_props(true);
+		}
 	}
 	else
 		res["error"] = tr("name does not exist in scene.");
@@ -801,6 +806,11 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_props	(const QMap<QSt
 	{
 		scheduleRefreshMarks();
 		scheduleUpdateMap();
+		if (base->props_visible())
+		{
+			base->show_props(false);
+			base->show_props(true);
+		}
 	}
 	return std::move(res);
 }
@@ -1063,14 +1073,14 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_load_xml		(const QMap<QStrin
 	return res;
 }
 /**
- * @brief func_add_reource is a internal function for plugin call_func "add_reource"
+ * @brief func_add_resource is a internal function for plugin call_func "add_resource"
  *
  * the paraments used by paras is listed below.
- * function=add_reource;
+ * function=add_resource;
  * @param paras The key-value style paraments.
  * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
  */
-QMap<QString, QVariant>			qtvplugin_geomarker::func_add_reource	(const QMap<QString, QVariant> & paras)
+QMap<QString, QVariant>			qtvplugin_geomarker::func_add_resource	(const QMap<QString, QVariant> & paras)
 {
 	//!xml: user should specify xml filename or the function calll will fail;
 	QMap<QString, QVariant> res;
@@ -1110,14 +1120,14 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_add_reource	(const QMap<QStr
 
 }
 /**
- * @brief func_save_reources is a internal function for plugin call_func "save_reources"
+ * @brief func_save_resources is a internal function for plugin call_func "save_resources"
  *
  * the paraments used by paras is listed below.
- * function=save_reources;
+ * function=save_resources;
  * @param paras The key-value style paraments.
  * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
  */
-QMap<QString, QVariant>			qtvplugin_geomarker::func_save_reources	(const QMap<QString, QVariant> & paras)
+QMap<QString, QVariant>			qtvplugin_geomarker::func_save_resources	(const QMap<QString, QVariant> & paras)
 {
 	//!xml: user should specify xml filename or the function calll will fail;
 	QMap<QString, QVariant> res;
@@ -1138,14 +1148,14 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_save_reources	(const QMap<QS
 	return res;
 }
 /**
- * @brief func_load_reources is a internal function for plugin call_func "load_reources"
+ * @brief func_load_resources is a internal function for plugin call_func "load_resources"
  *
  * the paraments used by paras is listed below.
- * function=save_reources;
+ * function=save_resources;
  * @param paras The key-value style paraments.
  * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
  */
-QMap<QString, QVariant>			qtvplugin_geomarker::func_load_reources	(const QMap<QString, QVariant> & paras)
+QMap<QString, QVariant>			qtvplugin_geomarker::func_load_resources	(const QMap<QString, QVariant> & paras)
 {
 	//!xml: user should specify xml filename or the function call will fail;
 	QMap<QString, QVariant> res;

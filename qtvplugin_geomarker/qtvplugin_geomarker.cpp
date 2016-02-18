@@ -404,7 +404,7 @@ bool qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
 	if (m_bVisible && pwig  && too_many_items()==false)
 	{
 		// Convert and deliver the mouse event to the scene.
-		QGraphicsSceneMouseEvent * pmouseEvent = new QGraphicsSceneMouseEvent(QEvent::GraphicsSceneMouseDoubleClick);
+		QGraphicsSceneMouseEvent * pmouseEvent = new QGraphicsSceneMouseEvent(QEvent::GraphicsSceneMousePress);
 		QGraphicsSceneMouseEvent & mouseEvent = * pmouseEvent;
 		mouseEvent.setWidget(pwig);
 		mouseEvent.setButtonDownScenePos(mouse_button, mouse_scene_pt);

@@ -457,13 +457,13 @@ void testcontainer::on_pushButton_test_xml_clicked()
 void testcontainer::on_pushButton_test_resource_clicked()
 {
 	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
-												 "function=add_reource;name=lena;filename=./lena.png;centerx=32;centery=32;").toString();
-	QMessageBox::information(this,"geomarker1::add_reource",res);
+												 "function=add_resource;name=lena;filename=./lena.png;centerx=32;centery=32;").toString();
+	QMessageBox::information(this,"geomarker1::add_resource",res);
 	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
-												 "function=load_reources;xml=.//resource.xml;").toString();
-	QMessageBox::information(this,"geomarker1::load_reources",res);
+												 "function=load_resources;xml=.//resource.xml;").toString();
+	QMessageBox::information(this,"geomarker1::load_resources",res);
 	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
-												 "function=save_reources;xml=.//resource.xml;").toString();
-	QMessageBox::information(this,"geomarker1::save_reources",res);
+												 "function=save_resources;xml=.//resource.xml;").toString();
+	QMessageBox::information(this,"geomarker1::save_resources",res);
 
 }

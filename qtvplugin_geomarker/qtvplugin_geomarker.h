@@ -149,9 +149,9 @@ private:
 	QMap<QString, QVariant>			func_save_xml		(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_load_xml		(const QMap<QString, QVariant> &);
 	//icon and its manage
-	QMap<QString, QVariant>			func_add_reource	(const QMap<QString, QVariant> &);
-	QMap<QString, QVariant>			func_save_reources	(const QMap<QString, QVariant> &);
-	QMap<QString, QVariant>			func_load_reources	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_add_resource	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_save_resources	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_load_resources	(const QMap<QString, QVariant> &);
 	//overloaded virtual funtions
 protected:
 	layer_interface *		load_initial_plugin(QString strSLibPath,viewer_interface  * ptrviewer);
