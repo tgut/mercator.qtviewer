@@ -18,6 +18,8 @@ namespace QTVOSM{
 		QString strServerURL = settings.value(QString("settings/ServerURL_%1").arg(layer->get_name()),"http://c.tile.openstreetmap.org/%1/%2/%3.png").toString();
 		QString strLocalCache = settings.value(QString("settings/LocalCache_%1").arg(layer->get_name()), QCoreApplication::applicationDirPath() +"/OSMCache").toString();
 		int nCacheExpireDays = settings.value(QString("settings/CacheExpireDays_%1").arg(layer->get_name()), 30).toInt();
+		int nAutoDownload = settings.value(QString("settings/nAutoDownload_%1").arg(layer->get_name()), 0).toInt();
+
 		ui->lineEdit_cacheFolder->setText(strLocalCache);
 		ui->lineEdit_addressUrl->setText(strServerURL);
 		ui->spinBox_cacheExpireDays->setValue(nCacheExpireDays);
@@ -30,7 +32,10 @@ namespace QTVOSM{
 		connect (layer, &layer_tiles::svrurlChanged ,this->ui->lineEdit_addressUrl, &QLineEdit::setText);
 		connect (layer, &layer_tiles::cacheChanged ,this->ui->lineEdit_cacheFolder, &QLineEdit::setText);
 		connect (layer, &layer_tiles::cacheExpireChanged ,this->ui->spinBox_cacheExpireDays, &QSpinBox::setValue);
-		ui->checkBox_connect->setChecked(layer->isConnected());
+		//ui->checkBox_connect->setChecked(layer->isConnected());
+		if (nAutoDownload!=0)
+			layer->connectToTilesServer(true);
+
 	}
 	void layer_tiles_page::reTransUI()
 	{

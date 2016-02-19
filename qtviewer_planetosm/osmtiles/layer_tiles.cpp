@@ -316,6 +316,9 @@ namespace QTVOSM{
 			map_evt["status"] =m_bconnected?"CONNECTED":"CLOSED";
 			m_pViewer->post_event(map_evt);
 		}
+		QSettings settings(QCoreApplication::applicationFilePath()+".ini",QSettings::IniFormat);
+		settings.setValue(QString("settings/nAutoDownload_%1").arg(get_name()),bconnected?-1:0);
+
 	}
 
 
