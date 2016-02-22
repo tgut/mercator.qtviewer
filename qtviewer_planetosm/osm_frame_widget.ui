@@ -39,22 +39,22 @@
       <enum>QTabWidget::South</enum>
      </property>
      <property name="tabShape">
-      <enum>QTabWidget::Triangular</enum>
+      <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
      <property name="iconSize">
       <size>
-       <width>8</width>
-       <height>8</height>
+       <width>16</width>
+       <height>16</height>
       </size>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
      </property>
      <property name="usesScrollButtons">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -66,6 +66,10 @@
       <bool>true</bool>
      </property>
      <widget class="QWidget" name="tab_map">
+      <attribute name="icon">
+       <iconset resource="resource/resource.qrc">
+        <normaloff>:/ui/icons/Folder Online aqua.png</normaloff>:/ui/icons/Folder Online aqua.png</iconset>
+      </attribute>
       <attribute name="title">
        <string>Map</string>
       </attribute>

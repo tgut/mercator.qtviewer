@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Grid</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/icons/Brush_Ruler_Alt.png</normaloff>:/icons/Brush_Ruler_Alt.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">

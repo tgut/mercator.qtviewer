@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>geoMarker</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/icons/default.png</normaloff>:/icons/default.png</iconset>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout_13">
    <property name="spacing">
     <number>3</number>
@@ -769,6 +773,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

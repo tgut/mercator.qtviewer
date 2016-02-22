@@ -129,10 +129,11 @@ bool osm_frame_widget::eventFilter(QObject *obj, QEvent *event)
 				Qt::WindowFlags flg = wig->windowFlags();
 				flg &= ~(Qt::WindowMinMaxButtonsHint|Qt::WindowStaysOnTopHint|Qt::Window );
 				wig->setWindowFlags(flg);
-				ui->tabWidget_main->addTab(
+				int idx = ui->tabWidget_main->addTab(
 							wig,
 							"Map"
 							);
+				ui->tabWidget_main->setTabIcon(idx,wig->windowIcon());
 				return true;
 			}
 		}
@@ -151,10 +152,11 @@ bool osm_frame_widget::eventFilter(QObject *obj, QEvent *event)
 				Qt::WindowFlags flg = wig->windowFlags();
 				flg &= ~(Qt::WindowMinMaxButtonsHint|Qt::WindowStaysOnTopHint|Qt::Window );
 				wig->setWindowFlags(flg);
-				ui->tabWidget_main->addTab(
+				int idx = ui->tabWidget_main->addTab(
 							wig,
 							m_PropPageslayer[obj]->get_name()
 							);
+				ui->tabWidget_main->setTabIcon(idx,wig->windowIcon());
 			}
 			return true;
 		}
@@ -180,7 +182,8 @@ bool osm_frame_widget::AppendLayer(QString SLName,layer_interface * interface)
 	{
 		m_layerPropPages[ci] = wig;
 		m_PropPageslayer[wig] = ci;
-		ui->tabWidget_main->addTab(wig,ci->get_name());
+		int idx = ui->tabWidget_main->addTab(wig,ci->get_name());
+		ui->tabWidget_main->setTabIcon(idx,wig->windowIcon());
 		wig->installEventFilter(this);
 	}
 	return true;
