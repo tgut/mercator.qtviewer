@@ -126,7 +126,7 @@ private:
 	template <class T>
 	QTVP_GEOMARKER::geoItemBase *	update_point		(const QString & name,double lat, double lon, int width, int height, QPen pen, QBrush brush);
 	QTVP_GEOMARKER::geoItemBase *	update_line			(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen);
-	QTVP_GEOMARKER::geoItemBase *	update_polygon		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush);
+	QTVP_GEOMARKER::geoItemBase *	update_polygon		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush, bool tp);
 	QTVP_GEOMARKER::geoItemBase *	update_icon			(const QString & name,double lat, double lon,qreal scale, qreal rotate,int smooth, QString id);
 	//update method for XML
 	bool							xml_update_mark		(tag_xml_mark & mark);

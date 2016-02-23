@@ -6,6 +6,7 @@
 #include "geographicslineitem.h"
 #include "geographicspolygonitem.h"
 #include "geographicsrectitem.h"
+#include "geographicsmultilineitem.h"
 #include <QDebug>
 #include <QXmlStreamAttributes>
 #include <QMap>
@@ -145,6 +146,31 @@ bool qtvplugin_geomarker::xml_save(QString xml)
 				stream.writeTextElement("scale",QString("%1").arg(pU->scale()));
 				stream.writeTextElement("rotate",QString("%1").arg(pU->rotation()));
 				stream.writeTextElement("smooth",QString("%1").arg(pU->transformationMode()==Qt::SmoothTransformation?1:0));
+			}
+		}
+			break;
+		case QTVP_GEOMARKER::ITEAMTYPE_MULTILINE:
+		{
+			QTVP_GEOMARKER::geoGraphicsMultilineItem * pU = dynamic_cast<QTVP_GEOMARKER::geoGraphicsMultilineItem *>(item);
+			if (pU)
+			{
+				//1.2. geo
+				stream.writeStartElement("geo");
+				QPolygonF pl = pU->llas();
+				int nPl = pl.size();
+				stream.writeAttribute("coords",QString("%1").arg(nPl));
+				foreach (QPointF pf, pl)
+					stream.writeTextElement("cod",QString("%1,%2").arg(pf.y(),0,'f',7).arg(pf.x(),0,'f',7));
+				stream.writeEndElement(); // geo
+				//1.2 style
+				stream.writeStartElement("style");
+				stream.writeTextElement("color_pen",color2string(pU->pen().color()));
+				stream.writeTextElement("style_pen",QString("%1").arg(int(pU->pen().style())));
+				stream.writeTextElement("width_pen",QString("%1").arg(int(pU->pen().width())));
+				stream.writeTextElement("color_brush",color2string(pU->brush().color()));
+				stream.writeTextElement("style_brush",QString("%1").arg(int(pU->brush().style())));
+
+
 			}
 		}
 			break;
@@ -428,7 +454,11 @@ bool qtvplugin_geomarker::xml_update_mark(tag_xml_mark & mark)
 	}
 	else if (mark.type==QTVP_GEOMARKER::ITEAMTYPE_POLYGON)
 	{
-		newitem = update_polygon(name,mark.geoPoints,pen,brush);
+		newitem = update_polygon(name,mark.geoPoints,pen,brush,false);
+	}
+	else if (mark.type==QTVP_GEOMARKER::ITEAMTYPE_MULTILINE)
+	{
+		newitem = update_polygon(name,mark.geoPoints,pen,brush,true);
 	}
 	else if (mark.type==QTVP_GEOMARKER::ITEAMTYPE_PIXMAP)
 	{

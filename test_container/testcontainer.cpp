@@ -379,6 +379,25 @@ void testcontainer::on_pushButton_test_polygon_clicked()
 												 "LABEL=Region;").toString();
 	if (res.contains("error"))
 		QMessageBox::information(this,"geomarker1::update_point",res);
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=update_polygon;name=ID40;type=6;"
+												 "lat0=42.2;lon0=-67.3;"
+												 "lat1=34.3;lon1=-62.8;"
+												 "lat2=22.7;lon2=-66.5;"
+												 "lat3=11.5;lon3=-72.2;"
+												 "lat4=0.8;lon4=-69.4;"
+												 "style_pen=2;color_pen=0,0,255,128;"
+												 "width_pen=3;style_brush=1;color_brush=0,255,0,128;").toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::update_polygon",res);
+
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=update_props;name=ID40;"
+												 "LABEL=Multiline;").toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::update_point",res);
+
 }
 
 void testcontainer::timerEvent(QTimerEvent * e)

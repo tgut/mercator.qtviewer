@@ -4,6 +4,7 @@
 #include "geographicslineitem.h"
 #include "geographicspolygonitem.h"
 #include "geographicsrectitem.h"
+#include "geographicsmultilineitem.h"
 #include <QDebug>
 #include <QMap>
 /**
@@ -489,6 +490,20 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_polygon		(const QMap<QS
 		res["error"] = tr("name could not be empty.");
 		return std::move(res);
 	}
+
+	int type = 4;//polygon
+	if (paras.contains("type")==true)
+	{
+		type = paras["type"].toInt();
+	}
+
+	if (name.size()==0)
+	{
+		res["error"] = tr("name could not be empty.");
+		return std::move(res);
+	}
+
+
 	QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(name);
 	QPen pen(Qt::SolidLine);
 	QBrush brush(QColor(255,255,255,128));
@@ -496,7 +511,7 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_polygon		(const QMap<QS
 	//if the mark is already exist, we will get its orgional style as default .
 	if (base)
 	{
-		if (base->item_type()==QTVP_GEOMARKER::ITEAMTYPE_POLYGON)
+		if (base->item_type()==QTVP_GEOMARKER::ITEAMTYPE_POLYGON && type !=6)
 		{
 			QTVP_GEOMARKER::geoGraphicsPolygonItem * it = dynamic_cast<QTVP_GEOMARKER::geoGraphicsPolygonItem * >(base);
 			if (it)
@@ -504,6 +519,12 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_polygon		(const QMap<QS
 				pen = it->pen();
 				brush = it->brush();
 			}
+		}
+		else if (base->item_type()==QTVP_GEOMARKER::ITEAMTYPE_MULTILINE && type !=4)
+		{
+			QTVP_GEOMARKER::geoGraphicsMultilineItem * it = dynamic_cast<QTVP_GEOMARKER::geoGraphicsMultilineItem * >(base);
+			if (it)
+				pen = it->pen();
 		}
 
 	}
@@ -592,8 +613,8 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_polygon		(const QMap<QS
 		strKeyLon = QString("lon%1").arg(ct);
 	}
 	//update using same function in UI
-	if (pl.size()>2)
-		newitem = update_polygon(name,pl,pen,brush);
+	if (pl.size()>2 || (type!=4 && pl.size()>1))
+		newitem = update_polygon(name,pl,pen,brush,type==6?true:false);
 	else
 		res["error"] = tr("polygon must contain at least 3 points,lat0,lat1,lat2 and lon0,lon1, lon2.");
 
@@ -659,13 +680,13 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_props(const QMap<QStrin
 			if (key!="name" && key!="function")
 				base->set_prop_data(key,paras[key]);
 		}
-		scheduleRefreshMarks();
-		scheduleUpdateMap();
 		if (base->props_visible())
 		{
 			base->show_props(false);
 			base->show_props(true);
 		}
+		scheduleRefreshMarks();
+		scheduleUpdateMap();
 	}
 	else
 		res["error"] = tr("name does not exist in scene.");
@@ -804,13 +825,13 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_props	(const QMap<QSt
 
 	if (needUpdate)
 	{
-		scheduleRefreshMarks();
-		scheduleUpdateMap();
 		if (base->props_visible())
 		{
 			base->show_props(false);
 			base->show_props(true);
 		}
+		scheduleRefreshMarks();
+		scheduleUpdateMap();
 	}
 	return std::move(res);
 }
@@ -955,6 +976,28 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_mark			(const QMap<QString, 
 				res["scale"] =  pU->scale();
 				res["rotate"] =  pU->rotation();
 				res["smooth"] = pU->transformationMode()==Qt::SmoothTransformation?1:0;
+			}
+		}
+			break;
+		case QTVP_GEOMARKER::ITEAMTYPE_MULTILINE:
+		{
+			QTVP_GEOMARKER::geoGraphicsMultilineItem * pU = dynamic_cast<QTVP_GEOMARKER::geoGraphicsMultilineItem *>(item);
+			if (pU)
+			{
+				QPolygonF pl = pU->llas();
+				int nPl = pl.size();
+				for (int in = 0;in < nPl; ++in)
+				{
+					QString keyLat = QString("lat%1").arg(in);
+					QString keyLon = QString("lon%1").arg(in);
+					res[keyLat] = QString("%1").arg(pl[in].y(),0,'f',7);
+					res[keyLon] = QString("%1").arg(pl[in].x(),0,'f',7);
+				}
+				res["color_pen"] = color2string(pU->pen().color());
+				res["style_pen"] = QString("%1").arg(int(pU->pen().style()));
+				res["width_pen"] = QString("%1").arg(int(pU->pen().width()));
+				res["color_brush"] = color2string(pU->brush().color());
+				res["style_brush"] = QString("%1").arg(int(pU->brush().style()));
 			}
 		}
 			break;

@@ -24,7 +24,8 @@ SOURCES += \
     qtvplugin_geomarker_func.cpp \
     qtvplugin_geomarker_xml.cpp \
     geographicspixmapitem.cpp \
-    dialogselecticon.cpp
+    dialogselecticon.cpp \
+    geographicsmultilineitem.cpp
 
 HEADERS +=\
     ../qtviewer_planetosm/osmtiles/layer_interface.h \
@@ -37,7 +38,8 @@ HEADERS +=\
     geographicslineitem.h \
     geographicspolygonitem.h \
     geographicspixmapitem.h \
-    dialogselecticon.h
+    dialogselecticon.h \
+    geographicsmultilineitem.h
 
 FORMS += \
     qtvplugin_geomarker.ui \

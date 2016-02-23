@@ -418,6 +418,13 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_14">
            <item>
+            <widget class="QCheckBox" name="checkBox_close">
+             <property name="text">
+              <string>Multiline(Not close)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="horizontalSpacer_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>

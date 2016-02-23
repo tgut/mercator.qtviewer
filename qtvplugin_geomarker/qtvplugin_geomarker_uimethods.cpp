@@ -12,6 +12,7 @@
 #include "geographicsrectitem.h"
 #include "geographicslineitem.h"
 #include "geographicspolygonitem.h"
+#include "geographicsmultilineitem.h"
 #include "dialogselecticon.h"
 
 void		qtvplugin_geomarker::timerEvent(QTimerEvent * e)
@@ -23,7 +24,7 @@ void		qtvplugin_geomarker::timerEvent(QTimerEvent * e)
 		if (m_items_to_insert.empty()==true)
 		{
 			m_items_to_insert = m_pScene->geo_item_names();
-			m_pGeoItemModel->clear();
+			m_pGeoItemModel->removeRows(0,m_pGeoItemModel->rowCount());
 		}
 		//refersh
 		int ct = 0;
@@ -176,6 +177,7 @@ void qtvplugin_geomarker::ini_save()
 	settings.setValue("ui/lineEdit_icon_lon",ui->lineEdit_icon_lon->text());
 	settings.setValue("ui/lineEdit_icon_rotate",ui->lineEdit_icon_rotate->text());
 	settings.setValue("ui/lineEdit_icon_scale",ui->lineEdit_icon_scale->text());
+	settings.setValue("ui/checkBox_close",ui->checkBox_close->isChecked()?-1:0);
 }
 
 void qtvplugin_geomarker::ini_load()
@@ -267,6 +269,9 @@ void qtvplugin_geomarker::ini_load()
 	ui->lineEdit_icon_scale->setText(lineEdit_icon_scale);
 	QString lineEdit_icon_rotate = settings.value("ui/lineEdit_icon_rotate","1.0").toString();
 	ui->lineEdit_icon_rotate->setText(lineEdit_icon_rotate);
+
+	int checkBox_close = settings.value("ui/checkBox_close",0).toInt();
+	ui->checkBox_close->setChecked(checkBox_close?true:false);
 
 }
 void qtvplugin_geomarker::on_pushButton_update_clicked()
@@ -367,7 +372,7 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 				latlons.push_back(ll);
 		}
 		if (latlons.size())
-			newitem = update_polygon(name,latlons,pen,brush);
+			newitem = update_polygon(name,latlons,pen,brush,ui->checkBox_close->isChecked()?true:false);
 
 	}
 	else if (ui->radioButton_tool_icons->isChecked())
@@ -567,6 +572,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 				strPlainText += QString("%1,%2;\n").arg(p.y(),0,'f',7).arg(p.x(),0,'f',7);
 			ui->plainTextEdit_corners->setPlainText(strPlainText);
 			ui->radioButton_tool_polygon->setChecked(true);
+			ui->checkBox_close->setChecked(false);
 		}
 			break;
 		case QTVP_GEOMARKER::ITEAMTYPE_PIXMAP:
@@ -583,6 +589,23 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			ui->comboBox_icons->setCurrentText(nameicon);
 		}
 			break;
+		case QTVP_GEOMARKER::ITEAMTYPE_MULTILINE:
+		{
+			QTVP_GEOMARKER::geoGraphicsMultilineItem * pitem = dynamic_cast<QTVP_GEOMARKER::geoGraphicsMultilineItem *>(item);
+			if (!pitem)
+				break;
+			pen = pitem->pen();
+			brush = pitem->brush();
+			QPolygonF pol = pitem->llas();
+			QString strPlainText;
+			foreach (QPointF p, pol)
+				strPlainText += QString("%1,%2;\n").arg(p.y(),0,'f',7).arg(p.x(),0,'f',7);
+			ui->plainTextEdit_corners->setPlainText(strPlainText);
+			ui->radioButton_tool_polygon->setChecked(true);
+			ui->checkBox_close->setChecked(true);
+		}
+			break;
+
 		default:
 			break;
 

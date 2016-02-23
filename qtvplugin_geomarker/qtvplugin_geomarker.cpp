@@ -16,6 +16,7 @@
 #include "geographicslineitem.h"
 #include "geographicspolygonitem.h"
 #include "geographicspixmapitem.h"
+#include "geographicsmultilineitem.h"
 QMutex mutex_instances;
 QMap<viewer_interface *,  qtvplugin_geomarker * > map_instances;
 QMap<QString,  int > count_instances;
@@ -528,7 +529,7 @@ QTVP_GEOMARKER::geoItemBase *  qtvplugin_geomarker::update_line(const QString & 
 }
 
 
-QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_polygon		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush)
+QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_polygon		(const QString & name,const QPolygonF latlons, QPen pen, QBrush brush, bool tp)
 {
 	QTVP_GEOMARKER::geoItemBase *  res = 0;
 	//Get raw Item by name
@@ -541,36 +542,72 @@ QTVP_GEOMARKER::geoItemBase *   qtvplugin_geomarker::update_polygon		(const QStr
 		propNames = base->prop_names();
 		propValues = base->prop_values();
 	}
-	//type convertion to T
-	QTVP_GEOMARKER::geoGraphicsPolygonItem * pitem = base?dynamic_cast<QTVP_GEOMARKER::geoGraphicsPolygonItem  *>(base):0;
-	if (!pitem)
-		pitem	= new QTVP_GEOMARKER::geoGraphicsPolygonItem(name,
-															 this->m_pVi,
-															 latlons);
-
-	pitem->setPen(pen);
-	pitem->setBrush(brush);
-	if (base == pitem)
+	if (tp==false)
 	{
-		pitem->setGeo(latlons);
-		res = pitem;
-	}
-	else if (false==this->m_pScene->addItem(pitem,0))
-	{
-		if (base != pitem)
-			delete pitem;
+		//type convertion to T
+		QTVP_GEOMARKER::geoGraphicsPolygonItem * pitem = base?dynamic_cast<QTVP_GEOMARKER::geoGraphicsPolygonItem  *>(base):0;
+		if (!pitem)
+			pitem	= new QTVP_GEOMARKER::geoGraphicsPolygonItem(name,
+																 this->m_pVi,
+																 latlons);
+		pitem->setPen(pen);
+		pitem->setBrush(brush);
+		if (base == pitem)
+		{
+			pitem->setGeo(latlons);
+			res = pitem;
+		}
+		else if (false==this->m_pScene->addItem(pitem,0))
+		{
+			if (base != pitem)
+				delete pitem;
+		}
+		else
+		{
+			int cs = propNames.size();
+			for (int i=0;i<cs && base != pitem;++i)
+			{
+				pitem->set_prop_data(propNames.first(), propValues.first());
+				propNames.pop_front();
+				propValues.pop_front();
+			}
+			res = pitem;
+		}
 	}
 	else
 	{
-		int cs = propNames.size();
-		for (int i=0;i<cs && base != pitem;++i)
+		//type convertion to T
+		QTVP_GEOMARKER::geoGraphicsMultilineItem * pitem = base?dynamic_cast<QTVP_GEOMARKER::geoGraphicsMultilineItem  *>(base):0;
+		if (!pitem)
+			pitem	= new QTVP_GEOMARKER::geoGraphicsMultilineItem(name,
+																 this->m_pVi,
+																 latlons);
+		pitem->setPen(pen);
+		//pitem->setBrush(QBrush(Qt::NoBrush));
+		if (base == pitem)
 		{
-			pitem->set_prop_data(propNames.first(), propValues.first());
-			propNames.pop_front();
-			propValues.pop_front();
+			pitem->setGeo(latlons);
+			res = pitem;
 		}
-		res = pitem;
+		else if (false==this->m_pScene->addItem(pitem,0))
+		{
+			if (base != pitem)
+				delete pitem;
+		}
+		else
+		{
+			int cs = propNames.size();
+			for (int i=0;i<cs && base != pitem;++i)
+			{
+				pitem->set_prop_data(propNames.first(), propValues.first());
+				propNames.pop_front();
+				propValues.pop_front();
+			}
+			res = pitem;
+		}
 	}
+
+
 	return res;
 }
 QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & name,double lat, double lon,qreal scale, qreal rotate,int smooth, QString id)
