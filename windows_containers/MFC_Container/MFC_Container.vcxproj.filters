@@ -65,5 +65,8 @@
     <Image Include="res\MFC_Container.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\mark.png">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

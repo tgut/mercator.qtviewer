@@ -1113,6 +1113,11 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_load_xml		(const QMap<QStrin
 
 	bool ok = this->xml_load(name);
 	res ["return"] = ok;
+	if (ok)
+	{
+		scheduleRefreshMarks();
+		scheduleUpdateMap();
+	}
 	return res;
 }
 /**

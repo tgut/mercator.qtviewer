@@ -34,9 +34,14 @@
 
 #include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 
+#include <string>
 
-
-
+//defines a _tstring type, for automaticlly unicode corresponding
+#ifdef _UNICODE
+typedef  std::wstring _tstring;
+#else
+typedef  std::string _tstring;
+#endif
 
 
 

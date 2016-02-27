@@ -49,7 +49,7 @@ BOOL CMFC_ContainerApp::InitInstance()
 	// Change the registry key under which our settings are stored
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+	SetRegistryKey(_T("QPlanetOSM windows activex container demo"));
 
 	CMFC_ContainerDlg dlg;
 	m_pMainWnd = &dlg;
