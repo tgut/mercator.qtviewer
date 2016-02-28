@@ -266,7 +266,7 @@ void CMFC_ContainerDlg::OnTimer(UINT_PTR nIDEvent)
 			lastlat = *latp, lastlon = *lonp;
 
 		}
-
+		m_map.osm_set_center_pos(m_currentLat, m_currentLon);
 
 		if (rand()%10==1)
 			m_direct += rand()%100/10.0-5.0;

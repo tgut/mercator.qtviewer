@@ -753,3 +753,7 @@ void qtvplugin_geomarker::on_pushButton_save_icons_clicked()
 			QMessageBox::warning(this,tr("failed"),tr("Save XML file") + newfm + tr(" Failed"));
 	}
 }
+void qtvplugin_geomarker::on_pushButton_refresh_list_clicked()
+{
+	scheduleRefreshMarks();
+}

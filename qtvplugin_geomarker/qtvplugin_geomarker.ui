@@ -40,20 +40,44 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_7">
       <property name="spacing">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="leftMargin">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="topMargin">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="rightMargin">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="bottomMargin">
-       <number>3</number>
+       <number>2</number>
       </property>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QPushButton" name="pushButton_refresh_list">
+          <property name="text">
+           <string>Refresh</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
       <item>
        <widget class="QTableView" name="tableView_marks">
         <property name="sizePolicy">
@@ -573,6 +597,21 @@
         <string>Properties</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>2</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>

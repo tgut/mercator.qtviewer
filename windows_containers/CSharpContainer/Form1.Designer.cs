@@ -73,11 +73,11 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.heavyTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadFromDiskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.axqtaxviewer_planetosm1 = new Axqtaxviewer_planetosmLib.Axqtaxviewer_planetosm();
             this.tabPage_map2 = new System.Windows.Forms.TabPage();
             this.axqtaxviewer_planetosm2 = new Axqtaxviewer_planetosmLib.Axqtaxviewer_planetosm();
             this.tabPage_msg = new System.Windows.Forms.TabPage();
-            this.loadFromDiskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl_map.SuspendLayout();
             this.tabPage_map1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -447,6 +447,7 @@
             this.heavyTestToolStripMenuItem.Name = "heavyTestToolStripMenuItem";
             this.heavyTestToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.heavyTestToolStripMenuItem.Text = "Heavy Test";
+            this.heavyTestToolStripMenuItem.Click += new System.EventHandler(this.heavyTestToolStripMenuItem_Click);
             // 
             // xMLToolStripMenuItem
             // 
@@ -454,6 +455,13 @@
             this.xMLToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.xMLToolStripMenuItem.Text = "Save to disk";
             this.xMLToolStripMenuItem.Click += new System.EventHandler(this.SaveToDiskToolStripMenuItem_Click);
+            // 
+            // loadFromDiskToolStripMenuItem
+            // 
+            this.loadFromDiskToolStripMenuItem.Name = "loadFromDiskToolStripMenuItem";
+            this.loadFromDiskToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.loadFromDiskToolStripMenuItem.Text = "Load from disk";
+            this.loadFromDiskToolStripMenuItem.Click += new System.EventHandler(this.loadFromDiskToolStripMenuItem_Click);
             // 
             // axqtaxviewer_planetosm1
             // 
@@ -499,13 +507,6 @@
             this.tabPage_msg.TabIndex = 2;
             this.tabPage_msg.Text = "Messages";
             this.tabPage_msg.UseVisualStyleBackColor = true;
-            // 
-            // loadFromDiskToolStripMenuItem
-            // 
-            this.loadFromDiskToolStripMenuItem.Name = "loadFromDiskToolStripMenuItem";
-            this.loadFromDiskToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.loadFromDiskToolStripMenuItem.Text = "Load from disk";
-            this.loadFromDiskToolStripMenuItem.Click += new System.EventHandler(this.loadFromDiskToolStripMenuItem_Click);
             // 
             // CSharpMapContainer
             // 

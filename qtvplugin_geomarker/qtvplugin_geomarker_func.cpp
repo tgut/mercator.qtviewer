@@ -239,7 +239,7 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_point		(const QMap<QStr
 			QColor textColor = string2color( paras["color_label"].toString());
 			newitem->setLabelColor(textColor);
 		}
-		scheduleRefreshMarks();
+		//scheduleRefreshMarks();
 		scheduleUpdateMap();
 	}
 	else
@@ -342,7 +342,7 @@ QMap<QString, QVariant>			qtvplugin_geomarker:: func_update_icon	(const QMap<QSt
 			QColor textColor = string2color( paras["color_label"].toString());
 			newitem->setLabelColor(textColor);
 		}
-		scheduleRefreshMarks();
+		//scheduleRefreshMarks();
 		scheduleUpdateMap();
 	}
 	else
@@ -456,7 +456,7 @@ QMap<QString, QVariant>  qtvplugin_geomarker::func_update_line		(const QMap<QStr
 			QColor textColor = string2color( paras["color_label"].toString());
 			newitem->setLabelColor(textColor);
 		}
-		scheduleRefreshMarks();
+		//scheduleRefreshMarks();
 		scheduleUpdateMap();
 	}
 	else
@@ -641,7 +641,7 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_polygon		(const QMap<QS
 			QColor textColor = string2color( paras["color_label"].toString());
 			newitem->setLabelColor(textColor);
 		}
-		scheduleRefreshMarks();
+		//scheduleRefreshMarks();
 		scheduleUpdateMap();
 	}
 	else
@@ -685,7 +685,7 @@ QMap<QString, QVariant> qtvplugin_geomarker::func_update_props(const QMap<QStrin
 			base->show_props(false);
 			base->show_props(true);
 		}
-		scheduleRefreshMarks();
+		//scheduleRefreshMarks();
 		scheduleUpdateMap();
 	}
 	else
@@ -771,7 +771,7 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_marks	(const QMap<QSt
 	}
 	if (needUpdate)
 	{
-		scheduleRefreshMarks();
+		//scheduleRefreshMarks();
 		scheduleUpdateMap();
 	}
 
@@ -830,7 +830,7 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_delete_props	(const QMap<QSt
 			base->show_props(false);
 			base->show_props(true);
 		}
-		scheduleRefreshMarks();
+		//scheduleRefreshMarks();
 		scheduleUpdateMap();
 	}
 	return std::move(res);
@@ -1115,7 +1115,7 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_load_xml		(const QMap<QStrin
 	res ["return"] = ok;
 	if (ok)
 	{
-		scheduleRefreshMarks();
+		//scheduleRefreshMarks();
 		scheduleUpdateMap();
 	}
 	return res;

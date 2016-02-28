@@ -192,6 +192,7 @@ protected slots:
 	void on_pushButton_import_icon_clicked();
 	void on_pushButton_load_icons_clicked();
 	void on_pushButton_save_icons_clicked();
+	void on_pushButton_refresh_list_clicked();
 };
 
 template <class T>
