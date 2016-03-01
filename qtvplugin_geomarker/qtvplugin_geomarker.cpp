@@ -675,3 +675,7 @@ QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & n
 	}
 	return res;
 }
+void qtvplugin_geomarker::on_pushButton_refresh_list_clicked()
+{
+	this->scheduleRefreshMarks();
+}

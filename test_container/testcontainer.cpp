@@ -324,7 +324,10 @@ void testcontainer::on_pushButton_test_mark_clicked()
 	if (res.contains("error"))
 		QMessageBox::information(this,"geomarker1::update_props",res);
 
-
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
+												 "function=show_props;ID7=1;ID1=0").toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker1::update_props",res);
 }
 void testcontainer::on_pushButton_test_line_clicked()
 {
@@ -437,8 +440,11 @@ void testcontainer::on_pushButton_test_request_clicked()
 	slot_message("geomarker1::mark_names:"+res);
 
 	QMap<QString,QVariant> mp =  string_to_map(res);
+	QString str_prop_vis = "function=props_vis;" ;
+	int c = 0;
 	foreach (QString key, mp.keys())
 	{
+		str_prop_vis += QString("name%1=%2;").arg(c++).arg(mp[key].toString());
 		res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1",
 											 "function=mark;name="+mp[key].toString()).toString();
 
@@ -447,6 +453,8 @@ void testcontainer::on_pushButton_test_request_clicked()
 													 "function=props;name="+mp[key].toString()).toString();
 		slot_message("geomarker1::props:"+res);
 	}
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)","geomarker1", str_prop_vis).toString();
+	slot_message("geomarker1::props_vis:"+res);
 
 
 }

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>446</width>
+    <width>458</width>
     <height>444</height>
    </rect>
   </property>
@@ -39,27 +39,19 @@
       <string>Marks</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_7">
-      <property name="spacing">
-       <number>2</number>
-      </property>
-      <property name="leftMargin">
-       <number>2</number>
-      </property>
-      <property name="topMargin">
-       <number>2</number>
-      </property>
-      <property name="rightMargin">
-       <number>2</number>
-      </property>
-      <property name="bottomMargin">
-       <number>2</number>
-      </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <widget class="QPushButton" name="pushButton_refresh_list">
           <property name="text">
            <string>Refresh</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_collaps_all">
+          <property name="text">
+           <string>Collapse All</string>
           </property>
          </widget>
         </item>
@@ -597,21 +589,6 @@
         <string>Properties</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
-        <property name="spacing">
-         <number>2</number>
-        </property>
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
-         <number>2</number>
-        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>

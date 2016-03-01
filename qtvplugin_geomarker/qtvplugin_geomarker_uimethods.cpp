@@ -753,7 +753,21 @@ void qtvplugin_geomarker::on_pushButton_save_icons_clicked()
 			QMessageBox::warning(this,tr("failed"),tr("Save XML file") + newfm + tr(" Failed"));
 	}
 }
-void qtvplugin_geomarker::on_pushButton_refresh_list_clicked()
+void qtvplugin_geomarker::on_pushButton_collaps_all_clicked()
 {
-	scheduleRefreshMarks();
+	QList< QTVP_GEOMARKER::geoItemBase *  > lst = m_pScene->geo_items();
+
+	bool needupdate = false;
+	foreach (QTVP_GEOMARKER::geoItemBase * base,lst)
+	{
+		bool bOldVis = base->props_visible();
+		if (bOldVis)
+			needupdate = true;
+		base->show_props(false);
+	}
+	if (needupdate)
+	{
+		//scheduleRefreshMarks();
+		scheduleUpdateMap();
+	}
 }

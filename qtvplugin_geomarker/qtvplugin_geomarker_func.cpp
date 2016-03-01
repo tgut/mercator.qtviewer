@@ -27,6 +27,10 @@
  * 12.add_resource		add an resource (eg, icon) to current resource list. icon mark can reference icons in current resource list.
  * 13 save_resources		save current resource list to disk files.
  * 14 load_resources		load previewsly saved list file from disk to current resource list.
+ * 15 load_xml			load xml from diskette
+ * 16 sava_xml			save marks to diskette in xml format
+ * 17 props_vis(ibiliuty)	collapse detail display for items.
+ * 18 show_props		show_details
  * @param paras	the key-value style paraments.
  * @return QMap<QString, QVariant>	the key-value style return values.
  */
@@ -65,9 +69,13 @@ void qtvplugin_geomarker::initialBindPluginFuntions()
 	m_map_pluginFunctions["props"]			= std::bind(&qtvplugin_geomarker::func_props,			this,std::placeholders::_1);
 	m_map_pluginFunctions["load_xml"]		= std::bind(&qtvplugin_geomarker::func_load_xml,		this,std::placeholders::_1);
 	m_map_pluginFunctions["save_xml"]		= std::bind(&qtvplugin_geomarker::func_save_xml,		this,std::placeholders::_1);
-	m_map_pluginFunctions["add_resource"]	= std::bind(&qtvplugin_geomarker::func_add_resource,		this,std::placeholders::_1);
+	m_map_pluginFunctions["add_resource"]	= std::bind(&qtvplugin_geomarker::func_add_resource,	this,std::placeholders::_1);
 	m_map_pluginFunctions["save_resources"]	= std::bind(&qtvplugin_geomarker::func_save_resources,	this,std::placeholders::_1);
 	m_map_pluginFunctions["load_resources"]	= std::bind(&qtvplugin_geomarker::func_load_resources,	this,std::placeholders::_1);
+	m_map_pluginFunctions["props_vis"]		= std::bind(&qtvplugin_geomarker::func_props_vis,		this,std::placeholders::_1);
+	m_map_pluginFunctions["show_props"]		= std::bind(&qtvplugin_geomarker::func_show_props,		this,std::placeholders::_1);
+
+
 }
 
 /**
@@ -1112,12 +1120,12 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_load_xml		(const QMap<QStrin
 	}
 
 	bool ok = this->xml_load(name);
-	res ["return"] = ok;
 	if (ok)
 	{
 		//scheduleRefreshMarks();
 		scheduleUpdateMap();
 	}
+	res ["return"] = ok;
 	return res;
 }
 /**
@@ -1222,4 +1230,107 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_load_resources	(const QMap<Q
 	bool ok = this->xml_icon_load(name);
 	res ["return"] = ok;
 	return res;
+}
+/**
+ * @brief func_props_vis is a internal function for plugin call_func "props_vis"
+ *
+ * the paraments used by paras is listed below.
+ * function=props_vis;
+ * @param paras The key-value style paraments.
+ * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
+ */
+QMap<QString, QVariant>			qtvplugin_geomarker::func_props_vis		(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
+	//! marknames should stored in parename name0, name1, name2
+	//! for example, name0=StarBar;name1=ruijing Hospital;name2=shunfun express;
+	QSet<QString> set_names;
+	int ct = 0;
+	do{
+		QString keystr = QString("name%1").arg(ct++);
+		if (paras.contains(keystr)==false)
+			break;
+		set_names.insert(paras[keystr].toString());
+	}while (ct<1024*1024*1024);
+	if (set_names.size())
+	{
+		ct = 0;
+		foreach (QString key,set_names)
+		{
+			QTVP_GEOMARKER::geoItemBase * base = m_pScene->geoitem_by_name(key);
+			if (base)
+			{
+				bool vis = base->props_visible();
+				if (vis)
+					res[key] = 1;
+				else
+					res[key] = 0;
+			}
+			else
+				res[key] = 0;
+		}
+	}
+	else
+	{
+		QList< QTVP_GEOMARKER::geoItemBase *  > lst = m_pScene->geo_items();
+		foreach (QTVP_GEOMARKER::geoItemBase * key,lst)
+		{
+			bool vis = key->props_visible();
+			if (vis)
+				res[key->item_name()] = 1;
+			else
+				res[key->item_name()] = 0;
+		}
+	}
+
+	//! the return value is "name=v;" serials, v=0 means props are collapsed, otherwise means props is visible.
+	return std::move(res);
+}
+/**
+ * @brief func_show_props is a internal function for plugin call_func "show_props"
+ *
+ * the paraments used by paras is listed below.
+ * function=show_props;
+ * @param paras The key-value style paraments.
+ * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
+ */
+QMap<QString, QVariant>			qtvplugin_geomarker::func_show_props		(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
+	//! mark props visibility should be stored in paire,
+	//! for example, StarBar=0;ruijing Hospital=1;shunfun express=1;
+	//! all other props will be hidden.
+	bool needupdate = false;
+
+	QList< QTVP_GEOMARKER::geoItemBase *  > lst = m_pScene->geo_items();
+	foreach (QTVP_GEOMARKER::geoItemBase * base,lst)
+	{
+		QString key = base->item_name();
+		if (paras.contains(key))
+		{
+			bool vis = paras[key].toInt()==0?false:true;
+			bool bOldVis = base->props_visible();
+			if (vis!=bOldVis)
+			{
+				needupdate = true;
+				base->show_props(vis);
+				bOldVis = vis;
+			}
+			res[key] = bOldVis?1:0;
+		}
+		else
+		{
+			bool bOldVis = base->props_visible();
+			if (bOldVis)
+				needupdate = true;
+			base->show_props(false);
+		}
+	}
+	if (needupdate)
+	{
+		//scheduleRefreshMarks();
+		scheduleUpdateMap();
+	}
+	//! the return value is "name=v;" serials, v=0 means props are collapsed, otherwise means props is visible.
+	return std::move(res);
 }

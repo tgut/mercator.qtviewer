@@ -152,6 +152,9 @@ private:
 	QMap<QString, QVariant>			func_add_resource	(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_save_resources	(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_load_resources	(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_props_vis		(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_show_props		(const QMap<QString, QVariant> &);
+
 	//overloaded virtual funtions
 protected:
 	layer_interface *		load_initial_plugin(QString strSLibPath,viewer_interface  * ptrviewer);
@@ -193,6 +196,7 @@ protected slots:
 	void on_pushButton_load_icons_clicked();
 	void on_pushButton_save_icons_clicked();
 	void on_pushButton_refresh_list_clicked();
+	void on_pushButton_collaps_all_clicked();
 };
 
 template <class T>
