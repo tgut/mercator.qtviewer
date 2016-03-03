@@ -14,7 +14,7 @@
 
 class osm_frame_widget;
 class qtaxviewer_planetosm;
-
+class qtwidget_planetosm;
 namespace QTVOSM
 {
 	class viewer_interface;
@@ -25,6 +25,7 @@ namespace QTVOSM
 	class layer_interface
 	{
 		friend class tilesviewer;
+		friend class ::qtwidget_planetosm;
 		friend class ::osm_frame_widget;
 		friend class ::qtaxviewer_planetosm;
 	public:

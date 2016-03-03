@@ -11,6 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ../../bin/test_container
 TEMPLATE = app
 
+LIBS += -L$$OUT_PWD/../bin
+LIBS += -lqtwidget_planetosm
+INCLUDEPATH += $$PWD/../qtviewer_planetosm
 
 SOURCES += main.cpp\
 	testcontainer.cpp

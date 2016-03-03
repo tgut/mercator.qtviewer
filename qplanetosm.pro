@@ -1,9 +1,11 @@
 TEMPLATE = subdirs
 SUBDIRS += \
 	qtviewer_planetosm \
-    qtvplugin_grid \
-	qtvplugin_geomarker
-
+	qtwidget_planetosm \
+	qtvplugin_grid \
+	qtvplugin_geomarker \
+	qtwidget_planetosm_designer
+qtwidget_planetosm.file = qtviewer_planetosm/qtwidget_planetosm.pro
 win32:{
     SUBDIRS +=\
 	qtaxviewer_planetosm\

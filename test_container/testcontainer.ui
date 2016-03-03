@@ -193,7 +193,7 @@
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>Map1</string>
+         <string>AxMap1</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -203,7 +203,7 @@
        </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
-         <string>Map2</string>
+         <string>AxMap2</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -215,6 +215,16 @@
             </sizepolicy>
            </property>
           </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="WidgetMap">
+        <attribute name="title">
+         <string>WidgetMap</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="qtwidget_planetosm" name="osmmap" native="true"/>
          </item>
         </layout>
        </widget>
@@ -253,6 +263,11 @@
    <class>QAxWidget</class>
    <extends>QWidget</extends>
    <header>qaxwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtwidget_planetosm</class>
+   <extends>QWidget</extends>
+   <header>qtwidget_planetosm.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

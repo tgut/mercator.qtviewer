@@ -23,6 +23,9 @@ protected:
 private:
 	Ui::testcontainer *ui;
 	int m_nAnTimer;
+	QString m_str_gridLayerName;
+	QString m_str_markerLayerName;
+	void confirmLayerNames();
 protected slots:
 	void slot_message(QString);
 	void on_pushButton_test_adds_clicked();
@@ -39,6 +42,7 @@ protected slots:
 	void on_pushButton_test_request_clicked();
 	void on_pushButton_test_xml_clicked();
 	void on_pushButton_test_resource_clicked();
+	void on_osmmap_map_event(QMap<QString, QVariant> p);
 };
 
 #endif // TESTCONTAINER_H

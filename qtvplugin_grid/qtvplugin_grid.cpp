@@ -10,6 +10,8 @@
 #include <QMutex>
 #include <QMap>
 #include <assert.h>
+#include <QMessageBox>
+#include <QSettings>
 /*!
  * The plugin dynamic library (.dll in windows or .so in linux) will be loaded into memory only once.
  * for example, a windows app like test_container will contain 2 qtaxviewer_planetosm OCX  ctrls ,
@@ -33,6 +35,7 @@ qtvplugin_grid::qtvplugin_grid(QWidget *parent) :
 	m_pt_end = QPointF(-1,-1);
 	bFinished = true;
 	m_bActive = false;
+	m_nMarks = 0;
 }
 
 qtvplugin_grid::~qtvplugin_grid()
@@ -71,6 +74,8 @@ layer_interface * qtvplugin_grid::load_initial_plugin(QString strSLibPath,viewer
 	{
 		QFileInfo info(strSLibPath);
 		m_SLLibName = info.completeBaseName();
+		m_SLLibPath = strSLibPath;
+
 		m_pVi = ptrviewer;
 
 		mutex_instances.lock();
@@ -78,6 +83,7 @@ layer_interface * qtvplugin_grid::load_initial_plugin(QString strSLibPath,viewer
 		mutex_instances.unlock();
 
 		loadTranslation();
+		load_ini();
 	}
 	//!3.if the instance not correspones to this, call the instances' load_initial_plugin instead.
 	else
@@ -222,21 +228,35 @@ void qtvplugin_grid::cb_paintEvent( QPainter * pImage )
 	}
 
 
-	pImage->setPen(pen_area);
+
 	int x1,y1,x2,y2;
 	int sz = m_list_points.size();
+	QPen pen_text(QColor(0,0,255));
 	for (int i=0;i<sz-1;++i)
 	{
 		m_pVi->CV_LLA2DP(m_list_points[i].x(),m_list_points[i].y(),&x1,&y1);
 		m_pVi->CV_LLA2DP(m_list_points[i+1].x(),m_list_points[i+1].y(),&x2,&y2);
+		pImage->setPen(pen_area);
 		pImage->drawLine(x1,y1,x2,y2);
+		double sita;
+		double dis = CalDistance(m_list_points[i].x(),m_list_points[i+1].x(),m_list_points[i].y(),m_list_points[i+1].y(), &sita);
+		sprintf(str,"%.2lfkm",dis/1000.0);
+		pImage->setPen(pen_text);
+		QPointF pos = QLineF(x1,y1,x2,y2).pointAt(i*0.8 / sz+0.1);
+		pImage->drawText(pos,str);
 	}
 	if (bFinished==false && sz>0)
 	{
 		m_pVi->CV_LLA2DP(m_list_points.last().x(),m_list_points.last().y(),&x1,&y1);
 		m_pVi->CV_LLA2DP(m_pt_end.x(),m_pt_end.y(),&x2,&y2);
+		pImage->setPen(pen_area);
 		pImage->drawLine(x1,y1,x2,y2);
-
+		double sita;
+		double dis = CalDistance(m_list_points.last().x(),m_pt_end.x(),m_list_points.last().y(),m_pt_end.y(), &sita);
+		sprintf(str,"%.1lfkm",dis/1000.0);
+		pImage->setPen(pen_text);
+		QPointF pos = QLineF(x1,y1,x2,y2).pointAt(1*0.8 / sz+0.1);
+		pImage->drawText(pos,str);
 	}
 	pImage->setPen(oldpen);
 }
@@ -278,6 +298,7 @@ void qtvplugin_grid::set_name(QString /*vb*/)
 }
 void qtvplugin_grid::on_checkBox_measure_clicked(bool acti)
 {
+	save_ini();
 	m_bActive = acti;
 	m_pVi->updateLayerGridView();
 }
@@ -292,7 +313,7 @@ bool qtvplugin_grid::cb_mouseMoveEvent(QMouseEvent * e )
 	if (m_pVi==0)
 		return false;
 	m_mousePos = e->pos();
-	if (m_bActive==false)
+	if (m_bVisible==true)
 	{
 		double clat,clon;
 		char buftmp[256];
@@ -304,8 +325,9 @@ bool qtvplugin_grid::cb_mouseMoveEvent(QMouseEvent * e )
 		sprintf (buftmp,"Center LAT=%14.9lf, LON=%14.9lf",clat,clon);
 		strMsg += buftmp;
 		ui->plainTextEdit_cursor->setPlainText(strMsg);
-		return false;
 	}
+	if (m_bActive==false)
+		return false;
 	if (m_list_points.size()>0&&bFinished==false)
 	{
 		QPoint pt = e->pos();
@@ -687,4 +709,143 @@ QMap<QString, QVariant> qtvplugin_grid::call_func(const  QMap<QString, QVariant>
 	else
 		res["error"] = "\"function\" keyword not specified, nothing to do.";
 	return std::move(res);
+}
+void qtvplugin_grid::on_pushButton_add_mark_clicked()
+{
+	if (!m_pVi)
+		return;
+	QString strMarkerName = QString("geomarker%1").arg(m_nInstance);
+	layer_interface * pif =  m_pVi->layer(strMarkerName);
+	save_ini();
+	QString strAll = ui->plainTextEdit_markcmd->toPlainText();
+	QStringList strLines = strAll.split("\n",QString::SkipEmptyParts);
+	foreach (QString str, strLines)
+	{
+		QString strRegWest = QString("([%1])+").arg(ui->lineEdit_west_spliter->text());
+		QString strRegsout = QString("([%1])+").arg(ui->lineEdit_south_spliter->text());
+		int latNG = 1, lonNG = 1;
+
+		if (str.indexOf(QRegExp(strRegWest))>=0)
+			lonNG=-1;
+		if (str.indexOf(QRegExp(strRegsout))>=0)
+			latNG=-1;
+
+
+		QStringList lst = str.split(QRegExp("([^0123456789.-])+"),QString::SkipEmptyParts);
+		double lat = 0, lon = 0;
+		if (lst.size()==6)
+		{
+			lat = lst.first().toDouble();			lst.pop_front();
+			lat += lst.first().toDouble() /60.0;	lst.pop_front();
+			lat += lst.first().toDouble() /3600.0;	lst.pop_front();
+			lon = lst.first().toDouble();			lst.pop_front();
+			lon += lst.first().toDouble() /60.0;	lst.pop_front();
+			lon += lst.first().toDouble() /3600.0;
+		}
+		else if (lst.size()==4)
+		{
+			lat = lst.first().toDouble();			lst.pop_front();
+			lat += lst.first().toDouble() /60.0;	lst.pop_front();
+			lon = lst.first().toDouble();			lst.pop_front();
+			lon += lst.first().toDouble() /60.0;
+		}
+		else if (lst.size()==2)
+		{
+			lat = lst.first().toDouble();			lst.pop_front();
+			lon = lst.first().toDouble();
+		}
+		else
+		{
+			QMessageBox::warning(
+						this,
+						tr("Error LLA formar"),
+						tr("Lat will be first, lon will be last, lat lon must have same element nums.")
+						);
+			break;
+		}
+		lat *= latNG;
+		lon *= lonNG;
+
+
+		if (pif)
+		{
+			QMap<QString, QVariant> inPara, outPara;
+			inPara["function"] = "update_point";
+			inPara["name"] = QString("%1_%2").arg(get_name()).arg(m_nMarks);
+			inPara["lat"] = lat;
+			inPara["lon"] = lon;
+			inPara["color_pen"] = "0,0,255,128";
+			inPara["color_brush"] = "0,0,0,64";
+			inPara["width"] = "7";
+			inPara["height"] = "7";
+			inPara["type"] = 1;
+			outPara = pif->call_func(inPara);
+			inPara.clear();
+			inPara["function"] = "update_props";
+			inPara["name"] = QString("%1_%2").arg(get_name()).arg(m_nMarks);
+			inPara["LABEL"] = QString("%1,%2").arg(lat).arg(lon);
+			++m_nMarks;
+			outPara = pif->call_func(inPara);
+		}
+	}
+
+}
+
+void qtvplugin_grid::on_pushButton_clear_clicked()
+{
+	if (!m_pVi || m_nMarks<=0)
+		return;
+	save_ini();
+	QString strMarkerName = QString("geomarker%1").arg(m_nInstance);
+	layer_interface * pif =  m_pVi->layer(strMarkerName);
+	if (pif)
+	{
+		QMap<QString, QVariant> inPara, outPara;
+		inPara["function"] = "delete_marks";
+		for (int i=0;i<m_nMarks;++i)
+			inPara[QString("name%1").arg(i)] = QString("%1_%2").arg(get_name()).arg(i);
+		outPara = pif->call_func(inPara);
+	}
+	m_nMarks = 0;
+
+
+}
+void qtvplugin_grid::on_pushButton_clear_all_clicked()
+{
+
+	if (!m_pVi)
+		return;
+	save_ini();
+	QString strMarkerName = QString("geomarker%1").arg(m_nInstance);
+	layer_interface * pif =  m_pVi->layer(strMarkerName);
+	if (pif)
+	{
+		QMap<QString, QVariant> inPara, outPara;
+		inPara["function"] = "delete_marks";
+		outPara = pif->call_func(inPara);
+	}
+	m_nMarks = 0;
+
+}
+QString qtvplugin_grid::ini_file()
+{
+	if (m_SLLibPath.size())
+		return m_SLLibPath + QString("%1").arg(m_nInstance) + ".ini";
+	else
+		return QCoreApplication::applicationFilePath() + QString("/grid%1.ini").arg(m_nInstance);
+}
+void  qtvplugin_grid::load_ini()
+{
+	QSettings settings(ini_file(),QSettings::IniFormat);
+	ui->lineEdit_south_spliter->setText(settings.value("settings/lineEdit_south_spliter","S").toString());
+	ui->lineEdit_west_spliter->setText(settings.value("settings/lineEdit_west_spliter","W").toString());
+	ui->plainTextEdit_markcmd->setPlainText(settings.value("settings/plainTextEdit_markcmd","").toString());
+}
+
+void  qtvplugin_grid::save_ini()
+{
+	QSettings settings(ini_file(),QSettings::IniFormat);
+	settings.setValue("settings/lineEdit_south_spliter",ui->lineEdit_south_spliter->text());
+	settings.setValue("settings/lineEdit_west_spliter",ui->lineEdit_west_spliter->text());
+	settings.setValue("settings/plainTextEdit_markcmd",ui->plainTextEdit_markcmd->toPlainText());
 }
