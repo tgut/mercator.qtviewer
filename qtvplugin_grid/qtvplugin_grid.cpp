@@ -36,6 +36,11 @@ qtvplugin_grid::qtvplugin_grid(QWidget *parent) :
 	bFinished = true;
 	m_bActive = false;
 	m_nMarks = 0;
+	m_pModelCombo = new QStandardItemModel(this);
+	m_pModelCombo->appendRow(new QStandardItem(tr("POINT")));
+	m_pModelCombo->appendRow(new QStandardItem(tr("LINE")));
+	m_pModelCombo->appendRow(new QStandardItem(tr("POLYGON")));
+	ui->combox_type->setModel(m_pModelCombo);
 }
 
 qtvplugin_grid::~qtvplugin_grid()
@@ -717,8 +722,11 @@ void qtvplugin_grid::on_pushButton_add_mark_clicked()
 	QString strMarkerName = QString("geomarker%1").arg(m_nInstance);
 	layer_interface * pif =  m_pVi->layer(strMarkerName);
 	save_ini();
+	int tp = ui->combox_type->currentIndex();
 	QString strAll = ui->plainTextEdit_markcmd->toPlainText();
 	QStringList strLines = strAll.split("\n",QString::SkipEmptyParts);
+	int c = 0;
+	QMap<QString, QVariant> map_multi;
 	foreach (QString str, strLines)
 	{
 		QString strRegWest = QString("([%1])+").arg(ui->lineEdit_west_spliter->text());
@@ -767,7 +775,7 @@ void qtvplugin_grid::on_pushButton_add_mark_clicked()
 		lon *= lonNG;
 
 
-		if (pif)
+		if (tp==0)
 		{
 			QMap<QString, QVariant> inPara, outPara;
 			inPara["function"] = "update_point";
@@ -787,8 +795,25 @@ void qtvplugin_grid::on_pushButton_add_mark_clicked()
 			++m_nMarks;
 			outPara = pif->call_func(inPara);
 		}
-	}
+		else
+		{
+			map_multi[QString("lat%1").arg(c)] = lat;
+			map_multi[QString("lon%1").arg(c)] = lon;
+			++c;
+		}
 
+	}
+	if (tp)
+	{
+		QMap<QString, QVariant> outPara;
+		map_multi["function"] = "update_polygon";
+		map_multi["name"] = QString("%1_%2").arg(get_name()).arg(m_nMarks);
+		map_multi["color_pen"] = "0,0,255,128";
+		map_multi["color_brush"] = "0,0,0,64";
+		map_multi["type"] = (tp==1)?6:4;
+		outPara = pif->call_func(map_multi);
+		++m_nMarks;
+	}
 }
 
 void qtvplugin_grid::on_pushButton_clear_clicked()
@@ -840,6 +865,7 @@ void  qtvplugin_grid::load_ini()
 	ui->lineEdit_south_spliter->setText(settings.value("settings/lineEdit_south_spliter","S").toString());
 	ui->lineEdit_west_spliter->setText(settings.value("settings/lineEdit_west_spliter","W").toString());
 	ui->plainTextEdit_markcmd->setPlainText(settings.value("settings/plainTextEdit_markcmd","").toString());
+	ui->combox_type->setCurrentIndex(settings.value("settings/combox_type",0).toInt());
 }
 
 void  qtvplugin_grid::save_ini()
@@ -848,4 +874,5 @@ void  qtvplugin_grid::save_ini()
 	settings.setValue("settings/lineEdit_south_spliter",ui->lineEdit_south_spliter->text());
 	settings.setValue("settings/lineEdit_west_spliter",ui->lineEdit_west_spliter->text());
 	settings.setValue("settings/plainTextEdit_markcmd",ui->plainTextEdit_markcmd->toPlainText());
+	settings.setValue("settings/combox_type",ui->combox_type->currentIndex());
 }

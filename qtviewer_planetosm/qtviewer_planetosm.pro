@@ -6,7 +6,7 @@
 
 QT       += core gui network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-linux:QMAKE_CXXFLAGS += -std=c++11
+linux:QMAKE_CXXFLAGS += -std=c++11  -fPIC
 win32-g++:QMAKE_CXXFLAGS += -std=c++11
 TARGET = ../../bin/qtviewer_planetosm
 TEMPLATE = app

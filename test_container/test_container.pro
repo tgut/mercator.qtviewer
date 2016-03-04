@@ -4,20 +4,28 @@
 #
 #-------------------------------------------------
 
-QT       += core gui axcontainer
-
+QT       += core gui
+win32: QT+= axcontainer
+linux: QMAKE_CXXFLAGS += -std=c++11
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = ../../bin/test_container
 TEMPLATE = app
 
-LIBS += -L$$OUT_PWD/../bin
+win32:LIBS += -L$$OUT_PWD/../bin
+linux:LIBS += -L$$OUT_PWD/../../bin
+
 LIBS += -lqtwidget_planetosm
 INCLUDEPATH += $$PWD/../qtviewer_planetosm
 
-SOURCES += main.cpp\
-	testcontainer.cpp
-
+SOURCES += main.cpp
 HEADERS  += testcontainer.h
 
-FORMS    += testcontainer.ui
+win32{
+ FORMS    += testcontainer.ui
+ SOURCES += testcontainer.cpp
+}
+linux{
+ FORMS    += testcontainer_linux.ui
+ SOURCES += testcontainer_linux.cpp
+}

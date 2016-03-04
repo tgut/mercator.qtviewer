@@ -10,7 +10,9 @@ win32-g++:QMAKE_CXXFLAGS += -std=c++11
 TARGET = ../../bin/qtwidget_planetosm_designer
 TEMPLATE = lib
 
-LIBS += -L$$OUT_PWD/../bin
+win32:LIBS += -L$$OUT_PWD/../bin
+linux:LIBS += -L$$OUT_PWD/../../bin
+
 LIBS += -lqtwidget_planetosm
 
 DEFINES += QTWIDGET_PLANETOSM_DESIGNER_LIBRARY

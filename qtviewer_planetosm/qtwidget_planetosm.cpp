@@ -381,7 +381,35 @@ int		qtwidget_planetosm::osm_layer_move_bottom(QString layerName)
 	}
 	return 0;
 }
+QString qtwidget_planetosm::map_to_string(const QMap<QString, QVariant> & m)
+{
+	QString s;
+	for(QMap<QString, QVariant>::const_iterator p = m.begin();p!=m.end();++p)
+	{
+		s += p.key();
+		s += "=";
+		s += p.value().toString();
+		s += ";";
+	}
+	return std::move(s);
+}
 
+QMap<QString, QVariant> qtwidget_planetosm::string_to_map(const QString & s)
+{
+	QMap<QString, QVariant> res;
+	QStringList lst = s.split(";");
+	foreach (QString s, lst)
+	{
+		int t = s.indexOf("=");
+		if (t>0 && t< s.size())
+		{
+			QString name = s.left(t).trimmed();
+			QString value = s.mid(t+1).trimmed();
+			res[name] = value;
+		}
+	}
+	return std::move(res);
+}
 /**
  * @brief	osm_layer_call_function call layers' call_func method from
  * outside the ocx ctrl. Please MAKE SURE that this function is called from UI thread,
@@ -407,5 +435,33 @@ QMap<QString, QVariant> qtwidget_planetosm::osm_layer_call_function(QString laye
 	return p_out;
 }
 
-
+/**
+ * @brief	osm_layer_call_function call layers' call_func method from
+ * outside the ocx ctrl. Please MAKE SURE that this function is called from UI thread,
+ * which means the same thread that OCX ctrl stays. Calling "call_func" from another thread is
+ * NOT SUPPORTED, and will cause strange problems.
+ *
+ * @param layerName	the layer name to whom this function call will be sent
+ * @param args	args stored in key, value strings,
+ * key, value is connected with "=", and each pairs splitted by ";"
+ * eg, function=get_polygon;x=38.43834784;y=16.3834754;
+ * @return QString	the result string is also formatted with key-vaslue para strings.
+ */
+QString qtwidget_planetosm::osm_layer_call_function(QString layerName, QString args)
+{
+	QString strRes;
+	osm_frame_widget * mp = qobject_cast<osm_frame_widget *>(m_map_widget);
+	tilesviewer * pv = mp->viewer();
+	layer_interface * la = pv->layer(layerName);
+	if (la)
+	{
+		QMap<QString, QVariant> p_in,p_out;
+		p_in = string_to_map(args);
+		p_out = la->call_func(p_in);
+		strRes = map_to_string(p_out);
+	}
+	else
+		strRes = QString("error=Layer name \"%1\" does not exist.;").arg(layerName);
+	return strRes;
+}
 

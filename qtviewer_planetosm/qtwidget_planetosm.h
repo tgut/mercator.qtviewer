@@ -33,6 +33,8 @@ public:
 	//! slots below is designed for widget interfaces
 public:
 	QTVOSM::viewer_interface * viewer();
+	QString map_to_string(const QMap<QString, QVariant> & m);
+	QMap<QString, QVariant> string_to_map(const QString & s);
 	QString osm_get_remote_address(QString layerName) const;
 	void	osm_set_remote_address (QString layerName, QString addr);
 	QString osm_get_local_cache(QString layerName) const;
@@ -62,6 +64,7 @@ public:
 	int		osm_layer_move_bottom(QString layerName);
 	//function Calls
 	QMap<QString, QVariant> osm_layer_call_function(QString layerName, QMap<QString, QVariant> args);
+	QString osm_layer_call_function(QString layerName, QString args);
 signals:
 	void map_event(QMap<QString, QVariant> p);
 };

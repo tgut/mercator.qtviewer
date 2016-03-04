@@ -6,12 +6,12 @@
 
 QT       += core gui network designer
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-linux:QMAKE_CXXFLAGS += -std=c++11
+linux:QMAKE_CXXFLAGS += -std=c++11 -fPIC
 win32-g++:QMAKE_CXXFLAGS += -std=c++11
 TARGET = ../../bin/qtwidget_planetosm
 
 TEMPLATE    = lib
-
+CONFIG += dll
 
 DEFINES += PLANETOSM_EXPORT_DLL
 

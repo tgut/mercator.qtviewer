@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTranslator>
 #include <QVector>
+#include <QStandardItemModel>
 #include "../qtviewer_planetosm/osmtiles/layer_interface.h"
 #include "../qtviewer_planetosm/osmtiles/viewer_interface.h"
 namespace Ui {
@@ -54,7 +55,7 @@ private:
 	bool					bFinished;
 	//simple mark
 	int						m_nMarks;
-
+	QStandardItemModel *	m_pModelCombo;
 	//measure method
 	void	CalArea();
 	double	GetArea(double * PointX,double * PointY,int Count);

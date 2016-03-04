@@ -26,8 +26,8 @@ private:
 	QString m_str_gridLayerName;
 	QString m_str_markerLayerName;
 	void confirmLayerNames();
+	void show_message(QString);
 protected slots:
-	void slot_message(QString);
 	void on_pushButton_test_adds_clicked();
 	void on_pushButton_test_cache_clicked();
 	void on_pushButton_test_autodl_clicked();
