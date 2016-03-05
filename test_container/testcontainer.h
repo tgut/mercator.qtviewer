@@ -27,6 +27,10 @@ private:
 	QString m_str_markerLayerName;
 	void confirmLayerNames();
 	void show_message(QString);
+#ifdef WIN32
+protected slots:
+	void slot_message(QString);
+#endif
 protected slots:
 	void on_pushButton_test_adds_clicked();
 	void on_pushButton_test_cache_clicked();
