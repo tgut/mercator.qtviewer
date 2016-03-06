@@ -12,6 +12,20 @@ namespace CSharpContainer
 {
     public partial class CSharpMapContainer : Form
     {
+        public string m_gridLayerName;
+        public string m_geomarkerLayerName;
+        public void init_layer_names()
+        {
+            int layers = axqtaxviewer_planetosm1.osm_layer_get_count();
+            for (int i = 0; i < layers; ++i)
+            {
+                string layername = axqtaxviewer_planetosm1.osm_layer_get_name(i);
+                if (layername.Contains("grid"))
+                    m_gridLayerName = layername;
+                if (layername.Contains("geomarker"))
+                    m_geomarkerLayerName = layername;
+            }
+        }
         public CSharpMapContainer()
         {
             InitializeComponent();
@@ -123,7 +137,7 @@ namespace CSharpContainer
                     pb_r + "," + pb_g + "," + pb_b +"," + pb_a +";"+
                     "color_label=0,0,255,96;weight_label=99;size_label=9;"+
                     "width="+width +";height="+height+";";
-                axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",cmd);
+                axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,cmd);
             }
         }
         //test function osm_set_remote_address
@@ -291,28 +305,28 @@ namespace CSharpContainer
 
         private void moveLayerUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = axqtaxviewer_planetosm1.osm_layer_move_up("grid1");
+            int n = axqtaxviewer_planetosm1.osm_layer_move_up(m_gridLayerName);
             messageOutput("osm_layer_move_up");
             messageOutput("res = " + n, 4);
         }
 
         private void moveLayerDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = axqtaxviewer_planetosm1.osm_layer_move_down("grid1");
+            int n = axqtaxviewer_planetosm1.osm_layer_move_down(m_gridLayerName);
             messageOutput("osm_layer_move_down");
             messageOutput("res = " + n, 4);
         }
 
         private void moveLayerTopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = axqtaxviewer_planetosm1.osm_layer_move_top("grid1");
+            int n = axqtaxviewer_planetosm1.osm_layer_move_top(m_gridLayerName);
             messageOutput("osm_layer_move_top");
             messageOutput("res = " + n, 4);
         }
 
         private void moveLayerBottomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = axqtaxviewer_planetosm1.osm_layer_move_bottom("grid1");
+            int n = axqtaxviewer_planetosm1.osm_layer_move_bottom(m_gridLayerName);
             messageOutput("osm_layer_move_bottom");
             messageOutput("res = " + n, 4);
         }
@@ -327,7 +341,7 @@ namespace CSharpContainer
         {
             messageOutput("grid1::measure control:");
             string res = axqtaxviewer_planetosm1.osm_layer_call_function(
-                "grid1",
+                m_gridLayerName,
                 "function=get_ruler_status;");
             Dictionary<string, string> dr = string2dict(res);
             string v;
@@ -336,11 +350,11 @@ namespace CSharpContainer
                 int s = System.Convert.ToInt32(v);
                 messageOutput("grid1::get_ruler_status="+ s,4);
                 res = axqtaxviewer_planetosm1.osm_layer_call_function(
-                "grid1",
+                m_gridLayerName,
                 "function=set_ruler_status;status="+(~s).ToString());
 
                 res = axqtaxviewer_planetosm1.osm_layer_call_function(
-                "grid1",
+                m_gridLayerName,
                 "function=get_ruler_status;");
 
                 messageOutput("grid1::set_ruler_status returns " + res, 4);
@@ -353,7 +367,7 @@ namespace CSharpContainer
         {
             messageOutput("grid1::get_polygon:");
             string res = axqtaxviewer_planetosm1.osm_layer_call_function
-                ("grid1", "function=get_polygon;");
+                (m_gridLayerName, "function=get_polygon;");
             Dictionary<string, string> dr = string2dict(res);
             messageOutput(dr, 4);
         }
@@ -362,7 +376,7 @@ namespace CSharpContainer
         {
             messageOutput("geomarker1::update_point");
             //add a round point
-            string res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            string res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_point;name=point_001;type=1;" +
                 "lat=35.2;lon=101.783;" +
                 "style_pen=2;color_pen=0,0,255,128;width_pen=3;" +
@@ -373,7 +387,7 @@ namespace CSharpContainer
                 messageOutput(res);
             //set props
             messageOutput("geomarker1::update_props");
-            res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_props;name=point_001;" +
                 "LABEL=Neimeng;EXPRESS=YunDa;Pero=NORMAL;" +
                 "CheckTime=2014-12-30 07:18:32;" +
@@ -381,7 +395,7 @@ namespace CSharpContainer
             if (res.Length > 0)
                 messageOutput(res);
             //add a rect point
-            res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_point;name=point_002;type=2;" +
                 "lat=45.2;lon=54.783;" +
                 "style_pen=4;color_pen=0,134,255,223;width_pen=2;" +
@@ -392,7 +406,7 @@ namespace CSharpContainer
                 messageOutput(res);
             //set props
             messageOutput("geomarker1::update_props");
-            res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_props;name=point_002;" +
                 "LABEL=EMS Global;EXPRESS=EMS;IMM=NORMAL;" +
                 "CheckTime=2014-12-31 17:18:32;" +
@@ -404,7 +418,7 @@ namespace CSharpContainer
         private void updateLineToolStripMenuItem_Click(object sender, EventArgs e)
         {
             messageOutput("geomarker1::update_line");
-            string res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            string res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_line;name=line_001;type=3;" +
                 "lat0=40;lon0=98;lat1=12;lon1=144;" +
                 "style_pen=4;color_pen=255,0,0,96;width_pen=2;");
@@ -412,7 +426,7 @@ namespace CSharpContainer
                 messageOutput(res);
             //set props
             messageOutput("geomarker1::update_props");
-            res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_props;name=line_001;" +
                 "LABEL=A line;");
             if (res.Length > 0)
@@ -422,7 +436,7 @@ namespace CSharpContainer
         private void updatePolygonToolStripMenuItem_Click(object sender, EventArgs e)
         {
             messageOutput("geomarker1::update_polygon");
-            string res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            string res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_polygon;name=polygon_1;type=4;" +
                 "lat0=12.2;lon0=67.3;" +
                 "lat1=24.3;lon1=72.8;" +
@@ -435,13 +449,13 @@ namespace CSharpContainer
                 messageOutput(res);
             //set props
             messageOutput("geomarker1::update_props");
-            res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_props;name=polygon_1;" +
                 "LABEL=A polygon;");
             if (res.Length > 0)
                 messageOutput(res);
 
-            res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_polygon;name=polygon_2;type=6;" +
                 "lat0=-12.2;lon0=-67.3;" +
                 "lat1=-24.3;lon1=-72.8;" +
@@ -454,7 +468,7 @@ namespace CSharpContainer
                 messageOutput(res);
             //set props
             messageOutput("geomarker1::update_props");
-            res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_props;name=polygon_2;" +
                 "LABEL=A multiline;");
             if (res.Length > 0)
@@ -464,7 +478,7 @@ namespace CSharpContainer
         private void updateIconToolStripMenuItem_Click(object sender, EventArgs e)
         {
             messageOutput("geomarker1::update_icon");
-            string res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            string res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_icon;name=icon1;" +
                 "lat=12.347364;lon=107.3736438;" +
                 "icon=default;scale=1.2;rotate=12;smooth=1;"
@@ -473,7 +487,7 @@ namespace CSharpContainer
                 messageOutput(res);
             //set props
             messageOutput("geomarker1::update_props");
-            res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=update_props;name=icon1;" +
                 "LABEL=A icon;");
             if (res.Length > 0)
@@ -483,7 +497,7 @@ namespace CSharpContainer
         private void existsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             messageOutput("geomarker1::exists");
-            string res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            string res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=exists;name=point_001;");
             if (res.Length > 0)
                 messageOutput(res);
@@ -492,7 +506,7 @@ namespace CSharpContainer
         private void deletemarksToolStripMenuItem_Click(object sender, EventArgs e)
         {
             messageOutput("geomarker1::delete_marks");
-            string res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            string res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=delete_marks;name0=point_001;name1=point_002;name2=line_001;name3=polygon_1;"+
                 ";name4=polygon_2;name5=icon1");
             if (res.Length > 0)
@@ -502,7 +516,7 @@ namespace CSharpContainer
         private void deletePropsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             messageOutput("geomarker1::delete_props");
-            string res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            string res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=delete_props;name=point_001;prop0=LABEL;prop1=CheckTime");
             if (res.Length > 0)
                 messageOutput(string2dict(res));
@@ -512,7 +526,7 @@ namespace CSharpContainer
         {
             messageOutput("geomarker1::enum all infos");
             //first, return all names
-            string res = axqtaxviewer_planetosm1.osm_layer_call_function("geomarker1",
+            string res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
                 "function=mark_names;");
             Dictionary<string, string> dct_names = string2dict(res);
             //for each name, get detailed infomations
@@ -521,12 +535,12 @@ namespace CSharpContainer
                 messageOutput("info of "+name +":",2);
 
                 res = axqtaxviewer_planetosm1.osm_layer_call_function
-                    ("geomarker1", "function=mark;name=" + name + ";");
+                    (m_geomarkerLayerName, "function=mark;name=" + name + ";");
                 messageOutput(string2dict(res), 4);
                 messageOutput("prop of " + name + ":", 2);
 
                 res = axqtaxviewer_planetosm1.osm_layer_call_function
-                    ("geomarker1", "function=props;name=" + name + ";");
+                    (m_geomarkerLayerName, "function=props;name=" + name + ";");
                 messageOutput(string2dict(res), 4);
 
             }
@@ -540,7 +554,7 @@ namespace CSharpContainer
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 string res = axqtaxviewer_planetosm1.osm_layer_call_function
-                    ("geomarker1", "function=save_xml;xml=" + dlg.FileName + ";");
+                    (m_geomarkerLayerName, "function=save_xml;xml=" + dlg.FileName + ";");
                 messageOutput("save_xml");
                 messageOutput(res, 4);
             }
@@ -554,7 +568,7 @@ namespace CSharpContainer
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 string res = axqtaxviewer_planetosm1.osm_layer_call_function
-                    ("geomarker1", "function=load_xml;xml=" + dlg.FileName + ";");
+                    (m_geomarkerLayerName, "function=load_xml;xml=" + dlg.FileName + ";");
                 messageOutput("load_xml");
                 messageOutput(res, 4);
             }
