@@ -29,6 +29,7 @@ namespace CSharpContainer
         public CSharpMapContainer()
         {
             InitializeComponent();
+            init_layer_names();
         }
         //a common message output method
         private void messageOutput(string strmsg, int intend = 0)
