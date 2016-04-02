@@ -401,10 +401,13 @@ void qtvplugin_grid::CalArea()
 
 	str_Polygon = ("ST_Transform(ST_GeomFromText('POLYGON(\n(");
 	str_LineString = ("ST_Transform(ST_GeomFromText('LINESTRING(\n(");
-
+	QString strLLASets;
 	for (int i=0;i<Count;i++)
 	{
 		double dLatCurr = m_list_points[i].x(),dLonCurr = m_list_points[i].y();
+		strLLASets += QString ("%1 , %2 \015\012")
+				.arg(dLatCurr,0,'f',7)
+				.arg(dLonCurr,0,'f',7);
 		if (i>0)
 		{
 			double sita;
@@ -450,6 +453,7 @@ void qtvplugin_grid::CalArea()
 	delete [] buffertmp;
 
 	ui->plainTextEdit_RES->setPlainText(strMsg);
+	ui->plainTextEdit_markcmd->setPlainText(strLLASets);
 }
 
 /**
