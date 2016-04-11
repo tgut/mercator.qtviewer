@@ -6,7 +6,11 @@
 
 QT       += core gui network axserver
 linux:QMAKE_CXXFLAGS += -std=c++11
-win32-g++:QMAKE_CXXFLAGS += -std=c++11
+win32-g++{
+	QMAKE_CXXFLAGS += -std=c++11
+	CONFIG += no_lflags_merge
+	LIBS += -lQt5AxServer -lQt5AxBase -lole32 -loleaut32 -luser32 -lgdi32 -ladvapi32 -luuid
+}
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = ../../bin/qtaxviewer_planetosm
