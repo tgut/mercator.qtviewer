@@ -1,0 +1,17 @@
+*.user
+
+ipch
+*.ncb
+*.sdf
+*.obj
+*.ilk
+*.aps
+*.tmp
+*.log
+*.pdb
+*.iobj
+*.ipdb
+*.suo
+Release
+Debug
+./x64
