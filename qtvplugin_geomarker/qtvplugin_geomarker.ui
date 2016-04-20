@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>458</width>
-    <height>444</height>
+    <width>469</width>
+    <height>483</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
      <property name="title">
       <string>Marks</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_7">
+     <layout class="QVBoxLayout" name="verticalLayout_11">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
@@ -71,13 +71,155 @@
        </layout>
       </item>
       <item>
-       <widget class="QTableView" name="tableView_marks">
+       <widget class="QGroupBox" name="groupBox_operation">
+        <property name="title">
+         <string>Map Operation</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <item>
+          <widget class="QRadioButton" name="radioButton_display">
+           <property name="text">
+            <string>Display Only</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioButton_rect_selection">
+           <property name="text">
+            <string>Rect Selection</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolBox" name="toolBox_marks">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <property name="tabSpacing">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="page">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>169</width>
+           <height>194</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>All marks</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <property name="spacing">
+           <number>1</number>
+          </property>
+          <property name="leftMargin">
+           <number>1</number>
+          </property>
+          <property name="topMargin">
+           <number>1</number>
+          </property>
+          <property name="rightMargin">
+           <number>1</number>
+          </property>
+          <property name="bottomMargin">
+           <number>1</number>
+          </property>
+          <item>
+           <widget class="QTableView" name="tableView_marks">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_2">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>166</width>
+           <height>272</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>Selected marks</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_12">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_21">
+            <item>
+             <widget class="QPushButton" name="pushButton_sel_clear">
+              <property name="text">
+               <string>Clear Sel</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_22">
+            <item>
+             <widget class="QPushButton" name="pushButton_sel_delselected">
+              <property name="text">
+               <string>Delete Selected  Items</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableView_marks_sel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
       <item>
@@ -154,20 +296,6 @@
         </item>
        </layout>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>ID</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_currentID"/>
-        </item>
-       </layout>
-      </item>
      </layout>
     </widget>
    </item>
@@ -176,6 +304,20 @@
      <property name="spacing">
       <number>1</number>
      </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_currentID"/>
+       </item>
+      </layout>
+     </item>
      <item>
       <widget class="QStackedWidget" name="stackedWidget_marks">
        <property name="sizePolicy">

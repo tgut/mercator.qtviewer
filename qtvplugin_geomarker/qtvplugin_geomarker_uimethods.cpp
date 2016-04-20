@@ -771,3 +771,50 @@ void qtvplugin_geomarker::on_pushButton_collaps_all_clicked()
 		scheduleUpdateMap();
 	}
 }
+void qtvplugin_geomarker::on_pushButton_refresh_list_clicked()
+{
+	this->scheduleRefreshMarks();
+}
+void qtvplugin_geomarker::on_radioButton_display_clicked()
+{
+	if (!m_pVi)	return ;
+	m_sel_ptStart_World = m_sel_ptEnd_World = QPointF();
+	m_currentTools = qtvplugin_geomarker::TOOLS_DISPLAY_ONLY;
+	layer_interface * pOSM =  m_pVi->layer("OSM");
+	if (pOSM)
+	{
+		pOSM->set_active(true);
+		m_pVi->adjust_layers(pOSM);
+	}
+	m_pVi->UpdateWindow();
+	m_pVi->updateLayerGridView();
+	ui->toolBox_marks->setCurrentIndex(0);
+
+}
+
+void qtvplugin_geomarker::on_radioButton_rect_selection_clicked()
+{
+	if (!m_pVi)	return ;
+	m_currentTools = qtvplugin_geomarker::TOOLS_RECT_SELECTION;
+	m_sel_ptStart_World = m_sel_ptEnd_World = QPointF();
+	m_pVi->adjust_layers(this);
+	m_pVi->UpdateWindow();
+	m_pVi->updateLayerGridView();
+	ui->toolBox_marks->setCurrentIndex(1);
+}
+void qtvplugin_geomarker::on_pushButton_sel_clear_clicked()
+{
+	clearSelection();
+}
+
+void qtvplugin_geomarker::on_pushButton_sel_delselected_clicked()
+{
+	foreach (QString namep,m_set_itemNameSelected)
+	{
+		QTVP_GEOMARKER::geoItemBase * b = m_pScene->geoitem_by_name(namep);
+		if (b)
+			m_pScene->removeItem(b,0);
+	}
+	clearSelection();
+	scheduleRefreshMarks();
+}

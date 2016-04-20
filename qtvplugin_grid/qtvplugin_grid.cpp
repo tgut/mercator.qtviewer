@@ -397,17 +397,21 @@ void qtvplugin_grid::CalArea()
 	//Length
 	double dTotalDis = 0;
 	double dPreLat,dPreLon;
-	QString str_Polygon,str_LineString;
+	QString str_Polygon,str_LineString,str_QuickMark;
 
 	str_Polygon = ("ST_Transform(ST_GeomFromText('POLYGON(\n(");
 	str_LineString = ("ST_Transform(ST_GeomFromText('LINESTRING(\n(");
-	QString strLLASets;
+
+	bool bLatFirst = ui->radioButton_latfirst->isChecked();
+
 	for (int i=0;i<Count;i++)
 	{
 		double dLatCurr = m_list_points[i].x(),dLonCurr = m_list_points[i].y();
-		strLLASets += QString ("%1 , %2 \015\012")
-				.arg(dLatCurr,0,'f',7)
-				.arg(dLonCurr,0,'f',7);
+
+		if (bLatFirst)
+			str_QuickMark += QString("%1 , %2\n").arg(dLatCurr,0,'f',7).arg(dLonCurr,0,'f',7);
+		else
+			str_QuickMark += QString("%2 , %1\n").arg(dLatCurr,0,'f',7).arg(dLonCurr,0,'f',7);
 		if (i>0)
 		{
 			double sita;
@@ -453,7 +457,7 @@ void qtvplugin_grid::CalArea()
 	delete [] buffertmp;
 
 	ui->plainTextEdit_RES->setPlainText(strMsg);
-	ui->plainTextEdit_markcmd->setPlainText(strLLASets);
+	ui->plainTextEdit_markcmd->setPlainText(str_QuickMark);
 }
 
 /**
@@ -730,6 +734,7 @@ void qtvplugin_grid::on_pushButton_add_mark_clicked()
 	QString strAll = ui->plainTextEdit_markcmd->toPlainText();
 	QStringList strLines = strAll.split("\n",QString::SkipEmptyParts);
 	int c = 0;
+	bool bLatFirst = ui->radioButton_latfirst->isChecked();
 	QMap<QString, QVariant> map_multi;
 	foreach (QString str, strLines)
 	{
@@ -771,9 +776,15 @@ void qtvplugin_grid::on_pushButton_add_mark_clicked()
 			QMessageBox::warning(
 						this,
 						tr("Error LLA formar"),
-						tr("Lat will be first, lon will be last, lat lon must have same element nums.")
+						tr("lat lon must have same element nums.")
 						);
 			break;
+		}
+		if (bLatFirst==false)
+		{
+			double tmp = lat;
+			lat = lon;
+			lon = tmp;
 		}
 		lat *= latNG;
 		lon *= lonNG;
@@ -870,6 +881,11 @@ void  qtvplugin_grid::load_ini()
 	ui->lineEdit_west_spliter->setText(settings.value("settings/lineEdit_west_spliter","W").toString());
 	ui->plainTextEdit_markcmd->setPlainText(settings.value("settings/plainTextEdit_markcmd","").toString());
 	ui->combox_type->setCurrentIndex(settings.value("settings/combox_type",0).toInt());
+	bool bLatFirst = settings.value("settings/latfirst",true).toBool();
+	if (bLatFirst)
+		ui->radioButton_latfirst->setChecked(true);
+	else
+		ui->radioButton_lonfirst->setChecked(true);
 }
 
 void  qtvplugin_grid::save_ini()
@@ -879,4 +895,6 @@ void  qtvplugin_grid::save_ini()
 	settings.setValue("settings/lineEdit_west_spliter",ui->lineEdit_west_spliter->text());
 	settings.setValue("settings/plainTextEdit_markcmd",ui->plainTextEdit_markcmd->toPlainText());
 	settings.setValue("settings/combox_type",ui->combox_type->currentIndex());
+	bool bLatFirst = ui->radioButton_latfirst->isChecked();
+	settings.setValue("settings/latfirst",bLatFirst);
 }

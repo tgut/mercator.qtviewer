@@ -31,6 +31,10 @@
  * 16 sava_xml			save marks to diskette in xml format
  * 17 props_vis(ibiliuty)	collapse detail display for items.
  * 18 show_props		show_details
+ * 19 set_mod			set current mod.0=display, 1 = rect selection
+ * 20 selection_clear	clear all selected items' status.
+ * 21 selection_delete	delete all selected items.
+ * 22 selected_items	return all selected item names
  * @param paras	the key-value style paraments.
  * @return QMap<QString, QVariant>	the key-value style return values.
  */
@@ -74,6 +78,10 @@ void qtvplugin_geomarker::initialBindPluginFuntions()
 	m_map_pluginFunctions["load_resources"]	= std::bind(&qtvplugin_geomarker::func_load_resources,	this,std::placeholders::_1);
 	m_map_pluginFunctions["props_vis"]		= std::bind(&qtvplugin_geomarker::func_props_vis,		this,std::placeholders::_1);
 	m_map_pluginFunctions["show_props"]		= std::bind(&qtvplugin_geomarker::func_show_props,		this,std::placeholders::_1);
+	m_map_pluginFunctions["set_mod"]		= std::bind(&qtvplugin_geomarker::func_set_mod,	this,std::placeholders::_1);
+	m_map_pluginFunctions["selection_clear"]= std::bind(&qtvplugin_geomarker::func_selection_clear,	this,std::placeholders::_1);
+	m_map_pluginFunctions["selection_delete"]=std::bind(&qtvplugin_geomarker::func_selection_delete,this,std::placeholders::_1);
+	m_map_pluginFunctions["selected_items"]	= std::bind(&qtvplugin_geomarker::func_selected_items,	this,std::placeholders::_1);
 
 
 }
@@ -1332,5 +1340,111 @@ QMap<QString, QVariant>			qtvplugin_geomarker::func_show_props		(const QMap<QStr
 		scheduleUpdateMap();
 	}
 	//! the return value is "name=v;" serials, v=0 means props are collapsed, otherwise means props is visible.
+	return std::move(res);
+}
+//tools methods
+/**
+ * @brief func_set_mod is a internal function for plugin call_func "set_mod"
+ *
+ * the paraments used by paras is listed below.
+ * function=set_mod;
+ * @param paras The key-value style paraments.
+ * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
+ */
+QMap<QString, QVariant>			qtvplugin_geomarker::func_set_mod		(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
+	//! the current mod can be set using the UI tools "radio button".
+	//!
+	//! all other props will be hidden.
+	if (paras.contains("mod")==false)
+	{
+		res["error"] = tr("mod must  exist in paraments.");
+		return std::move(res);
+	}
+	int mod = paras["mod"].toInt();
+	if (mod==0)
+	{
+		ui->radioButton_display->setChecked(true);
+		ui->toolBox_marks->setCurrentIndex(0);
+		m_sel_ptStart_World = m_sel_ptEnd_World = QPointF();
+		m_currentTools = qtvplugin_geomarker::TOOLS_DISPLAY_ONLY;
+		layer_interface * pOSM =  m_pVi->layer("OSM");
+		if (pOSM)
+		{
+			pOSM->set_active(true);
+			m_pVi->adjust_layers(pOSM);
+		}
+		m_pVi->UpdateWindow();
+		m_pVi->updateLayerGridView();
+	}
+	else if (mod==1)
+	{
+		ui->radioButton_rect_selection->setChecked(true);
+		ui->toolBox_marks->setCurrentIndex(1);
+		m_currentTools = qtvplugin_geomarker::TOOLS_RECT_SELECTION;
+		m_sel_ptStart_World = m_sel_ptEnd_World = QPointF();
+		m_pVi->adjust_layers(this);
+		m_pVi->UpdateWindow();
+		m_pVi->updateLayerGridView();
+	}
+	else
+	{
+		res["error"] = tr("mod is not valid in paraments. 0=display, 1=rect selection");
+		return std::move(res);
+	}
+
+	return std::move(res);
+}
+
+//selection methods
+/**
+ * @brief func_set_mod is a internal function for plugin call_func "selection_clear"
+ *
+ * the paraments used by paras is listed below.
+ * function=selection_clear;
+ * @param paras The key-value style paraments.
+ * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
+ */
+QMap<QString, QVariant>			qtvplugin_geomarker::func_selection_clear(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
+	this->on_pushButton_sel_clear_clicked();
+	return std::move(res);
+}
+/**
+ * @brief func_set_mod is a internal function for plugin call_func "selection_delete"
+ *
+ * the paraments used by paras is listed below.
+ * function=selection_delete;
+ * @param paras The key-value style paraments.
+ * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
+ */
+QMap<QString, QVariant>			qtvplugin_geomarker::func_selection_delete(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
+	this->on_pushButton_sel_delselected_clicked();
+	return std::move(res);
+}
+/**
+ * @brief func_set_mod is a internal function for plugin call_func "selected_items"
+ *
+ * the paraments used by paras is listed below.
+ * function=selected_items;
+ * @param paras The key-value style paraments.
+ * @return QMap<QString, QVariant>  if error happens, a property called "error" will store the most possible reason.
+ * the return value is stored in pairs, name0=??;name1=??;name2=??...namen-1=??...;
+ */
+QMap<QString, QVariant>			qtvplugin_geomarker::func_selected_items	(const QMap<QString, QVariant> & paras)
+{
+	QMap<QString, QVariant> res;
+	int ct = 0;
+	foreach (QString namestr,m_set_itemNameSelected)
+	{
+		QString keystr = QString("name%1").arg(ct++);
+		res[keystr] = namestr;
+	}
+	//! the mark names will be stored in key-value pairs, with
+	//! name0=??;name1=??;name2=??...namen-1=??
 	return std::move(res);
 }

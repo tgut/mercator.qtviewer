@@ -16,20 +16,6 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Layer control</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QPushButton" name="pushButton_test_navigate">
-       <property name="text">
-        <string>navigate</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="0">
       <widget class="QPushButton" name="pushButton_test_cache">
        <property name="text">
@@ -37,52 +23,17 @@
        </property>
       </widget>
      </item>
-     <item row="15" column="0">
-      <widget class="QPushButton" name="pushButton_test_xml">
+     <item row="13" column="0">
+      <widget class="QPushButton" name="pushButton_test_polygon">
        <property name="text">
-        <string>marks save/load</string>
+        <string>add a polygon</string>
        </property>
       </widget>
      </item>
-     <item row="11" column="0">
-      <widget class="QPushButton" name="pushButton_test_mark">
+     <item row="16" column="0">
+      <widget class="QPushButton" name="pushButton_test_geo_selected_marks">
        <property name="text">
-        <string>add marks</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Plugin test:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>background osm conn</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="pushButton_test_autodl">
-       <property name="text">
-        <string>connect</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QPushButton" name="pushButton_test_grid_getPolygon">
-       <property name="text">
-        <string>get polygon</string>
-       </property>
-      </widget>
-     </item>
-     <item row="14" column="0">
-      <widget class="QPushButton" name="pushButton_test_resource">
-       <property name="text">
-        <string>res save/load</string>
+        <string>selected_marks</string>
        </property>
       </widget>
      </item>
@@ -93,17 +44,73 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="pushButton_test_adds">
+     <item row="8" column="1">
+      <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>address</string>
+        <string>Grid measure</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
-      <widget class="QPushButton" name="pushButton_test_layers">
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>enum layers</string>
+        <string>Layer control</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QPushButton" name="pushButton_test_line">
+       <property name="text">
+        <string>add a line</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QPushButton" name="pushButton_test_navigate">
+       <property name="text">
+        <string>navigate</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="1">
+      <widget class="QPushButton" name="pushButton_test_request">
+       <property name="text">
+        <string>get info</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Plugin test:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="pushButton_test_autodl">
+       <property name="text">
+        <string>connect</string>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="0">
+      <widget class="QPushButton" name="pushButton_test_resource">
+       <property name="text">
+        <string>res save/load</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="0">
+      <widget class="QPushButton" name="pushButton_test_geo_displayMod">
+       <property name="text">
+        <string>display mod</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="1">
+      <widget class="QPushButton" name="pushButton_test_geo_selectionMod">
+       <property name="text">
+        <string>selection mod</string>
        </property>
       </widget>
      </item>
@@ -121,17 +128,17 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
-      <widget class="QLabel" name="label_5">
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Grid measure</string>
+        <string>Plugin test:</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="label_6">
+     <item row="1" column="0">
+      <widget class="QPushButton" name="pushButton_test_adds">
        <property name="text">
-        <string>Plugin test:</string>
+        <string>address</string>
        </property>
       </widget>
      </item>
@@ -142,7 +149,7 @@
        </property>
       </widget>
      </item>
-     <item row="16" column="0">
+     <item row="18" column="0">
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -155,24 +162,52 @@
        </property>
       </spacer>
      </item>
-     <item row="13" column="0">
-      <widget class="QPushButton" name="pushButton_test_polygon">
+     <item row="9" column="1">
+      <widget class="QPushButton" name="pushButton_test_grid_getPolygon">
        <property name="text">
-        <string>add a polygon</string>
+        <string>get polygon</string>
        </property>
       </widget>
      </item>
-     <item row="13" column="1">
-      <widget class="QPushButton" name="pushButton_test_request">
+     <item row="7" column="0">
+      <widget class="QPushButton" name="pushButton_test_layers">
        <property name="text">
-        <string>get info</string>
+        <string>enum layers</string>
        </property>
       </widget>
      </item>
-     <item row="11" column="1">
-      <widget class="QPushButton" name="pushButton_test_line">
+     <item row="16" column="1">
+      <widget class="QPushButton" name="pushButton_test_geo_clear_sel">
        <property name="text">
-        <string>add a line</string>
+        <string>clear selection</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QPushButton" name="pushButton_test_mark">
+       <property name="text">
+        <string>add marks</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>background osm conn</string>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="1">
+      <widget class="QPushButton" name="pushButton_test_xml">
+       <property name="text">
+        <string>marks save/load</string>
+       </property>
+      </widget>
+     </item>
+     <item row="17" column="0">
+      <widget class="QPushButton" name="pushButton_test_geo_del_sel">
+       <property name="text">
+        <string>delete selection</string>
        </property>
       </widget>
      </item>

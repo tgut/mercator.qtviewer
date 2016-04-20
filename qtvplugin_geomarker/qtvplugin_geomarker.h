@@ -16,6 +16,7 @@ namespace Ui {
 	class qtvplugin_geomarker;
 }
 using namespace QTVOSM;
+
 /*!
  \brief qtvplugin_geomarker introduces QGraphicesView system, established a common approach for geo marking.
  GEO marker is a vector symbol that will be displayed on the background OSM raster map. there are 3 different mark types supported by this plugin.
@@ -53,7 +54,11 @@ private:
 	};
 	//The global icon map
 	QMap<QString,QTVP_GEOMARKER::tag_icon> m_map_icons;
-
+	//Enum tools
+	enum enum_tools_selection{
+		TOOLS_DISPLAY_ONLY = 0,
+		TOOLS_RECT_SELECTION = 1
+	};
 public:
 	qtvplugin_geomarker(QWidget *parent = 0);
 	~qtvplugin_geomarker();
@@ -67,7 +72,6 @@ public:
 	QTVP_GEOMARKER::geoGraphicsScene * scene(){return m_pScene;}
 private:
 	int m_nInstance;
-
 	QTVP_GEOMARKER::geoGraphicsScene * m_pScene;	//! the graphics scene object pointer.
 	QTranslator pluginTranslator;
 	Ui::qtvplugin_geomarker *ui;
@@ -75,6 +79,19 @@ private:
 	bool m_bVisible;
 	QString m_SLLibName;
 	QString m_SLLibPath;
+	//selections
+private:
+	//current tools here
+	enum_tools_selection m_currentTools;
+	//selection tool
+	QPointF m_sel_ptStart_World;
+	QPointF m_sel_ptEnd_World;
+	QSet<QString> m_set_itemNameSelected;
+	QList<QRectF> m_sel_rects_merkator;
+	QRectF CV_RectWrold2Mkt(QRectF world);
+	QRectF current_sel_RectWorld();
+	void addSelection(QRectF rectWorld);
+	void clearSelection();
 private:
 	/*! a timer provides timing ui-refresh , instead of immediately refresh when item has been updated.
 	 * This timer is just affects UI widgets, Map will be updated immediately otherwise.
@@ -91,6 +108,7 @@ private:
 	QStandardItemModel * m_pGeoItemModel;
 	QStandardItemModel * m_pGeoPropModel;
 	QStandardItemModel * m_pIconsModel;
+	QStandardItemModel * m_pSelItemNameModel;
 
 	//persistent functions
 private:
@@ -113,6 +131,7 @@ private:
 	QList<QString> m_items_to_insert;
 	void		scheduleRefreshMarks();
 	void		scheduleUpdateMap();
+	void		refresh_selection_listview();
 	void		refreshItemUI(QString markname);
 	void		refreshProps(QTVP_GEOMARKER::geoItemBase * itm);
 	QColor		string2color(const QString & s);
@@ -154,6 +173,13 @@ private:
 	QMap<QString, QVariant>			func_load_resources	(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_props_vis		(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_show_props		(const QMap<QString, QVariant> &);
+private:
+	//tools methods
+	QMap<QString, QVariant>			func_set_mod		(const QMap<QString, QVariant> &);
+	//selection methods
+	QMap<QString, QVariant>			func_selection_clear(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_selection_delete(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_selected_items	(const QMap<QString, QVariant> &);
 
 	//overloaded virtual funtions
 protected:
@@ -163,11 +189,16 @@ protected:
 
 	bool		is_visible();
 	void		set_visible(bool vb);
+	bool		is_active(){return m_currentTools==qtvplugin_geomarker::TOOLS_DISPLAY_ONLY?false:true;}
+	void		set_active(bool ab);
 	void		set_name(QString vb);
+	bool		is_exclusive(){return true;}
 
 	void		cb_paintEvent( QPainter * pImage );
 	void		cb_levelChanged(int);
+	bool		cb_mouseMoveEvent(QMouseEvent *);
 	bool		cb_mousePressEvent(QMouseEvent *);
+	bool		cb_mouseReleaseEvent ( QMouseEvent * /*event*/ );
 	bool		cb_mouseDoubleClickEvent(QMouseEvent *);
 	bool		cb_event(const QMap<QString, QVariant>);
 
@@ -197,6 +228,10 @@ protected slots:
 	void on_pushButton_save_icons_clicked();
 	void on_pushButton_refresh_list_clicked();
 	void on_pushButton_collaps_all_clicked();
+	void on_radioButton_display_clicked();
+	void on_radioButton_rect_selection_clicked();
+	void on_pushButton_sel_clear_clicked();
+	void on_pushButton_sel_delselected_clicked();
 };
 
 template <class T>
