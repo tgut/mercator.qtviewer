@@ -10,6 +10,7 @@ namespace QTVP_GEOMARKER{
 		,m_type(tp)
 		,m_name(name)
 		,m_pLabelItem(0)
+		,m_pSelectionBound(0)
 		,m_bPropVisible(false)
 	{
 		if (pVi)
@@ -26,11 +27,64 @@ namespace QTVP_GEOMARKER{
 				m_pLabelItem = 0;
 			}
 		}
+		if (m_pSelectionBound)
+		{
+			if (m_pSelectionBound->scene()==0)
+			{
+				delete m_pSelectionBound;
+				m_pSelectionBound = 0;
+			}
+		}
 	}
+
+	bool geoItemBase::is_selected	()
+	{
+		return m_bSeleted;
+	}
+
+	void geoItemBase::set_selected	(bool bsel)
+	{
+		m_bSeleted = bsel;
+		QGraphicsItem * pc = dynamic_cast<QGraphicsItem *> (this);
+		if (pc)
+		{
+			if (m_bSeleted == true)
+			{
+				if (!m_pSelectionBound)
+				{
+					m_pSelectionBound = new QGraphicsRectItem(pc);
+					m_pSelectionBound->setRect(pc->boundingRect());
+					m_pSelectionBound->setPen(QPen(QBrush(QColor(255,64,0)),3,Qt::DashDotDotLine));
+				}
+
+			}
+			else
+			{
+				if (m_pSelectionBound)
+				{
+					QGraphicsScene * sc =  pc->scene();
+					if (sc)
+					{
+						sc->removeItem(m_pSelectionBound);
+					}
+					delete m_pSelectionBound;
+					m_pSelectionBound = 0;
+				}
+			}
+		}
+
+	}
+
 	void geoItemBase::setLevel(int newLevel)
 	{
 		if (m_pLabelItem && newLevel != level())
 			m_pLabelItem->setPos(label_pos());
+		if (m_pSelectionBound && newLevel != level())
+		{
+			QGraphicsItem * pc = dynamic_cast<QGraphicsItem *> (this);
+			if (pc)
+				m_pSelectionBound->setRect(pc->boundingRect());
+		}
 		m_nCurrentLevel = newLevel;
 	}
 

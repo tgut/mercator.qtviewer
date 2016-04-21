@@ -87,7 +87,6 @@ private:
 	QPointF m_sel_ptStart_World;
 	QPointF m_sel_ptEnd_World;
 	QSet<QString> m_set_itemNameSelected;
-	QList<QRectF> m_sel_rects_merkator;
 	QRectF CV_RectWrold2Mkt(QRectF world);
 	QRectF current_sel_RectWorld();
 	void addSelection(QRectF rectWorld);

@@ -315,25 +315,6 @@ void qtvplugin_geomarker::cb_paintEvent( QPainter * pImage )
 	default:
 		break;
 	}
-	if (m_sel_rects_merkator.empty()==false)
-	{
-		QPen pen_sel(QColor(0,64,255,128));
-		pen_sel.setWidth(2);
-		pen_sel.setStyle(Qt::DotLine);
-		pImage->setPen(pen_sel);
-		//draw select regions
-		foreach (QRectF wr, m_sel_rects_merkator)
-		{
-			double wx1,wy1,wx2,wy2;
-			qint32 nx1,ny1,nx2,ny2;
-			m_pVi->CV_MK2World(wr.left(),wr.top(),&wx1,&wy1);
-			m_pVi->CV_MK2World(wr.right(),wr.bottom(),&wx2,&wy2);
-			m_pVi->CV_World2DP(wx1,wy1,&nx1,&ny1);
-			m_pVi->CV_World2DP(wx2,wy2,&nx2,&ny2);
-			for (int i = -1;i<=1;++i)
-				pImage->drawRect(QRectF(QPointF(nx1 + i * winsz,ny1),QPointF(nx2 + i * winsz,ny2)));
-		}
-	}
 }
 
 void qtvplugin_geomarker::cb_levelChanged(int level)
@@ -433,15 +414,23 @@ QRectF qtvplugin_geomarker::current_sel_RectWorld()
 
 void qtvplugin_geomarker::clearSelection()
 {
+	if (!m_pVi)
+		return ;
+	foreach (QString name, m_set_itemNameSelected)
+	{
+		QTVP_GEOMARKER::geoItemBase * it = m_pScene->geoitem_by_name(name);
+		if (it)
+			it->set_selected(false);
+	}
+
 	m_set_itemNameSelected.clear();
-	m_sel_rects_merkator.clear();
 	refresh_selection_listview();
 	m_pVi->UpdateWindow();
 }
 void qtvplugin_geomarker::addSelection(QRectF rectWorld)
 {
 	qint32 wsz = 256*(1<<m_pVi->level());
-	int oldsz = m_set_itemNameSelected.size();
+	bool changed = false;
 	for (int i=-1;i<=1;++i)
 	{
 		double	x1 = rectWorld.left()+i * wsz,
@@ -456,14 +445,24 @@ void qtvplugin_geomarker::addSelection(QRectF rectWorld)
 					gi = dynamic_cast<QTVP_GEOMARKER::geoItemBase *>(it);
 			if (gi)
 			{
-				m_set_itemNameSelected.insert(gi->item_name());
+				changed = true;
+				QString nm = gi->item_name();
+				if (m_set_itemNameSelected.contains(nm))
+				{
+					m_set_itemNameSelected.remove(nm);
+					gi->set_selected(false);
+				}
+				else
+				{
+					m_set_itemNameSelected.insert(nm);
+					gi->set_selected(true);
+				}
+
 			}
 		}
 	}
-	int newsz = m_set_itemNameSelected.size();
-	if (newsz>oldsz)
+	if (changed)
 	{
-		m_sel_rects_merkator.push_back(CV_RectWrold2Mkt(rectWorld));
 		refresh_selection_listview();
 		scheduleUpdateMap();
 	}

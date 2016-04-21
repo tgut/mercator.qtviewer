@@ -7,6 +7,7 @@
 #include <QFont>
 #include <QColor>
 #include <QGraphicsTextItem>
+#include <QGraphicsRectItem>
 namespace QTVOSM{
 	class viewer_interface;
 }
@@ -57,8 +58,10 @@ namespace QTVP_GEOMARKER{
 		QFont						m_LabelTextFont;
 		QColor						m_LabelTextColor;
 		bool						m_bPropVisible;
+		bool						m_bSeleted;
 		int							m_nCurrentLevel;
 		QGraphicsTextItem *			m_pLabelItem;
+		QGraphicsRectItem *			m_pSelectionBound;
 		QMap<QString, QVariant>		m_props;
 		geo_item_type				m_type;
 		QTVOSM::viewer_interface *	m_pVi;
@@ -86,6 +89,8 @@ namespace QTVP_GEOMARKER{
 		void				del_prop		(const QString & s);
 		void				show_props		(bool bShow);
 		bool				props_visible	();
+		bool				is_selected		();
+		void				set_selected	(bool bsel);
 	public:
 		virtual void adjust_coords(int nNewLevel) = 0;
 		virtual QPointF label_pos() = 0;
