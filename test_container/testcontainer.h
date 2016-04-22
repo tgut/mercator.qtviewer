@@ -51,6 +51,7 @@ protected slots:
 	void on_pushButton_test_geo_selected_marks_clicked();
 	void on_pushButton_test_geo_clear_sel_clicked();
 	void on_pushButton_test_geo_del_sel_clicked();
+	void on_pushButton_default_style_clicked();
 	void on_osmmap_map_event(QMap<QString, QVariant> p);
 
 };

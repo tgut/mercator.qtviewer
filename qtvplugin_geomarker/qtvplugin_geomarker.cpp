@@ -161,6 +161,7 @@ layer_interface * qtvplugin_geomarker::load_initial_plugin(QString strSLibPath,v
 
 		loadTranslations();
 		ini_load();
+		style_load();
 		initialBindPluginFuntions();
 	}
 	//3. elseif, we call the instance's load_initial_plugin method instead
