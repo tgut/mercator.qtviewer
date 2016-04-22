@@ -249,5 +249,11 @@ namespace QTVP_GEOMARKER{
 			}
 			m_pLabelItem->setPos(this->label_pos());
 		}
+		if (m_pSelectionBound)
+		{
+			QGraphicsItem * pc = dynamic_cast<QGraphicsItem *> (this);
+			if (pc)
+				m_pSelectionBound->setRect(pc->boundingRect());
+		}
 	}
 }
