@@ -22,7 +22,10 @@ QMap<viewer_interface *,  qtvplugin_geomarker * > map_instances;
 QMap<QString,  int > count_instances;
 qtvplugin_geomarker::qtvplugin_geomarker(QWidget *parent) :
 	QWidget(parent),
-	ui(new Ui::qtvplugin_geomarker)
+	ui(new Ui::qtvplugin_geomarker),
+	m_currentTools(qtvplugin_geomarker::TOOLS_DISPLAY_ONLY),
+	m_sel_ptStart_World(0,0),
+	m_sel_ptEnd_World(0,0)
 {
 	m_nInstance = 0;
 	ui->setupUi(this);
@@ -40,6 +43,12 @@ qtvplugin_geomarker::qtvplugin_geomarker(QWidget *parent) :
 	m_pGeoItemModel->setHeaderData(1,Qt::Horizontal,tr("Type"));
 	m_pGeoItemModel->setHeaderData(2,Qt::Horizontal,tr("Props"));
 	ui->tableView_marks->setModel(m_pGeoItemModel);
+
+	m_pSelItemNameModel = new QStandardItemModel(this);
+	m_pSelItemNameModel->setColumnCount(1);
+	m_pSelItemNameModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
+	ui->tableView_marks_sel->setModel(m_pSelItemNameModel);
+
 
 	m_pGeoPropModel = new QStandardItemModel(this);
 	m_pGeoPropModel->setColumnCount(2);
@@ -94,6 +103,8 @@ qtvplugin_geomarker::qtvplugin_geomarker(QWidget *parent) :
 	m_nTimerID_refreshUI = startTimer(2000);
 	m_nTimerID_refreshMap = startTimer(100);
 	m_nTimerID_levelQueue = startTimer(100);
+
+	ui->radioButton_display->setChecked(true);
 }
 
 qtvplugin_geomarker::~qtvplugin_geomarker()
@@ -150,6 +161,7 @@ layer_interface * qtvplugin_geomarker::load_initial_plugin(QString strSLibPath,v
 
 		loadTranslations();
 		ini_load();
+		style_load();
 		initialBindPluginFuntions();
 	}
 	//3. elseif, we call the instance's load_initial_plugin method instead
@@ -271,12 +283,46 @@ void qtvplugin_geomarker::cb_paintEvent( QPainter * pImage )
 		QString strmsg= tr("Level Re-Coord %1 %%").arg(pc*100);
 		pImage->drawText(left+32,top+16,strmsg);
 	}
+	//draw current tools
+	switch (m_currentTools)
+	{
+	case qtvplugin_geomarker::TOOLS_RECT_SELECTION:
+	{
+		QPen pen_sel(QColor(128,64,0,128));
+		pen_sel.setWidth(3);
+		pen_sel.setStyle(Qt::DashLine);
+		pImage->setPen(pen_sel);
+		pImage->drawText(32,32,"GEO MARKER Rect-Selection Tools Actived.");
+		QRectF wrct = current_sel_RectWorld();
+		if (wrct.isValid())
+		{
+			double x1 = wrct.left();
+			double y1 = wrct.top();
+			double x2 = wrct.right();
+			double y2 = wrct.bottom();
+			qint32 nx1,ny1,nx2,ny2;
+			m_pVi->CV_World2DP(x1,y1,&nx1,&ny1);
+			m_pVi->CV_World2DP(x2,y2,&nx2,&ny2);
+			for (int i = -1;i<=1;++i)
+			{
+				pImage->drawLine(nx1 + i * winsz,ny1,nx1 + i * winsz,ny2);
+				pImage->drawLine(nx1 + i * winsz,ny2,nx2 + i * winsz,ny2);
+				pImage->drawLine(nx2 + i * winsz,ny2,nx2 + i * winsz,ny1);
+				pImage->drawLine(nx2 + i * winsz,ny1,nx1 + i * winsz,ny1);
+			}
+		}
+	}
+		break;
+	default:
+		break;
+	}
 }
 
 void qtvplugin_geomarker::cb_levelChanged(int level)
 {
 	if (!m_pVi)
 		return ;
+	m_sel_ptStart_World = m_sel_ptEnd_World = QPointF();
 	//Adjust new Scene rect
 	QRectF rect(0,0,256*(1<<level),256*(1<<level));
 	this->set_visible(false);
@@ -294,6 +340,23 @@ void qtvplugin_geomarker::set_visible(bool vb)
 {
 	m_bVisible = vb;
 }
+void qtvplugin_geomarker::set_active(bool ab)
+{
+	if (ab==true)
+	{
+		if (m_currentTools==qtvplugin_geomarker::TOOLS_DISPLAY_ONLY)
+		{
+			ui->radioButton_rect_selection->setChecked(true);
+			m_currentTools = qtvplugin_geomarker::TOOLS_RECT_SELECTION;
+		}
+	}
+	else
+	{
+		m_currentTools = qtvplugin_geomarker::TOOLS_DISPLAY_ONLY;
+		ui->radioButton_display->setChecked(true);
+	}
+
+}
 
 QString qtvplugin_geomarker::get_name()
 {
@@ -310,6 +373,100 @@ void qtvplugin_geomarker::set_name(QString /*vb*/)
 {
 	if (!m_pVi)
 		return ;
+
+}
+QRectF qtvplugin_geomarker::CV_RectWrold2Mkt(QRectF world)
+{
+	if (!m_pVi)	return QRectF();
+	double mx1,my1,mx2,my2;
+	m_pVi->CV_World2MK(world.left(),world.top(),&mx1,&my1);
+	m_pVi->CV_World2MK(world.right(),world.bottom(),&mx2,&my2);
+	return QRectF(QPointF(mx1,my1),QPointF(mx2,my2));
+}
+QRectF qtvplugin_geomarker::current_sel_RectWorld()
+{
+	if (!m_pVi)	return QRectF();
+	if (m_currentTools!=qtvplugin_geomarker::TOOLS_RECT_SELECTION)
+		return QRectF();
+	if (m_sel_ptEnd_World.isNull() || m_sel_ptStart_World.isNull())
+		return QRectF();
+	qint32 wsz = 256*(1<<m_pVi->level());
+	int wx1 = m_sel_ptStart_World.x(),wx2 = m_sel_ptEnd_World.x(),
+			wy1 = m_sel_ptStart_World.y(), wy2 = m_sel_ptEnd_World.y();
+	while (wx2 - wx1 > wsz/2)
+		wx1+=wsz;
+	while (wx2 - wx1 < -wsz/2)
+		wx2+=wsz;
+	if (wx1 > wx2)
+	{
+		float tp = wx1;
+		wx1 = wx2;
+		wx2 = tp;
+	}
+	if (wy1 > wy2)
+	{
+		float tp = wy1;
+		wy1 = wy2;
+		wy2 = tp;
+	}
+
+	return QRectF(QPointF(wx1,wy1),QPointF(wx2,wy2));
+}
+
+void qtvplugin_geomarker::clearSelection()
+{
+	if (!m_pVi)
+		return ;
+	foreach (QString name, m_set_itemNameSelected)
+	{
+		QTVP_GEOMARKER::geoItemBase * it = m_pScene->geoitem_by_name(name);
+		if (it)
+			it->set_selected(false);
+	}
+
+	m_set_itemNameSelected.clear();
+	refresh_selection_listview();
+	m_pVi->UpdateWindow();
+}
+void qtvplugin_geomarker::addSelection(QRectF rectWorld)
+{
+	qint32 wsz = 256*(1<<m_pVi->level());
+	bool changed = false;
+	for (int i=-1;i<=1;++i)
+	{
+		double	x1 = rectWorld.left()+i * wsz,
+				y1 = rectWorld.top(),
+				x2 = rectWorld.right()+i * wsz,
+				y2 = rectWorld.bottom();
+
+		QList<QGraphicsItem *> itmesel = m_pScene->items(QRectF(QPointF(x1,y1),QPointF(x2,y2)));
+		foreach (QGraphicsItem * it, itmesel)
+		{
+			QTVP_GEOMARKER::geoItemBase *
+					gi = dynamic_cast<QTVP_GEOMARKER::geoItemBase *>(it);
+			if (gi)
+			{
+				changed = true;
+				QString nm = gi->item_name();
+				if (m_set_itemNameSelected.contains(nm))
+				{
+					m_set_itemNameSelected.remove(nm);
+					gi->set_selected(false);
+				}
+				else
+				{
+					m_set_itemNameSelected.insert(nm);
+					gi->set_selected(true);
+				}
+
+			}
+		}
+	}
+	if (changed)
+	{
+		refresh_selection_listview();
+		scheduleUpdateMap();
+	}
 
 }
 
@@ -421,9 +578,98 @@ bool qtvplugin_geomarker::cb_mousePressEvent(QMouseEvent * e)
 		QApplication::postEvent(m_pScene, &mouseEvent);
 		scheduleUpdateMap();
 	}
+	//tools
+	switch (m_currentTools)
+	{
+	case qtvplugin_geomarker::TOOLS_RECT_SELECTION:
+	{
+		if (e->button()==Qt::LeftButton)
+		{
+			m_sel_ptStart_World = m_sel_ptEnd_World = QPointF(wx,wy);
+		}
+	}
+		break;
+	default:
+		break;
+	}
+
+
 	return false;
 
 }
+bool qtvplugin_geomarker::cb_mouseMoveEvent ( QMouseEvent * e )
+{
+	if (!m_pVi)
+		return false;
+	if (m_bVisible==false)
+		return false;
+	QPoint mouse_view_pt = e->pos();
+	int winsz = 256 * (1<<m_pVi->level());
+	double wx,wy;
+	m_pVi->CV_DP2World(mouse_view_pt.x(),mouse_view_pt.y(),&wx,&wy);
+	//Warp
+	while (wx < 0) wx += winsz;
+	while (wx > winsz-1) wx -= winsz;
+
+	//tools
+	switch (m_currentTools)
+	{
+	case qtvplugin_geomarker::TOOLS_RECT_SELECTION:
+	{
+		if (e->buttons()==Qt::LeftButton)
+		{
+			m_sel_ptEnd_World = QPointF(wx,wy);
+			scheduleUpdateMap();
+		}
+	}
+		break;
+	default:
+		break;
+	}
+
+
+	return false;
+
+}
+
+bool qtvplugin_geomarker::cb_mouseReleaseEvent ( QMouseEvent * e )
+{
+	if (!m_pVi)
+		return false;
+	if (m_bVisible==false)
+		return false;
+	QPoint mouse_view_pt = e->pos();
+	int winsz = 256 * (1<<m_pVi->level());
+	double wx,wy;
+	m_pVi->CV_DP2World(mouse_view_pt.x(),mouse_view_pt.y(),&wx,&wy);
+	//Warp
+	while (wx < 0) wx += winsz;
+	while (wx > winsz-1) wx -= winsz;
+
+	//tools
+	switch (m_currentTools)
+	{
+	case qtvplugin_geomarker::TOOLS_RECT_SELECTION:
+	{
+		if (e->button()==Qt::LeftButton)
+		{
+			m_sel_ptEnd_World = QPointF(wx,wy);
+			QRectF rectSel = current_sel_RectWorld();
+			m_sel_ptStart_World = m_sel_ptEnd_World = QPointF();
+			addSelection(rectSel);
+			scheduleUpdateMap();
+		}
+	}
+		break;
+	default:
+		break;
+	}
+
+
+	return false;
+
+}
+
 /*! for convenience, color is stored in plain text in XML and UI.
  * the plain text color is 4 sub value , which stands for r,g,b,alpha.
  *
@@ -480,6 +726,17 @@ void qtvplugin_geomarker::scheduleUpdateMap()
 	//BAD performence will arise if so.
 	//We will set a flag and refresh the ui in timerEvent Instead.
 	m_bNeedUpdateView = true;
+}
+void qtvplugin_geomarker::refresh_selection_listview()
+{
+	if (!m_pVi || !m_pScene)
+		return;
+	//refersh
+	this->m_pSelItemNameModel->removeRows(0,this->m_pSelItemNameModel->rowCount());
+	foreach (QString name, m_set_itemNameSelected)
+	{
+		m_pSelItemNameModel->appendRow(new QStandardItem(name));
+	}
 }
 
 QTVP_GEOMARKER::geoItemBase *  qtvplugin_geomarker::update_line(const QString & name,double lat1, double lon1,double lat2, double lon2, QPen pen)
@@ -674,8 +931,4 @@ QTVP_GEOMARKER::geoItemBase *	qtvplugin_geomarker::update_icon(const QString & n
 		pitem->adjustLabelPos();
 	}
 	return res;
-}
-void qtvplugin_geomarker::on_pushButton_refresh_list_clicked()
-{
-	this->scheduleRefreshMarks();
 }

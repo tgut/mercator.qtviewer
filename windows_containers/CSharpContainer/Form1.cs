@@ -574,5 +574,65 @@ namespace CSharpContainer
                 messageOutput(res, 4);
             }
         }
+
+        private void displayModToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string ret = axqtaxviewer_planetosm1.osm_layer_call_function(
+                m_geomarkerLayerName, 
+                "function=set_mod;mod=0;");
+            messageOutput("sel mod to display");
+            messageOutput(ret, 4);
+
+        }
+
+        private void selectinModToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string ret = axqtaxviewer_planetosm1.osm_layer_call_function(
+                m_geomarkerLayerName,
+                "function=set_mod;mod=1;");
+            messageOutput("sel mod to selection");
+            messageOutput(ret, 4);
+        }
+
+        private void clearSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string ret = axqtaxviewer_planetosm1.osm_layer_call_function(
+                m_geomarkerLayerName,
+                "function=selection_clear;");
+            messageOutput("clear selected items' status.");
+        }
+
+        private void delSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string ret = axqtaxviewer_planetosm1.osm_layer_call_function(
+                m_geomarkerLayerName,
+                "function=selection_delete;");
+            messageOutput("delete selected items.");
+        }
+
+        private void selectedItemsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            messageOutput("geomarker1::enum all selected items");
+            //first, return all names
+            string res = axqtaxviewer_planetosm1.osm_layer_call_function(m_geomarkerLayerName,
+                "function=selected_items;");
+            Dictionary<string, string> dct_names = string2dict(res);
+            //for each name, get detailed infomations
+            foreach (string name in dct_names.Values)
+            {
+                messageOutput("info of " + name + ":", 2);
+
+                res = axqtaxviewer_planetosm1.osm_layer_call_function
+                    (m_geomarkerLayerName, "function=mark;name=" + name + ";");
+                messageOutput(string2dict(res), 4);
+                messageOutput("prop of " + name + ":", 2);
+
+                res = axqtaxviewer_planetosm1.osm_layer_call_function
+                    (m_geomarkerLayerName, "function=props;name=" + name + ";");
+                messageOutput(string2dict(res), 4);
+
+            }
+
+        }
     }
 }

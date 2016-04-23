@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>458</width>
-    <height>444</height>
+    <width>542</width>
+    <height>419</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,22 @@
      <property name="title">
       <string>Marks</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_7">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>1</number>
+      </property>
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
@@ -71,102 +86,207 @@
        </layout>
       </item>
       <item>
-       <widget class="QTableView" name="tableView_marks">
+       <widget class="QGroupBox" name="groupBox_operation">
+        <property name="title">
+         <string>Map Operation</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <property name="spacing">
+          <number>1</number>
+         </property>
+         <property name="leftMargin">
+          <number>1</number>
+         </property>
+         <property name="topMargin">
+          <number>1</number>
+         </property>
+         <property name="rightMargin">
+          <number>1</number>
+         </property>
+         <property name="bottomMargin">
+          <number>1</number>
+         </property>
+         <item>
+          <widget class="QRadioButton" name="radioButton_display">
+           <property name="text">
+            <string>Display Only</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioButton_rect_selection">
+           <property name="text">
+            <string>Rect Selection</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolBox" name="toolBox_marks">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <property name="tabSpacing">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="page">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>169</width>
+           <height>229</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>All marks</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <property name="spacing">
+           <number>1</number>
+          </property>
+          <property name="leftMargin">
+           <number>1</number>
+          </property>
+          <property name="topMargin">
+           <number>1</number>
+          </property>
+          <property name="rightMargin">
+           <number>1</number>
+          </property>
+          <property name="bottomMargin">
+           <number>1</number>
+          </property>
+          <item>
+           <widget class="QTableView" name="tableView_marks">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_2">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>142</width>
+           <height>121</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>Selected marks</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_12">
+          <property name="spacing">
+           <number>1</number>
+          </property>
+          <property name="leftMargin">
+           <number>1</number>
+          </property>
+          <property name="topMargin">
+           <number>1</number>
+          </property>
+          <property name="rightMargin">
+           <number>1</number>
+          </property>
+          <property name="bottomMargin">
+           <number>1</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="pushButton_sel_clear">
+            <property name="text">
+             <string>Clear Sel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_sel_delselected">
+            <property name="text">
+             <string>Delete Selected  Items</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableView_marks_sel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QRadioButton" name="radioButton_tool_point">
-            <property name="text">
-             <string>points</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="radioButton_tool_line">
-            <property name="text">
-             <string>lines</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="radioButton_tool_polygon">
-            <property name="text">
-             <string>polygons</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="radioButton_tool_icons">
-            <property name="text">
-             <string>icons</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="pushButton_del">
-            <property name="text">
-             <string>Delete</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_update">
-            <property name="text">
-             <string>Update</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_save">
-            <property name="text">
-             <string>Save</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_load">
-            <property name="text">
-             <string>Load</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>ID</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_currentID"/>
-        </item>
-       </layout>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>Mark Type</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>1</number>
+         </property>
+         <property name="topMargin">
+          <number>1</number>
+         </property>
+         <property name="rightMargin">
+          <number>1</number>
+         </property>
+         <property name="bottomMargin">
+          <number>1</number>
+         </property>
+         <property name="spacing">
+          <number>1</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QRadioButton" name="radioButton_tool_point">
+           <property name="text">
+            <string>points</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QRadioButton" name="radioButton_tool_line">
+           <property name="text">
+            <string>lines</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QRadioButton" name="radioButton_tool_polygon">
+           <property name="text">
+            <string>polygons</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QRadioButton" name="radioButton_tool_icons">
+           <property name="text">
+            <string>icons</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -176,6 +296,51 @@
      <property name="spacing">
       <number>1</number>
      </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_currentID"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_update">
+         <property name="text">
+          <string>Update</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_del">
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_save">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_load">
+         <property name="text">
+          <string>Load</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
      <item>
       <widget class="QStackedWidget" name="stackedWidget_marks">
        <property name="sizePolicy">
@@ -217,6 +382,9 @@
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <property name="spacing">
             <number>1</number>
+           </property>
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMaximumSize</enum>
            </property>
            <item>
             <widget class="QLabel" name="label_4">
@@ -273,7 +441,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="spinBox_point_size_height">
+            <widget class="QSpinBox" name="spinBox_point_height">
              <property name="minimum">
               <number>1</number>
              </property>
@@ -434,7 +602,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_14">
            <item>
-            <widget class="QCheckBox" name="checkBox_close">
+            <widget class="QCheckBox" name="checkBox_multiline">
              <property name="text">
               <string>Multiline(Not close)</string>
              </property>
@@ -589,25 +757,54 @@
         <string>Properties</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="spacing">
+         <number>1</number>
+        </property>
+        <property name="leftMargin">
+         <number>1</number>
+        </property>
+        <property name="topMargin">
+         <number>1</number>
+        </property>
+        <property name="rightMargin">
+         <number>1</number>
+        </property>
+        <property name="bottomMargin">
+         <number>1</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
-           <widget class="QLabel" name="label_11">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_style_default_save">
             <property name="text">
-             <string>Pen width</string>
+             <string>Save to default style</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="spinBox_penWidth">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>256</number>
+           <widget class="QPushButton" name="pushButton_style_default_load">
+            <property name="text">
+             <string>Load from default style</string>
             </property>
            </widget>
           </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
           <item>
            <widget class="QLabel" name="label_19">
             <property name="text">
@@ -618,10 +815,6 @@
           <item>
            <widget class="QComboBox" name="comboBox_linePad"/>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_11">
           <item>
            <widget class="QLabel" name="label_12">
             <property name="text">
@@ -643,6 +836,23 @@
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <item>
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Pen width</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_penWidth">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>256</number>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QLabel" name="label_16">
             <property name="text">
@@ -760,9 +970,16 @@
            <widget class="QLineEdit" name="lineEdit_prop_name"/>
           </item>
           <item>
+           <widget class="QPushButton" name="pushButton_prop_update">
+            <property name="text">
+             <string>Update Prop</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="pushButton_prop_delete">
             <property name="text">
-             <string>Delete</string>
+             <string>Delete Prop</string>
             </property>
            </widget>
           </item>
@@ -779,13 +996,6 @@
           </item>
           <item>
            <widget class="QLineEdit" name="lineEdit_prop_string"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_prop_update">
-            <property name="text">
-             <string>Update</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>

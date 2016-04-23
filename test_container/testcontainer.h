@@ -27,7 +27,7 @@ private:
 	QString m_str_markerLayerName;
 	void confirmLayerNames();
 	void show_message(QString);
-#ifdef WINVER
+#ifdef _WIN32
 protected slots:
 	void slot_message(QString);
 #endif
@@ -46,7 +46,14 @@ protected slots:
 	void on_pushButton_test_request_clicked();
 	void on_pushButton_test_xml_clicked();
 	void on_pushButton_test_resource_clicked();
+	void on_pushButton_test_geo_displayMod_clicked();
+	void on_pushButton_test_geo_selectionMod_clicked();
+	void on_pushButton_test_geo_selected_marks_clicked();
+	void on_pushButton_test_geo_clear_sel_clicked();
+	void on_pushButton_test_geo_del_sel_clicked();
+	void on_pushButton_default_style_clicked();
 	void on_osmmap_map_event(QMap<QString, QVariant> p);
+
 };
 
 #endif // TESTCONTAINER_H

@@ -78,6 +78,12 @@
             this.tabPage_map2 = new System.Windows.Forms.TabPage();
             this.axqtaxviewer_planetosm2 = new Axqtaxviewer_planetosmLib.Axqtaxviewer_planetosm();
             this.tabPage_msg = new System.Windows.Forms.TabPage();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.selectinModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.displayModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.delSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectedItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl_map.SuspendLayout();
             this.tabPage_map1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -376,7 +382,13 @@
             this.toolStripSeparator1,
             this.heavyTestToolStripMenuItem,
             this.xMLToolStripMenuItem,
-            this.loadFromDiskToolStripMenuItem});
+            this.loadFromDiskToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.displayModToolStripMenuItem,
+            this.selectinModToolStripMenuItem,
+            this.clearSelectedToolStripMenuItem,
+            this.delSelectedToolStripMenuItem,
+            this.selectedItemsToolStripMenuItem});
             this.geomarkerPluginToolStripMenuItem.Name = "geomarkerPluginToolStripMenuItem";
             this.geomarkerPluginToolStripMenuItem.Size = new System.Drawing.Size(125, 21);
             this.geomarkerPluginToolStripMenuItem.Text = "geomarker plugin";
@@ -508,6 +520,46 @@
             this.tabPage_msg.Text = "Messages";
             this.tabPage_msg.UseVisualStyleBackColor = true;
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(166, 6);
+            // 
+            // selectinModToolStripMenuItem
+            // 
+            this.selectinModToolStripMenuItem.Name = "selectinModToolStripMenuItem";
+            this.selectinModToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.selectinModToolStripMenuItem.Text = "selectin mod";
+            this.selectinModToolStripMenuItem.Click += new System.EventHandler(this.selectinModToolStripMenuItem_Click);
+            // 
+            // displayModToolStripMenuItem
+            // 
+            this.displayModToolStripMenuItem.Name = "displayModToolStripMenuItem";
+            this.displayModToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.displayModToolStripMenuItem.Text = "display mod";
+            this.displayModToolStripMenuItem.Click += new System.EventHandler(this.displayModToolStripMenuItem_Click);
+            // 
+            // clearSelectedToolStripMenuItem
+            // 
+            this.clearSelectedToolStripMenuItem.Name = "clearSelectedToolStripMenuItem";
+            this.clearSelectedToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.clearSelectedToolStripMenuItem.Text = "clear selected";
+            this.clearSelectedToolStripMenuItem.Click += new System.EventHandler(this.clearSelectedToolStripMenuItem_Click);
+            // 
+            // delSelectedToolStripMenuItem
+            // 
+            this.delSelectedToolStripMenuItem.Name = "delSelectedToolStripMenuItem";
+            this.delSelectedToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.delSelectedToolStripMenuItem.Text = "del selected";
+            this.delSelectedToolStripMenuItem.Click += new System.EventHandler(this.delSelectedToolStripMenuItem_Click);
+            // 
+            // selectedItemsToolStripMenuItem
+            // 
+            this.selectedItemsToolStripMenuItem.Name = "selectedItemsToolStripMenuItem";
+            this.selectedItemsToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.selectedItemsToolStripMenuItem.Text = "selected items";
+            this.selectedItemsToolStripMenuItem.Click += new System.EventHandler(this.selectedItemsToolStripMenuItem_Click);
+            // 
             // CSharpMapContainer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -580,6 +632,12 @@
         private System.Windows.Forms.ToolStripMenuItem heavyTestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem xMLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadFromDiskToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem displayModToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectinModToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearSelectedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem delSelectedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectedItemsToolStripMenuItem;
     }
 }
 

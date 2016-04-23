@@ -65,9 +65,26 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
+         <widget class="QRadioButton" name="radioButton_latfirst">
+          <property name="text">
+           <string>LatLon</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButton_lonfirst">
+          <property name="text">
+           <string>LonLat</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>West spliter</string>
+           <string>,West spliter</string>
           </property>
          </widget>
         </item>
