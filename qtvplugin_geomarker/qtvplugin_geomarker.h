@@ -52,6 +52,21 @@ private:
 		QMap<QString, QString> styles;
 		QMap<QString, QString> props;
 	};
+	struct tag_style_item{
+		int		n_point_width;
+		int		n_point_height;
+		int		n_point_rect;
+		QPen	pen;
+		QBrush	brush;
+		QColor	text_color;
+		QFont	font;
+		qreal	rotate;
+		qreal	scale;
+		int		multiline;
+		int		smooth;
+		QString icon_name;
+	};
+
 	//The global icon map
 	QMap<QString,QTVP_GEOMARKER::tag_icon> m_map_icons;
 	//Enum tools
@@ -111,9 +126,13 @@ private:
 
 	//persistent functions
 private:
+	//default style
+	tag_style_item				m_default_style;
 	QString		ini_file();
 	void		ini_save();
 	void		ini_load();
+	void		style_save();
+	void		style_load();
 	bool		xml_save		(QString xml);
 	bool		xml_load		(QString xml);
 	bool		xml_readMark	(QXmlStreamReader & reader, tag_xml_mark & mark,QString & errMsg);
@@ -179,6 +198,9 @@ private:
 	QMap<QString, QVariant>			func_selection_clear(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_selection_delete(const QMap<QString, QVariant> &);
 	QMap<QString, QVariant>			func_selected_items	(const QMap<QString, QVariant> &);
+	//style setting
+	QMap<QString, QVariant>			func_set_default_style(const QMap<QString, QVariant> &);
+	QMap<QString, QVariant>			func_default_style	(const QMap<QString, QVariant> &);
 
 	//overloaded virtual funtions
 protected:
@@ -231,6 +253,8 @@ protected slots:
 	void on_radioButton_rect_selection_clicked();
 	void on_pushButton_sel_clear_clicked();
 	void on_pushButton_sel_delselected_clicked();
+	void on_pushButton_style_default_save_clicked();
+	void on_pushButton_style_default_load_clicked();
 };
 
 template <class T>

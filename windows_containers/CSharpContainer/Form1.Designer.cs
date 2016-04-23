@@ -74,21 +74,23 @@
             this.heavyTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadFromDiskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.axqtaxviewer_planetosm1 = new Axqtaxviewer_planetosmLib.Axqtaxviewer_planetosm();
-            this.tabPage_map2 = new System.Windows.Forms.TabPage();
-            this.axqtaxviewer_planetosm2 = new Axqtaxviewer_planetosmLib.Axqtaxviewer_planetosm();
-            this.tabPage_msg = new System.Windows.Forms.TabPage();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.selectinModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.displayModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectinModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.delSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectedItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabPage_map2 = new System.Windows.Forms.TabPage();
+            this.tabPage_msg = new System.Windows.Forms.TabPage();
+            this.axqtaxviewer_planetosm1 = new Axqtaxviewer_planetosmLib.Axqtaxviewer_planetosm();
+            this.axqtaxviewer_planetosm2 = new Axqtaxviewer_planetosmLib.Axqtaxviewer_planetosm();
+            this.setDefaultStyleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadDefaultStyleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl_map.SuspendLayout();
             this.tabPage_map1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.axqtaxviewer_planetosm1)).BeginInit();
             this.tabPage_map2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axqtaxviewer_planetosm1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axqtaxviewer_planetosm2)).BeginInit();
             this.SuspendLayout();
             // 
@@ -388,7 +390,9 @@
             this.selectinModToolStripMenuItem,
             this.clearSelectedToolStripMenuItem,
             this.delSelectedToolStripMenuItem,
-            this.selectedItemsToolStripMenuItem});
+            this.selectedItemsToolStripMenuItem,
+            this.setDefaultStyleToolStripMenuItem,
+            this.loadDefaultStyleToolStripMenuItem});
             this.geomarkerPluginToolStripMenuItem.Name = "geomarkerPluginToolStripMenuItem";
             this.geomarkerPluginToolStripMenuItem.Size = new System.Drawing.Size(125, 21);
             this.geomarkerPluginToolStripMenuItem.Text = "geomarker plugin";
@@ -396,84 +400,145 @@
             // updatePointToolStripMenuItem
             // 
             this.updatePointToolStripMenuItem.Name = "updatePointToolStripMenuItem";
-            this.updatePointToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.updatePointToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.updatePointToolStripMenuItem.Text = "update point";
             this.updatePointToolStripMenuItem.Click += new System.EventHandler(this.updatePointToolStripMenuItem_Click);
             // 
             // updateLineToolStripMenuItem
             // 
             this.updateLineToolStripMenuItem.Name = "updateLineToolStripMenuItem";
-            this.updateLineToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.updateLineToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.updateLineToolStripMenuItem.Text = "update line";
             this.updateLineToolStripMenuItem.Click += new System.EventHandler(this.updateLineToolStripMenuItem_Click);
             // 
             // updatePolygonToolStripMenuItem
             // 
             this.updatePolygonToolStripMenuItem.Name = "updatePolygonToolStripMenuItem";
-            this.updatePolygonToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.updatePolygonToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.updatePolygonToolStripMenuItem.Text = "update polygon";
             this.updatePolygonToolStripMenuItem.Click += new System.EventHandler(this.updatePolygonToolStripMenuItem_Click);
             // 
             // updateIconToolStripMenuItem
             // 
             this.updateIconToolStripMenuItem.Name = "updateIconToolStripMenuItem";
-            this.updateIconToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.updateIconToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.updateIconToolStripMenuItem.Text = "update icon";
             this.updateIconToolStripMenuItem.Click += new System.EventHandler(this.updateIconToolStripMenuItem_Click);
             // 
             // existsToolStripMenuItem
             // 
             this.existsToolStripMenuItem.Name = "existsToolStripMenuItem";
-            this.existsToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.existsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.existsToolStripMenuItem.Text = "exists";
             this.existsToolStripMenuItem.Click += new System.EventHandler(this.existsToolStripMenuItem_Click);
             // 
             // deletemarksToolStripMenuItem
             // 
             this.deletemarksToolStripMenuItem.Name = "deletemarksToolStripMenuItem";
-            this.deletemarksToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.deletemarksToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.deletemarksToolStripMenuItem.Text = "delete_marks ";
             this.deletemarksToolStripMenuItem.Click += new System.EventHandler(this.deletemarksToolStripMenuItem_Click);
             // 
             // deletePropsToolStripMenuItem
             // 
             this.deletePropsToolStripMenuItem.Name = "deletePropsToolStripMenuItem";
-            this.deletePropsToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.deletePropsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.deletePropsToolStripMenuItem.Text = "delete props";
             this.deletePropsToolStripMenuItem.Click += new System.EventHandler(this.deletePropsToolStripMenuItem_Click);
             // 
             // enumAllInfosToolStripMenuItem
             // 
             this.enumAllInfosToolStripMenuItem.Name = "enumAllInfosToolStripMenuItem";
-            this.enumAllInfosToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.enumAllInfosToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.enumAllInfosToolStripMenuItem.Text = "enum all infos";
             this.enumAllInfosToolStripMenuItem.Click += new System.EventHandler(this.enumAllInfosToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(166, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(173, 6);
             // 
             // heavyTestToolStripMenuItem
             // 
             this.heavyTestToolStripMenuItem.Name = "heavyTestToolStripMenuItem";
-            this.heavyTestToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.heavyTestToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.heavyTestToolStripMenuItem.Text = "Heavy Test";
             this.heavyTestToolStripMenuItem.Click += new System.EventHandler(this.heavyTestToolStripMenuItem_Click);
             // 
             // xMLToolStripMenuItem
             // 
             this.xMLToolStripMenuItem.Name = "xMLToolStripMenuItem";
-            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.xMLToolStripMenuItem.Text = "Save to disk";
             this.xMLToolStripMenuItem.Click += new System.EventHandler(this.SaveToDiskToolStripMenuItem_Click);
             // 
             // loadFromDiskToolStripMenuItem
             // 
             this.loadFromDiskToolStripMenuItem.Name = "loadFromDiskToolStripMenuItem";
-            this.loadFromDiskToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.loadFromDiskToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.loadFromDiskToolStripMenuItem.Text = "Load from disk";
             this.loadFromDiskToolStripMenuItem.Click += new System.EventHandler(this.loadFromDiskToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(173, 6);
+            // 
+            // displayModToolStripMenuItem
+            // 
+            this.displayModToolStripMenuItem.Name = "displayModToolStripMenuItem";
+            this.displayModToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.displayModToolStripMenuItem.Text = "display mod";
+            this.displayModToolStripMenuItem.Click += new System.EventHandler(this.displayModToolStripMenuItem_Click);
+            // 
+            // selectinModToolStripMenuItem
+            // 
+            this.selectinModToolStripMenuItem.Name = "selectinModToolStripMenuItem";
+            this.selectinModToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.selectinModToolStripMenuItem.Text = "selectin mod";
+            this.selectinModToolStripMenuItem.Click += new System.EventHandler(this.selectinModToolStripMenuItem_Click);
+            // 
+            // clearSelectedToolStripMenuItem
+            // 
+            this.clearSelectedToolStripMenuItem.Name = "clearSelectedToolStripMenuItem";
+            this.clearSelectedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.clearSelectedToolStripMenuItem.Text = "clear selected";
+            this.clearSelectedToolStripMenuItem.Click += new System.EventHandler(this.clearSelectedToolStripMenuItem_Click);
+            // 
+            // delSelectedToolStripMenuItem
+            // 
+            this.delSelectedToolStripMenuItem.Name = "delSelectedToolStripMenuItem";
+            this.delSelectedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.delSelectedToolStripMenuItem.Text = "del selected";
+            this.delSelectedToolStripMenuItem.Click += new System.EventHandler(this.delSelectedToolStripMenuItem_Click);
+            // 
+            // selectedItemsToolStripMenuItem
+            // 
+            this.selectedItemsToolStripMenuItem.Name = "selectedItemsToolStripMenuItem";
+            this.selectedItemsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.selectedItemsToolStripMenuItem.Text = "selected items";
+            this.selectedItemsToolStripMenuItem.Click += new System.EventHandler(this.selectedItemsToolStripMenuItem_Click);
+            // 
+            // tabPage_map2
+            // 
+            this.tabPage_map2.Controls.Add(this.axqtaxviewer_planetosm2);
+            this.tabPage_map2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_map2.Name = "tabPage_map2";
+            this.tabPage_map2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_map2.Size = new System.Drawing.Size(904, 536);
+            this.tabPage_map2.TabIndex = 1;
+            this.tabPage_map2.Text = "Map2";
+            this.tabPage_map2.UseVisualStyleBackColor = true;
+            // 
+            // tabPage_msg
+            // 
+            this.tabPage_msg.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_msg.Name = "tabPage_msg";
+            this.tabPage_msg.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_msg.Size = new System.Drawing.Size(904, 536);
+            this.tabPage_msg.TabIndex = 2;
+            this.tabPage_msg.Text = "Messages";
+            this.tabPage_msg.UseVisualStyleBackColor = true;
             // 
             // axqtaxviewer_planetosm1
             // 
@@ -488,17 +553,6 @@
             this.axqtaxviewer_planetosm1.TabIndex = 0;
             this.axqtaxviewer_planetosm1.evt_Message += new Axqtaxviewer_planetosmLib.Iqtaxviewer_planetosmEvents_evt_MessageEventHandler(this.axqtaxviewer_planetosm1_evt_Message);
             // 
-            // tabPage_map2
-            // 
-            this.tabPage_map2.Controls.Add(this.axqtaxviewer_planetosm2);
-            this.tabPage_map2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_map2.Name = "tabPage_map2";
-            this.tabPage_map2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_map2.Size = new System.Drawing.Size(904, 536);
-            this.tabPage_map2.TabIndex = 1;
-            this.tabPage_map2.Text = "Map2";
-            this.tabPage_map2.UseVisualStyleBackColor = true;
-            // 
             // axqtaxviewer_planetosm2
             // 
             this.axqtaxviewer_planetosm2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -510,55 +564,19 @@
             this.axqtaxviewer_planetosm2.TabIndex = 0;
             this.axqtaxviewer_planetosm2.evt_Message += new Axqtaxviewer_planetosmLib.Iqtaxviewer_planetosmEvents_evt_MessageEventHandler(this.axqtaxviewer_planetosm2_evt_Message);
             // 
-            // tabPage_msg
+            // setDefaultStyleToolStripMenuItem
             // 
-            this.tabPage_msg.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_msg.Name = "tabPage_msg";
-            this.tabPage_msg.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_msg.Size = new System.Drawing.Size(904, 536);
-            this.tabPage_msg.TabIndex = 2;
-            this.tabPage_msg.Text = "Messages";
-            this.tabPage_msg.UseVisualStyleBackColor = true;
+            this.setDefaultStyleToolStripMenuItem.Name = "setDefaultStyleToolStripMenuItem";
+            this.setDefaultStyleToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.setDefaultStyleToolStripMenuItem.Text = "set default style";
+            this.setDefaultStyleToolStripMenuItem.Click += new System.EventHandler(this.setDefaultStyleToolStripMenuItem_Click);
             // 
-            // toolStripSeparator2
+            // loadDefaultStyleToolStripMenuItem
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(166, 6);
-            // 
-            // selectinModToolStripMenuItem
-            // 
-            this.selectinModToolStripMenuItem.Name = "selectinModToolStripMenuItem";
-            this.selectinModToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.selectinModToolStripMenuItem.Text = "selectin mod";
-            this.selectinModToolStripMenuItem.Click += new System.EventHandler(this.selectinModToolStripMenuItem_Click);
-            // 
-            // displayModToolStripMenuItem
-            // 
-            this.displayModToolStripMenuItem.Name = "displayModToolStripMenuItem";
-            this.displayModToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.displayModToolStripMenuItem.Text = "display mod";
-            this.displayModToolStripMenuItem.Click += new System.EventHandler(this.displayModToolStripMenuItem_Click);
-            // 
-            // clearSelectedToolStripMenuItem
-            // 
-            this.clearSelectedToolStripMenuItem.Name = "clearSelectedToolStripMenuItem";
-            this.clearSelectedToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.clearSelectedToolStripMenuItem.Text = "clear selected";
-            this.clearSelectedToolStripMenuItem.Click += new System.EventHandler(this.clearSelectedToolStripMenuItem_Click);
-            // 
-            // delSelectedToolStripMenuItem
-            // 
-            this.delSelectedToolStripMenuItem.Name = "delSelectedToolStripMenuItem";
-            this.delSelectedToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.delSelectedToolStripMenuItem.Text = "del selected";
-            this.delSelectedToolStripMenuItem.Click += new System.EventHandler(this.delSelectedToolStripMenuItem_Click);
-            // 
-            // selectedItemsToolStripMenuItem
-            // 
-            this.selectedItemsToolStripMenuItem.Name = "selectedItemsToolStripMenuItem";
-            this.selectedItemsToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.selectedItemsToolStripMenuItem.Text = "selected items";
-            this.selectedItemsToolStripMenuItem.Click += new System.EventHandler(this.selectedItemsToolStripMenuItem_Click);
+            this.loadDefaultStyleToolStripMenuItem.Name = "loadDefaultStyleToolStripMenuItem";
+            this.loadDefaultStyleToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.loadDefaultStyleToolStripMenuItem.Text = "load default style";
+            this.loadDefaultStyleToolStripMenuItem.Click += new System.EventHandler(this.loadDefaultStyleToolStripMenuItem_Click);
             // 
             // CSharpMapContainer
             // 
@@ -574,8 +592,8 @@
             this.tabPage_map1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.axqtaxviewer_planetosm1)).EndInit();
             this.tabPage_map2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.axqtaxviewer_planetosm1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axqtaxviewer_planetosm2)).EndInit();
             this.ResumeLayout(false);
 
@@ -638,6 +656,8 @@
         private System.Windows.Forms.ToolStripMenuItem clearSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem delSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectedItemsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setDefaultStyleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadDefaultStyleToolStripMenuItem;
     }
 }
 

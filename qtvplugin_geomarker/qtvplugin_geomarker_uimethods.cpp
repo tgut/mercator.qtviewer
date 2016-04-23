@@ -149,7 +149,7 @@ void qtvplugin_geomarker::ini_save()
 	settings.setValue("ui/lineEdit_point_lat",ui->lineEdit_point_lat->text());
 	settings.setValue("ui/lineEdit_point_lon",ui->lineEdit_point_lon->text());
 	settings.setValue("ui/spinBox_point_width",ui->spinBox_point_width->value());
-	settings.setValue("ui/spinBox_point_size_height",ui->spinBox_point_size_height->value());
+	settings.setValue("ui/spinBox_point_height",ui->spinBox_point_height->value());
 
 
 	int radioButton_PointRect = 0;
@@ -177,7 +177,7 @@ void qtvplugin_geomarker::ini_save()
 	settings.setValue("ui/lineEdit_icon_lon",ui->lineEdit_icon_lon->text());
 	settings.setValue("ui/lineEdit_icon_rotate",ui->lineEdit_icon_rotate->text());
 	settings.setValue("ui/lineEdit_icon_scale",ui->lineEdit_icon_scale->text());
-	settings.setValue("ui/checkBox_close",ui->checkBox_close->isChecked()?-1:0);
+	settings.setValue("ui/checkBox_multiline",ui->checkBox_multiline->isChecked()?-1:0);
 }
 
 void qtvplugin_geomarker::ini_load()
@@ -211,8 +211,8 @@ void qtvplugin_geomarker::ini_load()
 	ui->lineEdit_point_lon->setText(lineEdit_point_lon);
 	int spinBox_point_width = settings.value("ui/spinBox_point_width",8).toInt();
 	ui->spinBox_point_width->setValue(spinBox_point_width);
-	int spinBox_point_size_height = settings.value("ui/spinBox_point_size_height",8).toInt();
-	ui->spinBox_point_size_height->setValue(spinBox_point_size_height);
+	int spinBox_point_height = settings.value("ui/spinBox_point_height",8).toInt();
+	ui->spinBox_point_height->setValue(spinBox_point_height);
 	QString lineEdit_PenColor = settings.value("ui/lineEdit_PenColor",color2string(QColor(0,0,0,128))).toString();
 	ui->lineEdit_PenColor->setText(lineEdit_PenColor);
 	QString lineEdit_FillColor = settings.value("ui/lineEdit_FillColor",color2string(QColor(255,255,255,128))).toString();
@@ -270,10 +270,139 @@ void qtvplugin_geomarker::ini_load()
 	QString lineEdit_icon_rotate = settings.value("ui/lineEdit_icon_rotate","1.0").toString();
 	ui->lineEdit_icon_rotate->setText(lineEdit_icon_rotate);
 
-	int checkBox_close = settings.value("ui/checkBox_close",0).toInt();
-	ui->checkBox_close->setChecked(checkBox_close?true:false);
+	int checkBox_multiline = settings.value("ui/checkBox_multiline",0).toInt();
+	ui->checkBox_multiline->setChecked(checkBox_multiline?true:false);
 
 }
+
+
+void qtvplugin_geomarker::style_save()
+{
+	QSettings settings(ini_file(),QSettings::IniFormat);
+	settings.setValue("default_style/spinBox_point_width",ui->spinBox_point_width->value());
+	settings.setValue("default_style/spinBox_point_height",ui->spinBox_point_height->value());
+	int radioButton_PointRect = 0;
+	if (ui->radioButton_PointRound->isChecked()==true) radioButton_PointRect = 1;
+	else radioButton_PointRect = 0;
+	settings.setValue("default_style/radioButton_PointRect",radioButton_PointRect);
+
+	settings.setValue("default_style/lineEdit_PenColor",ui->lineEdit_PenColor->text());
+	settings.setValue("default_style/lineEdit_FillColor",ui->lineEdit_FillColor->text());
+	settings.setValue("default_style/lineEdit_TextColor",ui->lineEdit_TextColor->text());
+	settings.setValue("default_style/spinBox_penWidth",ui->spinBox_penWidth->value());
+	settings.setValue("default_style/comboBox_linePad",ui->comboBox_linePad->currentIndex());
+	settings.setValue("default_style/comboBox_fillPad",ui->comboBox_fillPad->currentIndex());
+
+	settings.setValue("default_style/spinBox_textWeight",ui->spinBox_textWeight->value());
+	settings.setValue("default_style/spinBox_fontSize",ui->spinBox_fontSize->value());
+	settings.setValue("default_style/lineEdit_icon_rotate",ui->lineEdit_icon_rotate->text());
+	settings.setValue("default_style/lineEdit_icon_scale",ui->lineEdit_icon_scale->text());
+	settings.setValue("default_style/checkBox_multiline",ui->checkBox_multiline->isChecked()?-1:0);
+	settings.setValue("default_style/checkBox_icon_smooth",ui->checkBox_icon_smooth->isChecked()?-1:0);
+	settings.setValue("default_style/comboBox_icons",ui->comboBox_icons->currentText());
+
+	//update current style
+	m_default_style.n_point_width = ui->spinBox_point_width->value();
+	m_default_style.n_point_height = ui->spinBox_point_height->value();
+	m_default_style.n_point_rect = radioButton_PointRect;
+	m_default_style.pen.setColor(string2color(ui->lineEdit_PenColor->text()));
+	m_default_style.pen.setWidth(ui->spinBox_penWidth->value());
+	m_default_style.pen.setStyle(static_cast<Qt::PenStyle>(ui->comboBox_linePad->currentIndex()));
+	m_default_style.brush.setColor(string2color(ui->lineEdit_FillColor->text()));
+	m_default_style.brush.setStyle(static_cast<Qt::BrushStyle>(ui->comboBox_fillPad->currentIndex()));
+	m_default_style.text_color = string2color(ui->lineEdit_TextColor->text());
+	m_default_style.font.setWeight(ui->spinBox_textWeight->value());
+	m_default_style.font.setPointSize(ui->spinBox_fontSize->value());
+	m_default_style.scale = ui->lineEdit_icon_scale->text().toFloat();
+	m_default_style.rotate = ui->lineEdit_icon_rotate->text().toFloat();
+	m_default_style.multiline = ui->checkBox_multiline->isChecked()?-1:0;
+	m_default_style.smooth = ui->checkBox_icon_smooth->isChecked()?-1:0;
+	m_default_style.icon_name = ui->comboBox_icons->currentText();
+}
+
+void qtvplugin_geomarker::style_load()
+{
+	QSettings settings(ini_file(),QSettings::IniFormat);
+
+	int spinBox_point_width = settings.value("default_style/spinBox_point_width",8).toInt();
+	ui->spinBox_point_width->setValue(spinBox_point_width);
+
+	int spinBox_point_height = settings.value("default_style/spinBox_point_height",8).toInt();
+	ui->spinBox_point_height->setValue(spinBox_point_height);
+
+	QString lineEdit_PenColor = settings.value("default_style/lineEdit_PenColor",color2string(QColor(0,0,0,128))).toString();
+	ui->lineEdit_PenColor->setText(lineEdit_PenColor);
+
+	QString lineEdit_FillColor = settings.value("default_style/lineEdit_FillColor",color2string(QColor(255,255,255,128))).toString();
+	ui->lineEdit_FillColor->setText(lineEdit_FillColor);
+
+	QString lineEdit_TextColor = settings.value("default_style/lineEdit_TextColor",color2string(QColor(0,0,0))).toString();
+	ui->lineEdit_TextColor->setText(lineEdit_TextColor);
+
+	int radioButton_PointRect =  settings.value("default_style/radioButton_PointRect",0).toInt();
+	switch (radioButton_PointRect)
+	{
+	case 0:
+		ui->radioButton_PointRect->setChecked(true);
+		break;
+	case 1:
+		ui->radioButton_PointRound->setChecked(true);
+		break;
+	default:
+		ui->radioButton_PointRect->setChecked(true);
+		break;
+	}
+
+	int spinBox_penWidth = settings.value("default_style/spinBox_penWidth",3).toInt();
+	ui->spinBox_penWidth->setValue(spinBox_penWidth);
+
+	int comboBox_linePad = settings.value("default_style/comboBox_linePad",1).toInt();
+	ui->comboBox_linePad->setCurrentIndex(comboBox_linePad);
+
+	int comboBox_fillPad = settings.value("default_style/comboBox_fillPad",1).toInt();
+	ui->comboBox_fillPad->setCurrentIndex(comboBox_fillPad);
+
+
+	int spinBox_fontSize = settings.value("default_style/spinBox_fontSize",9).toInt();
+	ui->spinBox_fontSize->setValue(spinBox_fontSize);
+
+	int spinBox_textWeight = settings.value("default_style/spinBox_textWeight",16).toInt();
+	ui->spinBox_textWeight->setValue(spinBox_textWeight);
+
+	QString lineEdit_icon_scale = settings.value("default_style/lineEdit_icon_scale","1.0").toString();
+	ui->lineEdit_icon_scale->setText(lineEdit_icon_scale);
+
+	QString lineEdit_icon_rotate = settings.value("default_style/lineEdit_icon_rotate","1.0").toString();
+	ui->lineEdit_icon_rotate->setText(lineEdit_icon_rotate);
+
+	int checkBox_multiline = settings.value("default_style/checkBox_multiline",0).toInt();
+	ui->checkBox_multiline->setChecked(checkBox_multiline?true:false);
+
+	int checkBox_icon_smooth = settings.value("default_style/checkBox_icon_smooth",0).toInt();
+	ui->checkBox_icon_smooth->setChecked(checkBox_icon_smooth?true:false);
+
+	QString comboBox_icons = settings.value("default_style/comboBox_icons","default").toString();
+	if (m_map_icons.contains(comboBox_icons))
+		ui->comboBox_icons->setCurrentText(comboBox_icons);
+	//update current style
+	m_default_style.n_point_width = ui->spinBox_point_width->value();
+	m_default_style.n_point_height = ui->spinBox_point_height->value();
+	m_default_style.n_point_rect = radioButton_PointRect;
+	m_default_style.pen.setColor(string2color(ui->lineEdit_PenColor->text()));
+	m_default_style.pen.setWidth(ui->spinBox_penWidth->value());
+	m_default_style.pen.setStyle(static_cast<Qt::PenStyle>(ui->comboBox_linePad->currentIndex()));
+	m_default_style.brush.setColor(string2color(ui->lineEdit_FillColor->text()));
+	m_default_style.brush.setStyle(static_cast<Qt::BrushStyle>(ui->comboBox_fillPad->currentIndex()));
+	m_default_style.text_color = string2color(ui->lineEdit_TextColor->text());
+	m_default_style.font.setWeight(ui->spinBox_textWeight->value());
+	m_default_style.font.setPointSize(ui->spinBox_fontSize->value());
+	m_default_style.scale = ui->lineEdit_icon_scale->text().toFloat();
+	m_default_style.rotate = ui->lineEdit_icon_rotate->text().toFloat();
+	m_default_style.multiline = ui->checkBox_multiline->isChecked()?-1:0;
+	m_default_style.smooth = ui->checkBox_icon_smooth->isChecked()?-1:0;
+	m_default_style.icon_name = ui->comboBox_icons->currentText();
+}
+
 void qtvplugin_geomarker::on_pushButton_update_clicked()
 {
 	if (m_pVi==0 || !m_pScene)
@@ -336,7 +465,7 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 		double lon = ui->lineEdit_point_lon->text().toDouble();
 		int tp = ui->radioButton_PointRect->isChecked()?0:1;
 		int width = ui->spinBox_point_width->value();
-		int height = ui->spinBox_point_size_height->value();
+		int height = ui->spinBox_point_height->value();
 		if (tp==0)
 			newitem = update_point<QTVP_GEOMARKER::geoGraphicsRectItem>(name,lat,lon,width,height,pen,brush);
 		else
@@ -372,7 +501,7 @@ void qtvplugin_geomarker::on_pushButton_update_clicked()
 				latlons.push_back(ll);
 		}
 		if (latlons.size())
-			newitem = update_polygon(name,latlons,pen,brush,ui->checkBox_close->isChecked()?true:false);
+			newitem = update_polygon(name,latlons,pen,brush,ui->checkBox_multiline->isChecked()?true:false);
 
 	}
 	else if (ui->radioButton_tool_icons->isChecked())
@@ -527,7 +656,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			ui->lineEdit_point_lon->setText(QString("%1").arg(pitem->lon(),0,'f',7));
 			ui->radioButton_PointRect->setChecked(true);
 			ui->spinBox_point_width->setValue(pitem->width());
-			ui->spinBox_point_size_height->setValue(pitem->height());
+			ui->spinBox_point_height->setValue(pitem->height());
 			ui->radioButton_tool_point->setChecked(true);
 		}
 			break;
@@ -542,7 +671,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 			ui->lineEdit_point_lon->setText(QString("%1").arg(pitem->lon(),0,'f',7));
 			ui->radioButton_PointRound->setChecked(true);
 			ui->spinBox_point_width->setValue(pitem->width());
-			ui->spinBox_point_size_height->setValue(pitem->height());
+			ui->spinBox_point_height->setValue(pitem->height());
 			ui->radioButton_tool_point->setChecked(true);
 		}
 			break;
@@ -572,7 +701,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 				strPlainText += QString("%1,%2;\n").arg(p.y(),0,'f',7).arg(p.x(),0,'f',7);
 			ui->plainTextEdit_corners->setPlainText(strPlainText);
 			ui->radioButton_tool_polygon->setChecked(true);
-			ui->checkBox_close->setChecked(false);
+			ui->checkBox_multiline->setChecked(false);
 		}
 			break;
 		case QTVP_GEOMARKER::ITEAMTYPE_PIXMAP:
@@ -602,7 +731,7 @@ void qtvplugin_geomarker::refreshItemUI(QString markname)
 				strPlainText += QString("%1,%2;\n").arg(p.y(),0,'f',7).arg(p.x(),0,'f',7);
 			ui->plainTextEdit_corners->setPlainText(strPlainText);
 			ui->radioButton_tool_polygon->setChecked(true);
-			ui->checkBox_close->setChecked(true);
+			ui->checkBox_multiline->setChecked(true);
 		}
 			break;
 
@@ -817,4 +946,13 @@ void qtvplugin_geomarker::on_pushButton_sel_delselected_clicked()
 	}
 	clearSelection();
 	scheduleRefreshMarks();
+}
+void qtvplugin_geomarker::on_pushButton_style_default_save_clicked()
+{
+	style_save();
+}
+
+void qtvplugin_geomarker::on_pushButton_style_default_load_clicked()
+{
+	style_load();
 }

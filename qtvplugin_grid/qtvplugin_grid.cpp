@@ -773,12 +773,13 @@ void qtvplugin_grid::on_pushButton_add_mark_clicked()
 		}
 		else
 		{
-			QMessageBox::warning(
-						this,
-						tr("Error LLA formar"),
-						tr("lat lon must have same element nums.")
-						);
-			break;
+//			QMessageBox::warning(
+//						this,
+//						tr("Error LLA formar"),
+//						tr("lat lon must have same element nums.")
+//						);
+//			break;
+			continue;
 		}
 		if (bLatFirst==false)
 		{
@@ -797,16 +798,16 @@ void qtvplugin_grid::on_pushButton_add_mark_clicked()
 			inPara["name"] = QString("%1_%2").arg(get_name()).arg(m_nMarks);
 			inPara["lat"] = lat;
 			inPara["lon"] = lon;
-			inPara["color_pen"] = "0,0,255,128";
-			inPara["color_brush"] = "0,0,0,64";
-			inPara["width"] = "7";
-			inPara["height"] = "7";
-			inPara["type"] = 1;
+			//inPara["color_pen"] = "0,0,255,128";
+			//inPara["color_brush"] = "0,0,0,64";
+			//inPara["width"] = "7";
+			//inPara["height"] = "7";
+			//inPara["type"] = 1;
 			outPara = pif->call_func(inPara);
 			inPara.clear();
 			inPara["function"] = "update_props";
 			inPara["name"] = QString("%1_%2").arg(get_name()).arg(m_nMarks);
-			inPara["LABEL"] = QString("%1,%2").arg(lat).arg(lon);
+			inPara["POS"] = QString("%1,%2").arg(lat).arg(lon);
 			++m_nMarks;
 			outPara = pif->call_func(inPara);
 		}
@@ -823,8 +824,8 @@ void qtvplugin_grid::on_pushButton_add_mark_clicked()
 		QMap<QString, QVariant> outPara;
 		map_multi["function"] = "update_polygon";
 		map_multi["name"] = QString("%1_%2").arg(get_name()).arg(m_nMarks);
-		map_multi["color_pen"] = "0,0,255,128";
-		map_multi["color_brush"] = "0,0,0,64";
+		//map_multi["color_pen"] = "0,0,255,128";
+		//map_multi["color_brush"] = "0,0,0,64";
 		map_multi["type"] = (tp==1)?6:4;
 		outPara = pif->call_func(map_multi);
 		++m_nMarks;

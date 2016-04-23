@@ -574,3 +574,14 @@ void testcontainer::on_pushButton_test_geo_del_sel_clicked()
 		QMessageBox::information(this,"geomarker::selection_delete",res);
 
 }
+void testcontainer::on_pushButton_default_style_clicked()
+{
+	QString res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)",m_str_markerLayerName,
+												 "function=default_style;").toString();
+	QMessageBox::information(this,"geomarker::default_style",res);
+	res = ui->axWidget_map1->dynamicCall("osm_layer_call_function(QString,QString)",m_str_markerLayerName,
+													"function=set_default_style;" + res).toString();
+	if (res.contains("error"))
+		QMessageBox::information(this,"geomarker::selection_delete",res);
+
+}
