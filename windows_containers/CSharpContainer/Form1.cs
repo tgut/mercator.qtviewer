@@ -634,5 +634,29 @@ namespace CSharpContainer
             }
 
         }
+
+        private void setDefaultStyleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            messageOutput("geomarker1::set_default_style");
+            string ret = axqtaxviewer_planetosm1.osm_layer_call_function
+                (m_geomarkerLayerName, 
+                "function=set_default_style;"+
+                "style_pen=2;color_pen=0,0,255,128;width_pen=3;"+
+                "style_brush=1;color_brush=0,255,0,128;"+
+                "width=16;height=20;"+
+                "color_label=0,0,255,96;weight_label=99;size_label=12;"+
+                "icon=lena;scale=1.2;rotate=12;smooth=1;"+
+                "point_type=2; polygon_type =4;");
+            messageOutput(ret, 4);
+        }
+
+        private void loadDefaultStyleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            messageOutput("geomarker1::default_style");
+            string ret = axqtaxviewer_planetosm1.osm_layer_call_function
+                (m_geomarkerLayerName,
+                "function=default_style;");
+            messageOutput(ret, 4);
+        }
     }
 }
