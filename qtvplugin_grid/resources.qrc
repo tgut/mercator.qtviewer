@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>icons/Brush_Ruler_Alt.png</file>
         <file>icons/Clear.png</file>
+        <file>icons/Add to favourites.png</file>
+        <file>icons/delete-21.png</file>
+        <file>icons/Delete-1.png</file>
     </qresource>
 </RCC>

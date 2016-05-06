@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>542</width>
-    <height>419</height>
+    <width>538</width>
+    <height>424</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,12 +61,20 @@
           <property name="text">
            <string>Refresh</string>
           </property>
+          <property name="icon">
+           <iconset resource="resources.qrc">
+            <normaloff>:/icons/Refresh-1.png</normaloff>:/icons/Refresh-1.png</iconset>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pushButton_collaps_all">
           <property name="text">
-           <string>Collapse All</string>
+           <string>Collapse</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resources.qrc">
+            <normaloff>:/icons/Collapse.png</normaloff>:/icons/Collapse.png</iconset>
           </property>
          </widget>
         </item>
@@ -142,10 +150,14 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>169</width>
-           <height>229</height>
+           <width>165</width>
+           <height>225</height>
           </rect>
          </property>
+         <attribute name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/all_marks.png</normaloff>:/icons/all_marks.png</iconset>
+         </attribute>
          <attribute name="label">
           <string>All marks</string>
          </attribute>
@@ -182,10 +194,14 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>142</width>
-           <height>121</height>
+           <width>166</width>
+           <height>220</height>
           </rect>
          </property>
+         <attribute name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/selected_marks.png</normaloff>:/icons/selected_marks.png</iconset>
+         </attribute>
          <attribute name="label">
           <string>Selected marks</string>
          </attribute>
@@ -316,12 +332,20 @@
          <property name="text">
           <string>Update</string>
          </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/Trust.png</normaloff>:/icons/Trust.png</iconset>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_del">
          <property name="text">
           <string>Delete</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/delete-21.png</normaloff>:/icons/delete-21.png</iconset>
          </property>
         </widget>
        </item>
@@ -330,12 +354,20 @@
          <property name="text">
           <string>Save</string>
          </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/Floppy_Red.png</normaloff>:/icons/Floppy_Red.png</iconset>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_load">
          <property name="text">
           <string>Load</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/Floppy_Purple.png</normaloff>:/icons/Floppy_Purple.png</iconset>
          </property>
         </widget>
        </item>
@@ -531,6 +563,10 @@
              <property name="text">
               <string>Pick</string>
              </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/icons/Updates.png</normaloff>:/icons/Updates.png</iconset>
+             </property>
             </widget>
            </item>
           </layout>
@@ -561,6 +597,10 @@
             <widget class="QPushButton" name="pushButton_pickToLine2">
              <property name="text">
               <string>Pick</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/icons/Updates.png</normaloff>:/icons/Updates.png</iconset>
              </property>
             </widget>
            </item>
@@ -626,6 +666,10 @@
              <property name="text">
               <string>Call Polygon Get</string>
              </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/icons/Network-27.png</normaloff>:/icons/Network-27.png</iconset>
+             </property>
             </widget>
            </item>
           </layout>
@@ -657,6 +701,10 @@
             <widget class="QPushButton" name="pushButton_import_icon">
              <property name="text">
               <string>add</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/icons/Add to favourites.png</normaloff>:/icons/Add to favourites.png</iconset>
              </property>
             </widget>
            </item>
@@ -730,12 +778,20 @@
              <property name="text">
               <string>load</string>
              </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/icons/Drive Slot Load.png</normaloff>:/icons/Drive Slot Load.png</iconset>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="pushButton_save_icons">
              <property name="text">
               <string>save</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/icons/Add window 2.png</normaloff>:/icons/Add window 2.png</iconset>
              </property>
             </widget>
            </item>
@@ -792,12 +848,20 @@
             <property name="text">
              <string>Save to default style</string>
             </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/icons/StyleSave.png</normaloff>:/icons/StyleSave.png</iconset>
+            </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_style_default_load">
             <property name="text">
              <string>Load from default style</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/icons/StyleLoad.png</normaloff>:/icons/StyleLoad.png</iconset>
             </property>
            </widget>
           </item>
@@ -974,12 +1038,20 @@
             <property name="text">
              <string>Update Prop</string>
             </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/icons/Properties.png</normaloff>:/icons/Properties.png</iconset>
+            </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_prop_delete">
             <property name="text">
              <string>Delete Prop</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/icons/delete-21.png</normaloff>:/icons/delete-21.png</iconset>
             </property>
            </widget>
           </item>

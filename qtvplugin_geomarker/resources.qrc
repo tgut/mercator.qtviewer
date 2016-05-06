@@ -2,5 +2,21 @@
     <qresource prefix="/">
         <file>icons/people.ico</file>
         <file>icons/default.png</file>
+        <file>icons/Refresh-1.png</file>
+        <file>icons/Collapse.png</file>
+        <file>icons/all_marks.png</file>
+        <file>icons/selected_marks.png</file>
+        <file>icons/delete-21.png</file>
+        <file>icons/Trust.png</file>
+        <file>icons/Updates.png</file>
+        <file>icons/Floppy_Purple.png</file>
+        <file>icons/Floppy_Red.png</file>
+        <file>icons/StyleLoad.png</file>
+        <file>icons/StyleSave.png</file>
+        <file>icons/Network-27.png</file>
+        <file>icons/Add to favourites.png</file>
+        <file>icons/Add window 2.png</file>
+        <file>icons/Drive Slot Load.png</file>
+        <file>icons/Properties.png</file>
     </qresource>
 </RCC>

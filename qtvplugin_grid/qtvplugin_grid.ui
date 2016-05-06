@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>410</width>
+    <width>422</width>
     <height>418</height>
    </rect>
   </property>
@@ -126,6 +126,10 @@
           <property name="text">
            <string>Add</string>
           </property>
+          <property name="icon">
+           <iconset resource="../qtvplugin_geomarker/resources.qrc">
+            <normaloff>:/icons/Add to favourites.png</normaloff>:/icons/Add to favourites.png</iconset>
+          </property>
          </widget>
         </item>
         <item>
@@ -133,12 +137,20 @@
           <property name="text">
            <string>Clear</string>
           </property>
+          <property name="icon">
+           <iconset resource="resources.qrc">
+            <normaloff>:/icons/Delete-1.png</normaloff>:/icons/Delete-1.png</iconset>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pushButton_clear_all">
           <property name="text">
            <string>Clear All</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../qtvplugin_geomarker/resources.qrc">
+            <normaloff>:/icons/delete-21.png</normaloff>:/icons/delete-21.png</iconset>
           </property>
          </widget>
         </item>
@@ -184,6 +196,7 @@
   </layout>
  </widget>
  <resources>
+  <include location="../qtvplugin_geomarker/resources.qrc"/>
   <include location="resources.qrc"/>
  </resources>
  <connections/>
