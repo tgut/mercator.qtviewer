@@ -406,12 +406,27 @@ void osm_frame_widget::on_pushButton_saveToFile_clicked()
 {
 	QSettings settings(QCoreApplication::applicationFilePath()+".ini",QSettings::IniFormat);
 	QString strLastSaveImgDir = settings.value("history/last_save_img_dir","./").toString();
-	QString newfm = QFileDialog::getSaveFileName(this,tr("save to image"),strLastSaveImgDir,
+
+	QString strDefaultFilename = "Image_" +
+			QDateTime::currentDateTime()
+			.toString("yyyyMMddHHmmss") +".png";
+
+	QFileDialog dlg_save(this,tr("save to image"),strLastSaveImgDir,
 								 "Images (*.png *.bmp *.jpg);;All files(*.*)"
 								 );
-	if (newfm.size()>2)
+	dlg_save.setFileMode(QFileDialog::AnyFile);
+	dlg_save.setAcceptMode(QFileDialog::AcceptSave);
+	dlg_save.selectFile(strDefaultFilename);
+	if (dlg_save.exec()==QDialog::Accepted)
 	{
-		if (true == ui->widget_mainMap->saveToImage(newfm))
-			 settings.setValue("history/last_save_img_dir",newfm);
+		QStringList fms = dlg_save.selectedFiles();
+		foreach (QString newfm,  fms)
+		{
+			if (true == ui->widget_mainMap->saveToImage(newfm))
+			{
+				QFileInfo info(newfm);
+				settings.setValue("history/last_save_img_dir",info.absolutePath());
+			}
+		}
 	}
 }

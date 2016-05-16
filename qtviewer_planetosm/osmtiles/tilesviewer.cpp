@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <math.h>
 #include <QPixmap>
+#include <QFileInfo>
+#include <QDir>
 #include "layer_interface.h"
 namespace QTVOSM{
 	tilesviewer::tilesviewer(QWidget *parent) :
@@ -986,6 +988,9 @@ namespace QTVOSM{
 
 	bool tilesviewer::saveToImage(const QString & strFm)
 	{
+		QFileInfo info(strFm);
+		QDir dir;
+		dir.mkpath(info.absolutePath());
 		QPixmap m = this->grab();
 		return m.save(strFm);
 	}
